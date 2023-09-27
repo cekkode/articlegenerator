@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Article Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+</head>
+<body>
+    <form id="api-key-form">
+        <input type="text" id="api-key" placeholder="Paste OpenAI API Key here">
+        <button type="submit">Save API Key</button>
+    </form>
+    <form id="google-sheet-url">
+        <input type="text" id="sheet-url" placeholder="Paste Google Sheet URL here">
+        <select id="ai-model">
+            <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+            <option value="gpt-4">gpt-4</option>
+        </select>
+        <button type="submit">Generate Articles</button>
+    </form>
+    <div id="articles"></div>
+
+    <script>
+        $(document).ready(function() {
+            var apiKey = Cookies.get('apiKey');
+            if (apiKey) {
+                $('#api-key').val(apiKey);
+            }
+        });
+
+        $('#api-key-form').on('submit', function(e) {
+            e.preventDefault();
+            var apiKey = $('#api-key').val();
+            Cookies.set('apiKey', apiKey);
+        });
+
+        $('#google-sheet-url').on('submit', function(e) {
+            e.preventDefault();
+            var url = $('#sheet-url').val();
+            var model = $('#ai-model').val();
+            var apiKey = Cookies.get('apiKey');
+
+            Papa.parse(url, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    results.data.forEach(function(row) {
+                        var title = row['TITLE'];
+                        var headings = row['HEADINGS'].split(',');
+
+                        var article = '';
+                        headings.forEach(function(heading) {
+                            var prompt = "Title: " + title + "\nHeading: " + heading + "\n\n";
+                            $.ajax({
+                                url: 'https://api.openai.com/v1/engines/' + model + '/completions',
+                                type: 'POST',
+                                headers: {
+                                    'Authorization': 'Bearer ' + apiKey,
+                                    'Content-Type': 'application/json'
+                                },
+                                data: JSON.stringify({
+                                    'prompt': prompt,
+                                    'max_tokens': 100
+                                }),
+                                success: function(response) {
+                                    article += heading + '\n' + response.choices[0].text + '\n';
+                                    $('#articles').append('<textarea>' + article + '</textarea>');
+                                }
+                            });
+                        });
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
