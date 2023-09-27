@@ -20,7 +20,9 @@
         <button type="submit">Generate Articles</button>
     </form>
     <div id="articles"></div>
-
+    <div id="progress-bar" style="display: none;">
+        <div class="progress"></div>
+    </div>
     <script>
         $(document).ready(function() {
             var apiKey = Cookies.get('apiKey');
@@ -41,10 +43,31 @@
             var model = $('#ai-model').val();
             var apiKey = Cookies.get('apiKey');
 
+            if (!url.startsWith('https://docs.google.com/spreadsheets/')) {
+                alert('Invalid Google Sheet URL');
+                return;
+            }
+
+            if (!apiKey) {
+                alert('Please provide OpenAI API Key');
+                return;
+            }
+
+            $('#progress-bar').show();
+
             Papa.parse(url, {
                 download: true,
                 header: true,
                 complete: function(results) {
+                    if (results.errors.length > 0) {
+                        alert('Error reading Google Sheet: ' + results.errors[0].message);
+                        $('#progress-bar').hide();
+                        return;
+                    }
+
+                    var total = results.data.length;
+                    var count = 0;
+
                     results.data.forEach(function(row) {
                         var title = row['TITLE'];
                         var headings = row['HEADINGS'].split(',');
@@ -61,11 +84,24 @@
                                 },
                                 data: JSON.stringify({
                                     'prompt': prompt,
-                                    'max_tokens': 100
+                                    'max_tokens': 7000
                                 }),
                                 success: function(response) {
+                                    if (response.error) {
+                                        alert('OpenAI API Error: ' + response.error.message);
+                                        $('#progress-bar').hide();
+                                        return;
+                                    }
+
                                     article += heading + '\n' + response.choices[0].text + '\n';
                                     $('#articles').append('<textarea>' + article + '</textarea>');
+
+                                    count++;
+                                    $('.progress').css('width', (count / total * 100) + '%');
+
+                                    if (count === total) {
+                                        $('#progress-bar').hide();
+                                    }
                                 }
                             });
                         });
