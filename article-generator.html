@@ -17,6 +17,7 @@
             <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
             <option value="gpt-4">gpt-4</option>
         </select>
+        <input type="number" id="token-length" value="7000">
         <button type="submit">Generate Articles</button>
     </form>
     <div id="articles"></div>
@@ -42,6 +43,7 @@
             var url = $('#sheet-url').val();
             var model = $('#ai-model').val();
             var apiKey = Cookies.get('apiKey');
+            var tokenLength = $('#token-length').val();
 
             if (!url.startsWith('https://docs.google.com/spreadsheets/')) {
                 alert('Invalid Google Sheet URL');
@@ -68,14 +70,14 @@
                     var total = results.data.length;
                     var count = 0;
 
-                    results.data.forEach(function(row) {
+                    var promises = results.data.map(function(row) {
                         var title = row['TITLE'];
                         var headings = row['HEADINGS'].split(',');
 
                         var article = '';
-                        headings.forEach(function(heading) {
+                        return Promise.all(headings.map(function(heading) {
                             var prompt = "Title: " + title + "\nHeading: " + heading + "\n\n";
-                            $.ajax({
+                            return $.ajax({
                                 url: 'https://api.openai.com/v1/engines/' + model + '/completions',
                                 type: 'POST',
                                 headers: {
@@ -84,27 +86,29 @@
                                 },
                                 data: JSON.stringify({
                                     'prompt': prompt,
-                                    'max_tokens': 7000
-                                }),
-                                success: function(response) {
-                                    if (response.error) {
-                                        alert('OpenAI API Error: ' + response.error.message);
-                                        $('#progress-bar').hide();
-                                        return;
-                                    }
-
-                                    article += heading + '\n' + response.choices[0].text + '\n';
-                                    $('#articles').append('<textarea>' + article + '</textarea>');
-
-                                    count++;
-                                    $('.progress').css('width', (count / total * 100) + '%');
-
-                                    if (count === total) {
-                                        $('#progress-bar').hide();
-                                    }
+                                    'max_tokens': tokenLength
+                                })
+                            }).then(function(response) {
+                                if (response.error) {
+                                    throw new Error('OpenAI API Error: ' + response.error.message);
                                 }
+
+                                article += heading + '\n' + response.choices[0].text + '\n';
                             });
+                        })).then(function() {
+                            $('#articles').append('<textarea>' + article + '</textarea>');
+                            count++;
+                            $('.progress').css('width', (count / total * 100) + '%');
+
+                            if (count === total) {
+                                $('#progress-bar').hide();
+                            }
                         });
+                    });
+
+                    Promise.all(promises).catch(function(error) {
+                        alert(error.message);
+                        $('#progress-bar').hide();
                     });
                 }
             });
