@@ -24,7 +24,14 @@
 <div id="fileContent">
 </div>
 
+<button id="aiTitle">AI Title</button>
+<button id="aiHeading">AI Heading</button>
+
+<p id="counter">Total Articles: 0</p>
+
 <script>
+let articleCount = 0;
+
 document.getElementById("myForm").addEventListener("submit", function(event){
   event.preventDefault();
   var apikey = document.getElementById("apikey").value;
@@ -46,11 +53,14 @@ document.getElementById("myForm").addEventListener("submit", function(event){
         textarea.rows = "4";
         textarea.cols = "50";
         textarea.value = lines[i];
+        textarea.name = lines[i];
         fileContent.appendChild(textarea);
+        articleCount++;
       } else {
         textarea.value += '\n' + lines[i].trim();
       }
     }
+    document.getElementById("counter").innerText = "Total Articles: " + articleCount;
   };
   if(file) reader.readAsText(file);
 
@@ -62,11 +72,26 @@ document.getElementById("myForm").addEventListener("submit", function(event){
       textarea.rows = "4";
       textarea.cols = "50";
       textarea.value = textLines[i];
+      textarea.name = textLines[i];
       document.getElementById("fileContent").appendChild(textarea);
+      articleCount++;
     } else {
       textarea.value += '\n' + textLines[i].trim();
     }
   }
+  document.getElementById("counter").innerText = "Total Articles: " + articleCount;
+});
+
+document.getElementById("aiTitle").addEventListener("click", function() {
+  // Call OpenAI API to generate SEO optimized title for each article
+  // This is a placeholder and needs to be replaced with actual API call
+  console.log("Generating SEO optimized titles...");
+});
+
+document.getElementById("aiHeading").addEventListener("click", function() {
+  // Call OpenAI API to generate subheadings for each article
+  // This is a placeholder and needs to be replaced with actual API call
+  console.log("Generating subheadings...");
 });
 </script>
 
