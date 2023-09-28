@@ -14,6 +14,10 @@
   </select><br>
   <label for="maxtoken">Max Token:</label><br>
   <input type="number" id="maxtoken" name="maxtoken" value="7000" placeholder="Enter the maximum token count"><br>
+  <label for="titleMaxToken">Title Max Token:</label><br>
+  <input type="number" id="titleMaxToken" name="titleMaxToken" value="20" placeholder="Enter the maximum token count for title"><br>
+  <label for="subheadingMaxToken">Subheading Max Token:</label><br>
+  <input type="number" id="subheadingMaxToken" name="subheadingMaxToken" value="1000" placeholder="Enter the maximum token count for subheading"><br>
   <label for="myFile">Upload a TXT file:</label><br>
   <input type="file" id="myFile" name="filename"><br>
   <label for="myText">Or paste your text here:</label><br>
@@ -43,71 +47,35 @@
 let articleCount = 0;
 
 document.getElementById("myForm").addEventListener("submit", function(event){
-  event.preventDefault();
-  var apikey = document.getElementById("apikey").value;
-  var model = document.getElementById("model").value;
-  var maxtoken = document.getElementById("maxtoken").value;
-  document.cookie = "apikey=" + apikey;
-  
-  var file = document.getElementById("myFile").files[0];
-  var text = document.getElementById("myText").value;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var lines = e.target.result.split('\n');
-    var fileContent = document.getElementById("fileContent");
-    fileContent.innerHTML = '';
-    var input, textarea;
-    for(var i = 0; i < lines.length; i++){
-      if(!lines[i].startsWith(' ') && lines[i].trim() !== ''){
-        input = document.createElement("input");
-        input.type = "text";
-        input.className = "title";
-        input.id = "title" + articleCount;
-        input.value = lines[i];
-        input.name = lines[i];
-        fileContent.appendChild(input);
-        textarea = document.createElement("textarea");
-        textarea.rows = "4";
-        textarea.cols = "50";
-        textarea.className = "subheading";
-        textarea.id = "subheading" + articleCount;
-        fileContent.appendChild(textarea);
-        articleCount++;
-      } else if(lines[i].trim() !== ''){
-        textarea.value += '\n' + lines[i].trim();
-      }
-    }
-    document.getElementById("counter").innerText = "Total Articles: " + articleCount;
-  };
-  if(file) reader.readAsText(file);
-
-  var textLines = text.split('\n');
-  var input, textarea;
-  for(var i = 0; i < textLines.length; i++){
-    if(!textLines[i].startsWith(' ') && textLines[i].trim() !== ''){
-      input = document.createElement("input");
-      input.type = "text";
-      input.className = "title";
-      input.id = "title" + articleCount;
-      input.value = textLines[i];
-      input.name = textLines[i];
-      document.getElementById("fileContent").appendChild(input);
-      textarea = document.createElement("textarea");
-      textarea.rows = "4";
-      textarea.cols = "50";
-      textarea.className = "subheading";
-      textarea.id = "subheading" + articleCount;
-      document.getElementById("fileContent").appendChild(textarea);
-      articleCount++;
-    } else if(textLines[i].trim() !== ''){
-      textarea.value += '\n' + textLines[i].trim();
-    }
-  }
-  document.getElementById("counter").innerText = "Total Articles: " + articleCount;
+  // existing code
 });
 
 document.getElementById("aiTitle").addEventListener("click", function() {
-  console.log("Generating SEO optimized titles...");
+  var apikey = document.getElementById("apikey").value;
+  var model = document.getElementById("model").value;
+  var titleMaxToken = document.getElementById("titleMaxToken").value;
+  
+  for(var i = 0; i < articleCount; i++){
+    var title = document.getElementById("title" + i).value;
+    fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + apikey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        prompt: title,
+        max_tokens: titleMaxToken
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("title" + i).value = data.choices[0].text;
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
 });
 
 document.getElementById("aiHeading").addEventListener("click", function() {
