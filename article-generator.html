@@ -6,16 +6,18 @@
 
 <form id="myForm">
   <label for="apikey">API Key:</label><br>
-  <input type="text" id="apikey" name="apikey"><br>
+  <input type="text" id="apikey" name="apikey" placeholder="Enter your API Key here"><br>
   <label for="model">Model:</label><br>
   <select id="model" name="model">
     <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
     <option value="gpt-4">gpt-4</option>
   </select><br>
   <label for="maxtoken">Max Token:</label><br>
-  <input type="number" id="maxtoken" name="maxtoken" value="7000"><br>
-  <input type="file" id="myFile" name="filename">
-  <textarea id="myText" rows="4" cols="50"></textarea>
+  <input type="number" id="maxtoken" name="maxtoken" value="7000" placeholder="Enter the maximum token count"><br>
+  <label for="myFile">Upload a TXT file:</label><br>
+  <input type="file" id="myFile" name="filename"><br>
+  <label for="myText">Or paste your text here:</label><br>
+  <textarea id="myText" rows="4" cols="50" placeholder="Paste your text here"></textarea><br>
   <input type="submit" value="Submit">
 </form>
 
@@ -24,7 +26,7 @@
 
 <script>
 document.getElementById("myForm").addEventListener("submit", function(event){
-  event.preventDefault() 
+  event.preventDefault();
   var apikey = document.getElementById("apikey").value;
   var model = document.getElementById("model").value;
   var maxtoken = document.getElementById("maxtoken").value;
@@ -37,36 +39,32 @@ document.getElementById("myForm").addEventListener("submit", function(event){
     var lines = e.target.result.split('\n');
     var fileContent = document.getElementById("fileContent");
     fileContent.innerHTML = '';
+    var textarea;
     for(var i = 0; i < lines.length; i++){
       if(!lines[i].startsWith(' ')){
-        var input = document.createElement("input");
-        input.type = "text";
-        input.value = lines[i];
-        fileContent.appendChild(input);
-      } else {
-        var textarea = document.createElement("textarea");
+        textarea = document.createElement("textarea");
         textarea.rows = "4";
         textarea.cols = "50";
-        textarea.value = lines[i].trim();
+        textarea.value = lines[i];
         fileContent.appendChild(textarea);
+      } else {
+        textarea.value += '\n' + lines[i].trim();
       }
     }
   };
-  reader.readAsText(file);
+  if(file) reader.readAsText(file);
 
   var textLines = text.split('\n');
+  var textarea;
   for(var i = 0; i < textLines.length; i++){
     if(!textLines[i].startsWith(' ')){
-      var input = document.createElement("input");
-      input.type = "text";
-      input.value = textLines[i];
-      document.getElementById("fileContent").appendChild(input);
-    } else {
-      var textarea = document.createElement("textarea");
+      textarea = document.createElement("textarea");
       textarea.rows = "4";
       textarea.cols = "50";
-      textarea.value = textLines[i].trim();
+      textarea.value = textLines[i];
       document.getElementById("fileContent").appendChild(textarea);
+    } else {
+      textarea.value += '\n' + textLines[i].trim();
     }
   }
 });
