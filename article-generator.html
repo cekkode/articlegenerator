@@ -43,6 +43,12 @@ document.getElementById("myForm").addEventListener("submit", function(event){
         input.type = "text";
         input.value = lines[i];
         fileContent.appendChild(input);
+      } else {
+        var textarea = document.createElement("textarea");
+        textarea.rows = "4";
+        textarea.cols = "50";
+        textarea.value = lines[i].trim();
+        fileContent.appendChild(textarea);
       }
     }
   };
@@ -55,6 +61,12 @@ document.getElementById("myForm").addEventListener("submit", function(event){
       input.type = "text";
       input.value = textLines[i];
       document.getElementById("fileContent").appendChild(input);
+    } else {
+      var textarea = document.createElement("textarea");
+      textarea.rows = "4";
+      textarea.cols = "50";
+      textarea.value = textLines[i].trim();
+      document.getElementById("fileContent").appendChild(textarea);
     }
   }
 });
