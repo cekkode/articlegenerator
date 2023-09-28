@@ -22,6 +22,8 @@
   <input type="file" id="myFile" name="filename"><br>
   <label for="myText">Or paste your text here:</label><br>
   <textarea id="myText" rows="4" cols="50" placeholder="Paste your text here"></textarea><br>
+  <label for="titlePrompt">Title Prompt:</label><br>
+  <input type="text" id="titlePrompt" name="titlePrompt" value="tulis ulang topik ini menjadi judul artikel yang menarik: "><br>
   <input type="submit" value="Submit">
 </form>
 
@@ -32,6 +34,7 @@
 <button id="aiHeading">AI Heading</button>
 
 <p id="counter">Total Articles: 0</p>
+<p id="tokenCounter">Total Tokens: 0</p>
 
 <style>
   .title {
@@ -45,6 +48,7 @@
 
 <script>
 let articleCount = 0;
+let tokenCount = 0;
 
 document.getElementById("myForm").addEventListener("submit", function(event){
   event.preventDefault();
@@ -77,11 +81,14 @@ document.getElementById("myForm").addEventListener("submit", function(event){
         textarea.id = "subheading" + articleCount;
         fileContent.appendChild(textarea);
         articleCount++;
+        tokenCount += lines[i].split(' ').length;
       } else if(lines[i].trim() !== ''){
         textarea.value += '\n' + lines[i].trim();
+        tokenCount += lines[i].split(' ').length;
       }
     }
     document.getElementById("counter").innerText = "Total Articles: " + articleCount;
+    document.getElementById("tokenCounter").innerText = "Total Tokens: " + tokenCount;
   };
   if(file) reader.readAsText(file);
 
@@ -103,18 +110,25 @@ document.getElementById("myForm").addEventListener("submit", function(event){
       textarea.id = "subheading" + articleCount;
       document.getElementById("fileContent").appendChild(textarea);
       articleCount++;
+      tokenCount += textLines[i].split(' ').length;
     } else if(textLines[i].trim() !== ''){
       textarea.value += '\n' + textLines[i].trim();
+      tokenCount += textLines[i].split(' ').length;
     }
   }
   document.getElementById("counter").innerText = "Total Articles: " + articleCount;
+  document.getElementById("tokenCounter").innerText = "Total Tokens: " + tokenCount;
 });
 
 document.getElementById("aiTitle").addEventListener("click", function() {
   var apikey = document.getElementById("apikey").value;
   var model = document.getElementById("model").value;
   var titleMaxToken = document.getElementById("titleMaxToken").value;
-  console.log("Generating SEO optimized titles using API Key: " + apikey + ", Model: " + model + ", Title Max Token: " + titleMaxToken);
+  var titlePrompt = document.getElementById("titlePrompt").value;
+  for(var i = 0; i < articleCount; i++){
+    var title = document.getElementById("title" + i).value;
+    console.log("Generating SEO optimized titles using API Key: " + apikey + ", Model: " + model + ", Title Max Token: " + titleMaxToken + ", Title Prompt: " + titlePrompt + title);
+  }
 });
 
 document.getElementById("aiHeading").addEventListener("click", function() {
