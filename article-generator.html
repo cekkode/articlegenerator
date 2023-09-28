@@ -15,6 +15,7 @@
   <label for="maxtoken">Max Token:</label><br>
   <input type="number" id="maxtoken" name="maxtoken" value="7000"><br>
   <input type="file" id="myFile" name="filename">
+  <textarea id="myText" rows="4" cols="50"></textarea>
   <input type="submit" value="Submit">
 </form>
 
@@ -30,20 +31,32 @@ document.getElementById("myForm").addEventListener("submit", function(event){
   document.cookie = "apikey=" + apikey;
   
   var file = document.getElementById("myFile").files[0];
+  var text = document.getElementById("myText").value;
   var reader = new FileReader();
   reader.onload = function(e) {
     var lines = e.target.result.split('\n');
     var fileContent = document.getElementById("fileContent");
     fileContent.innerHTML = '';
     for(var i = 0; i < lines.length; i++){
-      var textarea = document.createElement("textarea");
-      textarea.rows = "4";
-      textarea.cols = "50";
-      textarea.value = lines[i];
-      fileContent.appendChild(textarea);
+      if(!lines[i].startsWith(' ')){
+        var input = document.createElement("input");
+        input.type = "text";
+        input.value = lines[i];
+        fileContent.appendChild(input);
+      }
     }
   };
   reader.readAsText(file);
+
+  var textLines = text.split('\n');
+  for(var i = 0; i < textLines.length; i++){
+    if(!textLines[i].startsWith(' ')){
+      var input = document.createElement("input");
+      input.type = "text";
+      input.value = textLines[i];
+      document.getElementById("fileContent").appendChild(input);
+    }
+  }
 });
 </script>
 
