@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<h2>OpenAI API Key</h2>
+<h2>AI Article Generator Adsense</h2>
 
 <form id="myForm">
   <label for="apikey">API Key:</label><br>
@@ -18,8 +18,8 @@
   <input type="submit" value="Submit">
 </form>
 
-<textarea id="fileContent" rows="4" cols="50">
-</textarea>
+<div id="fileContent">
+</div>
 
 <script>
 document.getElementById("myForm").addEventListener("submit", function(event){
@@ -32,7 +32,16 @@ document.getElementById("myForm").addEventListener("submit", function(event){
   var file = document.getElementById("myFile").files[0];
   var reader = new FileReader();
   reader.onload = function(e) {
-    document.getElementById("fileContent").value = e.target.result;
+    var lines = e.target.result.split('\n');
+    var fileContent = document.getElementById("fileContent");
+    fileContent.innerHTML = '';
+    for(var i = 0; i < lines.length; i++){
+      var textarea = document.createElement("textarea");
+      textarea.rows = "4";
+      textarea.cols = "50";
+      textarea.value = lines[i];
+      fileContent.appendChild(textarea);
+    }
   };
   reader.readAsText(file);
 });
