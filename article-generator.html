@@ -29,6 +29,16 @@
 
 <p id="counter">Total Articles: 0</p>
 
+<style>
+  .title {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  .subheading {
+    margin-bottom: 20px;
+  }
+</style>
+
 <script>
 let articleCount = 0;
 
@@ -48,7 +58,7 @@ document.getElementById("myForm").addEventListener("submit", function(event){
     fileContent.innerHTML = '';
     var input, textarea;
     for(var i = 0; i < lines.length; i++){
-      if(!lines[i].startsWith(' ')){
+      if(!lines[i].startsWith(' ') && lines[i].trim() !== ''){
         input = document.createElement("input");
         input.type = "text";
         input.className = "title";
@@ -62,7 +72,7 @@ document.getElementById("myForm").addEventListener("submit", function(event){
         textarea.className = "subheading";
         fileContent.appendChild(textarea);
         articleCount++;
-      } else {
+      } else if(lines[i].trim() !== ''){
         textarea.value += '\n' + lines[i].trim();
       }
     }
@@ -73,7 +83,7 @@ document.getElementById("myForm").addEventListener("submit", function(event){
   var textLines = text.split('\n');
   var input, textarea;
   for(var i = 0; i < textLines.length; i++){
-    if(!textLines[i].startsWith(' ')){
+    if(!textLines[i].startsWith(' ') && textLines[i].trim() !== ''){
       input = document.createElement("input");
       input.type = "text";
       input.className = "title";
@@ -87,7 +97,7 @@ document.getElementById("myForm").addEventListener("submit", function(event){
       textarea.className = "subheading";
       document.getElementById("fileContent").appendChild(textarea);
       articleCount++;
-    } else {
+    } else if(textLines[i].trim() !== ''){
       textarea.value += '\n' + textLines[i].trim();
     }
   }
@@ -95,14 +105,10 @@ document.getElementById("myForm").addEventListener("submit", function(event){
 });
 
 document.getElementById("aiTitle").addEventListener("click", function() {
-  // Call OpenAI API to generate SEO optimized title for each article
-  // This is a placeholder and needs to be replaced with actual API call
   console.log("Generating SEO optimized titles...");
 });
 
 document.getElementById("aiHeading").addEventListener("click", function() {
-  // Call OpenAI API to generate subheadings for each article
-  // This is a placeholder and needs to be replaced with actual API call
   console.log("Generating subheadings...");
 });
 </script>
