@@ -70,6 +70,7 @@ document.getElementById("myForm").addEventListener("submit", function(event){
         textarea.rows = "4";
         textarea.cols = "50";
         textarea.className = "subheading";
+        textarea.id = "subheading" + articleCount;
         fileContent.appendChild(textarea);
         articleCount++;
       } else if(lines[i].trim() !== ''){
@@ -95,6 +96,7 @@ document.getElementById("myForm").addEventListener("submit", function(event){
       textarea.rows = "4";
       textarea.cols = "50";
       textarea.className = "subheading";
+      textarea.id = "subheading" + articleCount;
       document.getElementById("fileContent").appendChild(textarea);
       articleCount++;
     } else if(textLines[i].trim() !== ''){
