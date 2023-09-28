@@ -46,14 +46,20 @@ document.getElementById("myForm").addEventListener("submit", function(event){
     var lines = e.target.result.split('\n');
     var fileContent = document.getElementById("fileContent");
     fileContent.innerHTML = '';
-    var textarea;
+    var input, textarea;
     for(var i = 0; i < lines.length; i++){
       if(!lines[i].startsWith(' ')){
+        input = document.createElement("input");
+        input.type = "text";
+        input.className = "title";
+        input.id = "title" + articleCount;
+        input.value = lines[i];
+        input.name = lines[i];
+        fileContent.appendChild(input);
         textarea = document.createElement("textarea");
         textarea.rows = "4";
         textarea.cols = "50";
-        textarea.value = lines[i];
-        textarea.name = lines[i];
+        textarea.className = "subheading";
         fileContent.appendChild(textarea);
         articleCount++;
       } else {
@@ -65,14 +71,20 @@ document.getElementById("myForm").addEventListener("submit", function(event){
   if(file) reader.readAsText(file);
 
   var textLines = text.split('\n');
-  var textarea;
+  var input, textarea;
   for(var i = 0; i < textLines.length; i++){
     if(!textLines[i].startsWith(' ')){
+      input = document.createElement("input");
+      input.type = "text";
+      input.className = "title";
+      input.id = "title" + articleCount;
+      input.value = textLines[i];
+      input.name = textLines[i];
+      document.getElementById("fileContent").appendChild(input);
       textarea = document.createElement("textarea");
       textarea.rows = "4";
       textarea.cols = "50";
-      textarea.value = textLines[i];
-      textarea.name = textLines[i];
+      textarea.className = "subheading";
       document.getElementById("fileContent").appendChild(textarea);
       articleCount++;
     } else {
