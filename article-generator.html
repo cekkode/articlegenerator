@@ -3,7 +3,7 @@
 <body>
 
 <h2>AI Article Generator Adsense</h2>
-
+<p id="errorMessage" style="color:red;"></p>
 <form id="myForm">
   <label for="apikey">API Key:</label><br>
   <input type="text" id="apikey" name="apikey" placeholder="Enter your API Key here"><br>
@@ -145,24 +145,35 @@ document.getElementById("aiTitle").addEventListener("click", function() {
   var titlePrompt = document.getElementById("titlePrompt").value;
   for(var i = 0; i < articleCount; i++){
     var title = document.getElementById("title" + i).value;
-    fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + apikey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        prompt: titlePrompt + title,
-        max_tokens: titleMaxToken
-      })
+  fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer ' + apikey,
+    'Content-Type': 'application/json'
+    },
+  body: JSON.stringify({
+    prompt: titlePrompt + title,
+    max_tokens: titleMaxToken
     })
-    .then(response => response.json())
-    .then(data => {
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.choices && data.choices[0]) {
       document.getElementById("title" + i).value = data.choices[0].text.trim();
-    })
-    .catch(error => console.error('Error:', error));
-  }
-});
+      document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
+    } else {
+      throw new Error('Error: data.choices is undefined');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+  }});
 
 document.getElementById("aiHeading").addEventListener("click", function() {
   console.log("Generating subheadings...");
