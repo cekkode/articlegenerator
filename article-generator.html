@@ -127,7 +127,22 @@ document.getElementById("aiTitle").addEventListener("click", function() {
   var titlePrompt = document.getElementById("titlePrompt").value;
   for(var i = 0; i < articleCount; i++){
     var title = document.getElementById("title" + i).value;
-    console.log("Generating SEO optimized titles using API Key: " + apikey + ", Model: " + model + ", Title Max Token: " + titleMaxToken + ", Title Prompt: " + titlePrompt + title);
+    fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + apikey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        prompt: titlePrompt + title,
+        max_tokens: titleMaxToken
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("title" + i).value = data.choices[0].text.trim();
+    })
+    .catch(error => console.error('Error:', error));
   }
 });
 
