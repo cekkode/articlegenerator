@@ -9,7 +9,7 @@
 <p id="errorMessage" style="color:red;"></p>
 <form id="myForm">
   <label for="apikey">API Key:</label><br>
-  <input type="text" id="apikey" name="apikey" placeholder="Enter your API Key here"><br>
+  <input type="text" id="apikey" name="apikey" placeholder="Enter your API Key here" onchange="checkAPIKey()"><br>
   <label for="model">Model:</label><br>
   <select id="model" name="model">
     <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
@@ -43,6 +43,26 @@
 let articleCount = 0;
 let tokenCount = 0;
 let input, textarea, fileContent;
+
+function checkAPIKey() {
+  var apikey = document.getElementById("apikey").value;
+  fetch('https://api.openai.com/v1/engines/davinci', {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + apikey
+    }
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Invalid API Key');
+    }
+    document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+  });
+}
 
 document.getElementById("myForm").addEventListener("submit", function(event){
   event.preventDefault();
