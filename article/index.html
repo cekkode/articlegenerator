@@ -120,7 +120,7 @@ document.getElementById("aiTitle").addEventListener("click", function() {
   var title;
   for(var i = 0; i < articleCount; i++){
     title = document.getElementById("title" + i).value;
-    fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
+    fetch('https://api.openai.com/v1/engines/davinci/completions', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + apikey,
@@ -128,7 +128,8 @@ document.getElementById("aiTitle").addEventListener("click", function() {
       },
       body: JSON.stringify({
         prompt: titlePrompt + title,
-        max_tokens: titleMaxToken
+        max_tokens: titleMaxToken,
+        model: model
       })
     })
     .then(response => {
