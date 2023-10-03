@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
@@ -120,7 +120,7 @@ document.getElementById("aiTitle").addEventListener("click", function() {
   var title;
   for(var i = 0; i < articleCount; i++){
     title = document.getElementById("title" + i).value;
-    fetch('https://api.openai.com/v1/engines/davinci/completions', {
+    fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + apikey,
@@ -128,8 +128,7 @@ document.getElementById("aiTitle").addEventListener("click", function() {
       },
       body: JSON.stringify({
         prompt: titlePrompt + title,
-        max_tokens: titleMaxToken,
-        model: model
+        max_tokens: titleMaxToken
       })
     })
     .then(response => {
