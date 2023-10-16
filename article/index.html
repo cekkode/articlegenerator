@@ -40,6 +40,7 @@
 <p id="counter">Total Articles: 0</p>
 <p id="tokenCounter">Total Tokens: 0</p>
 
+<script src="https://cdn.jsdelivr.net/npm/openai@0.27.0"></script>
 <script>
 let articleCount = 0;
 let tokenCount = 0;
@@ -47,22 +48,23 @@ let input, textarea, fileContent;
 
 function checkAPIKey() {
   var apikey = document.getElementById("apikey").value;
-  fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + apikey
-    }
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Invalid API Key');
-    }
-    document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
-  })
-  .catch(error => {
-    console.error('Error:', error);
-    document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+  openai.configure({
+    apiKey: apikey,
   });
+
+  const prompt = 'This is a sample API call to check key validity.';
+  openai.Completion.create({
+    model: 'text-davinci-002',
+    prompt: prompt,
+    max_tokens: 50,
+  })
+    .then(response => {
+      document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+    });
 }
 
 document.getElementById("myForm").addEventListener("submit", function(event){
