@@ -47,7 +47,7 @@ let input, textarea, fileContent;
 
 function checkAPIKey() {
   var apikey = document.getElementById("apikey").value;
-  fetch('https://api.openai.com/v1/engines/davinci', {
+  fetch('https://api.openai.com/v1/engines/gpt-3.5-turbo/completions', {
     method: 'GET',
     headers: {
       'Authorization': 'Bearer ' + apikey
