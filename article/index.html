@@ -69,7 +69,7 @@ document.getElementById("myForm").addEventListener("submit", function(event){
   var apikey = document.getElementById("apikey").value;
   var model = document.getElementById("model").value;
   var maxtoken = document.getElementById("maxtoken").value;
-  document.cookie = "apikey=" + apikey;
+  document.cookie = "apikey=" + apikey + "; SameSite=None; Secure";
   
   var file = document.getElementById("myFile").files[0];
   var text = document.getElementById("myText").value;
