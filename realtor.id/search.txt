@@ -1,0 +1,567 @@
+<div class="es-search js-es-search et_smooth_scroll_disabled es-search--ignore-ajax es-search--main js-es-search--main es-search--desktop" id="es-search--64f1b896f30a8" data-same-price="1">
+    <form action="https://oxygen-qmfwnd54xg4tl.oxygen-demo.qsandbox.org/search-results" role="search" method="get">
+        <input type="hidden" name="es" value="1">
+
+                            
+                    <h3>Properti yang Anda Butuhkan?</h3>
+        
+                    <div class="es-search__address">
+                <label class="es-field es-field__address">
+                    <input type="text" name="address" class="js-es-address" placeholder="Address, City, ZIP">
+                </label>
+                <button type="submit" class="es-btn es-btn--primary">
+                    <span class="es-icon es-icon_search"></span>
+                    <span class="es-btn__label">Search</span>
+                </button>
+            </div>
+        
+                    <ul class="es-search-nav js-es-search-nav ">
+                                                                <li class="js-es-search-nav__single-item js-es-search-nav__item" data-placeholder="Price" data-field="price" data-range-enabled="1" data-formatter="price">
+                                <a href="#">
+                                    <span class="js-es-search-nav__label">Price</span>
+                                    <span class="es-icon es-icon_chevron-bottom js-es-search-nav__open"></span>
+                                    <span class="es-icon es-icon_close js-es-search-nav__reset es-search-nav__reset es-hidden"></span>
+                                </a>
+                                <div id="nav-price-64f1b896f30a8" class="es-search-nav__content">
+                                    <div class="es-field-row es-field-row__range js-search-field-container">
+                               <div class="js-es-field es-field es-field__min_price es-field--select ">
+                                   <label for="price-min-64f1b896f3158"><div class="es-field__label">Price</div>
+			<select id="price-min-64f1b896f3158" name="min_price" class="js-es-search-field js-es-search-field--price js-es-search-field--price-min es-field__input select2-hidden-accessible" data-single_unit="" data-plural_unit="" data-prices-list="[]" data-base-name="price" data-placeholder="Min" data-select2-id="price-min-64f1b896f3158" tabindex="-1" aria-hidden="true"><option data-select2-id="2"></option>
+<option value="50000">Rp50,000.00</option>
+<option value="75000">Rp75,000.00</option>
+<option value="100000">Rp100,000.00</option>
+<option value="125000">Rp125,000.00</option>
+<option value="150000">Rp150,000.00</option>
+<option value="175000">Rp175,000.00</option>
+<option value="200000">Rp200,000.00</option>
+<option value="300000">Rp300,000.00</option>
+<option value="400000">Rp400,000.00</option>
+<option value="500000">Rp500,000.00</option>
+<option value="600000">Rp600,000.00</option>
+<option value="700000">Rp700,000.00</option>
+<option value="800000">Rp800,000.00</option>
+<option value="900000">Rp900,000.00</option>
+<option value="1000000">Rp1,000,000.00</option>
+<option value="1250000">Rp1,250,000.00</option>
+<option value="1500000">Rp1,500,000.00</option>
+<option value="1750000">Rp1,750,000.00</option>
+<option value="2000000">Rp2,000,000.00</option>
+<option value="2500000">Rp2,500,000.00</option>
+<option value="3000000">Rp3,000,000.00</option>
+<option value="5000000">Rp5,000,000.00</option>
+<option value="10000000">Rp10,000,000.00</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="1" style="width: auto;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-price-min-64f1b896f3158-container"><span class="select2-selection__rendered" id="select2-price-min-64f1b896f3158-container" role="textbox" aria-readonly="true"><span class="select2-selection__placeholder">Min</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+		</label>
+                               </div>
+                           
+                               <div class="js-es-field es-field es-field__max_price es-field--select ">
+                                   <label for="price-max-64f1b896f3158">
+			<select id="price-max-64f1b896f3158" name="max_price" class="js-es-search-field js-es-search-field--price js-es-search-field--price-max es-field__input select2-hidden-accessible" data-single_unit="" data-plural_unit="" data-prices-list="[]" data-base-name="price" data-placeholder="Max" data-select2-id="price-max-64f1b896f3158" tabindex="-1" aria-hidden="true"><option data-select2-id="4"></option>
+<option value="75000">Rp75,000.00</option>
+<option value="100000">Rp100,000.00</option>
+<option value="125000">Rp125,000.00</option>
+<option value="150000">Rp150,000.00</option>
+<option value="175000">Rp175,000.00</option>
+<option value="200000">Rp200,000.00</option>
+<option value="300000">Rp300,000.00</option>
+<option value="400000">Rp400,000.00</option>
+<option value="500000">Rp500,000.00</option>
+<option value="600000">Rp600,000.00</option>
+<option value="700000">Rp700,000.00</option>
+<option value="800000">Rp800,000.00</option>
+<option value="900000">Rp900,000.00</option>
+<option value="1000000">Rp1,000,000.00</option>
+<option value="1250000">Rp1,250,000.00</option>
+<option value="1500000">Rp1,500,000.00</option>
+<option value="1750000">Rp1,750,000.00</option>
+<option value="2000000">Rp2,000,000.00</option>
+<option value="2500000">Rp2,500,000.00</option>
+<option value="3000000">Rp3,000,000.00</option>
+<option value="5000000">Rp5,000,000.00</option>
+<option value="10000000">Rp10,000,000.00</option>
+<option value="20000000">Rp20,000,000.00</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="3" style="width: auto;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-price-max-64f1b896f3158-container"><span class="select2-selection__rendered" id="select2-price-max-64f1b896f3158-container" role="textbox" aria-readonly="true"><span class="select2-selection__placeholder">Max</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+		</label>
+                               </div>
+                           </div>                                </div>
+                            </li>
+                                                    <li class="js-es-search-nav__single-item js-es-search-nav__item" data-placeholder="Type" data-field="es_type" data-range-enabled="" data-formatter="default">
+                                <a href="#">
+                                    <span class="js-es-search-nav__label">Type</span>
+                                    <span class="es-icon es-icon_chevron-bottom js-es-search-nav__open"></span>
+                                    <span class="es-icon es-icon_close js-es-search-nav__reset es-search-nav__reset es-hidden"></span>
+                                </a>
+                                <div id="nav-es_type-64f1b896f30a8" class="es-search-nav__content">
+                                    
+                               <div class="es-field es-field__es_type es-field--checkboxes-bordered  js-search-field-container">
+                                   <div class="es-field__label">Type</div>
+<div class="es-field-row">
+                               <div class="es-field es-field__es_type es-field--checkbox-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="es_type-64f1b89701f21-76" name="es_type[0]" class="js-es-search-field js-es-search-field--es_type es-field__input es-field__input" multiple="" data-single_unit="" data-plural_unit="" data-placeholder="All home types" data-formatter="default" data-base-name="es_type" type="checkbox" value="76"><label for="es_type-64f1b89701f21-76">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">Apartemen</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__es_type es-field--checkbox-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="es_type-64f1b89701f21-6" name="es_type[1]" class="js-es-search-field js-es-search-field--es_type es-field__input es-field__input" multiple="" data-single_unit="" data-plural_unit="" data-placeholder="All home types" data-formatter="default" data-base-name="es_type" type="checkbox" value="6"><label for="es_type-64f1b89701f21-6">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">Gudang</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__es_type es-field--checkbox-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="es_type-64f1b89701f21-100" name="es_type[2]" class="js-es-search-field js-es-search-field--es_type es-field__input es-field__input" multiple="" data-single_unit="" data-plural_unit="" data-placeholder="All home types" data-formatter="default" data-base-name="es_type" type="checkbox" value="100"><label for="es_type-64f1b89701f21-100">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">Kantor</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__es_type es-field--checkbox-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="es_type-64f1b89701f21-7" name="es_type[3]" class="js-es-search-field js-es-search-field--es_type es-field__input es-field__input" multiple="" data-single_unit="" data-plural_unit="" data-placeholder="All home types" data-formatter="default" data-base-name="es_type" type="checkbox" value="7"><label for="es_type-64f1b89701f21-7">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">Ruko</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__es_type es-field--checkbox-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="es_type-64f1b89701f21-102" name="es_type[4]" class="js-es-search-field js-es-search-field--es_type es-field__input es-field__input" multiple="" data-single_unit="" data-plural_unit="" data-placeholder="All home types" data-formatter="default" data-base-name="es_type" type="checkbox" value="102"><label for="es_type-64f1b89701f21-102">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">Rumah</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__es_type es-field--checkbox-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="es_type-64f1b89701f21-5" name="es_type[5]" class="js-es-search-field js-es-search-field--es_type es-field__input es-field__input" multiple="" data-single_unit="" data-plural_unit="" data-placeholder="All home types" data-formatter="default" data-base-name="es_type" type="checkbox" value="5"><label for="es_type-64f1b89701f21-5">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">Soho (Komersial Di Apartemen)</div></label>
+                                  </div>
+                               </div>
+                           </div>
+                               </div>
+                                                           </div>
+                            </li>
+                                                    <li class="js-es-search-nav__single-item js-es-search-nav__item" data-placeholder="Bedrooms" data-field="bedrooms" data-range-enabled="" data-formatter="beds">
+                                <a href="#">
+                                    <span class="js-es-search-nav__label">Bedrooms</span>
+                                    <span class="es-icon es-icon_chevron-bottom js-es-search-nav__open"></span>
+                                    <span class="es-icon es-icon_close js-es-search-nav__reset es-search-nav__reset es-hidden"></span>
+                                </a>
+                                <div id="nav-bedrooms-64f1b896f30a8" class="es-search-nav__content">
+                                    
+                               <div class="es-field es-field__from_bedrooms es-field--radio-bordered  js-search-field-container">
+                                   <div class="es-field__label">Bedrooms</div>
+<div class="es-field-row">
+                               <div class="es-field es-field__from_bedrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bedrooms-64f1b89702112-" name="from_bedrooms" class="js-es-search-field js-es-search-field--bedrooms es-field__input es-field__input" data-single_unit="bed" data-plural_unit="beds" data-formatter="beds" data-base-name="bedrooms" type="radio" value=""><label for="from_bedrooms-64f1b89702112-">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">Any</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_bedrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bedrooms-64f1b89702112-1" name="from_bedrooms" class="js-es-search-field js-es-search-field--bedrooms es-field__input es-field__input" data-single_unit="bed" data-plural_unit="beds" data-formatter="beds" data-base-name="bedrooms" type="radio" value="1"><label for="from_bedrooms-64f1b89702112-1">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">1+</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_bedrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bedrooms-64f1b89702112-2" name="from_bedrooms" class="js-es-search-field js-es-search-field--bedrooms es-field__input es-field__input" data-single_unit="bed" data-plural_unit="beds" data-formatter="beds" data-base-name="bedrooms" type="radio" value="2"><label for="from_bedrooms-64f1b89702112-2">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">2+</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_bedrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bedrooms-64f1b89702112-3" name="from_bedrooms" class="js-es-search-field js-es-search-field--bedrooms es-field__input es-field__input" data-single_unit="bed" data-plural_unit="beds" data-formatter="beds" data-base-name="bedrooms" type="radio" value="3"><label for="from_bedrooms-64f1b89702112-3">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">3+</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_bedrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bedrooms-64f1b89702112-4" name="from_bedrooms" class="js-es-search-field js-es-search-field--bedrooms es-field__input es-field__input" data-single_unit="bed" data-plural_unit="beds" data-formatter="beds" data-base-name="bedrooms" type="radio" value="4"><label for="from_bedrooms-64f1b89702112-4">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">4+</div></label>
+                                  </div>
+                               </div>
+                           </div>
+                               </div>
+                                                           </div>
+                            </li>
+                                                    <li class="js-es-search-nav__single-item js-es-search-nav__item" data-placeholder="Bathrooms" data-field="bathrooms" data-range-enabled="" data-formatter="baths">
+                                <a href="#">
+                                    <span class="js-es-search-nav__label">Bathrooms</span>
+                                    <span class="es-icon es-icon_chevron-bottom js-es-search-nav__open"></span>
+                                    <span class="es-icon es-icon_close js-es-search-nav__reset es-search-nav__reset es-hidden"></span>
+                                </a>
+                                <div id="nav-bathrooms-64f1b896f30a8" class="es-search-nav__content">
+                                    
+                               <div class="es-field es-field__from_bathrooms es-field--radio-bordered  js-search-field-container">
+                                   <div class="es-field__label">Bathrooms</div>
+<div class="es-field-row">
+                               <div class="es-field es-field__from_bathrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bathrooms-64f1b89702231-" name="from_bathrooms" class="js-es-search-field js-es-search-field--bathrooms es-field__input es-field__input" data-single_unit="bath" data-plural_unit="baths" data-formatter="baths" data-base-name="bathrooms" type="radio" value=""><label for="from_bathrooms-64f1b89702231-">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">Any</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_bathrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bathrooms-64f1b89702231-1" name="from_bathrooms" class="js-es-search-field js-es-search-field--bathrooms es-field__input es-field__input" data-single_unit="bath" data-plural_unit="baths" data-formatter="baths" data-base-name="bathrooms" type="radio" value="1"><label for="from_bathrooms-64f1b89702231-1">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">1+</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_bathrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bathrooms-64f1b89702231-2" name="from_bathrooms" class="js-es-search-field js-es-search-field--bathrooms es-field__input es-field__input" data-single_unit="bath" data-plural_unit="baths" data-formatter="baths" data-base-name="bathrooms" type="radio" value="2"><label for="from_bathrooms-64f1b89702231-2">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">2+</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_bathrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bathrooms-64f1b89702231-3" name="from_bathrooms" class="js-es-search-field js-es-search-field--bathrooms es-field__input es-field__input" data-single_unit="bath" data-plural_unit="baths" data-formatter="baths" data-base-name="bathrooms" type="radio" value="3"><label for="from_bathrooms-64f1b89702231-3">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">3+</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_bathrooms es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_bathrooms-64f1b89702231-4" name="from_bathrooms" class="js-es-search-field js-es-search-field--bathrooms es-field__input es-field__input" data-single_unit="bath" data-plural_unit="baths" data-formatter="baths" data-base-name="bathrooms" type="radio" value="4"><label for="from_bathrooms-64f1b89702231-4">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">4+</div></label>
+                                  </div>
+                               </div>
+                           </div>
+                               </div>
+                                                           </div>
+                            </li>
+                                                                            <li class="js-es-search-nav__item js-es-search-nav__item--more">
+                        <a href="#">
+                            More filters                            <span class="es-icon es-icon_chevron-bottom js-es-search-nav__open"></span>
+                            <span class="es-icon es-icon_close js-es-search-nav__reset es-search-nav__reset es-hidden"></span>
+                        </a>
+                        <div id="nav-more-64f1b896f30a8" class="es-search-nav__content">
+                                                            
+                               <div class="es-field es-field__from_half_baths es-field--radio-bordered  js-search-field-container">
+                                   <div class="es-field__label">Half baths</div>
+<div class="es-field-row">
+                               <div class="es-field es-field__from_half_baths es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_half_baths-64f1b89702338-" name="from_half_baths" class="js-es-search-field js-es-search-field--half_baths es-field__input es-field__input" data-single_unit="" data-plural_unit="" data-formatter="half_baths" data-base-name="half_baths" type="radio" value=""><label for="from_half_baths-64f1b89702338-">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">Any</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_half_baths es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_half_baths-64f1b89702338-1" name="from_half_baths" class="js-es-search-field js-es-search-field--half_baths es-field__input es-field__input" data-single_unit="" data-plural_unit="" data-formatter="half_baths" data-base-name="half_baths" type="radio" value="1"><label for="from_half_baths-64f1b89702338-1">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">1+</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_half_baths es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_half_baths-64f1b89702338-2" name="from_half_baths" class="js-es-search-field js-es-search-field--half_baths es-field__input es-field__input" data-single_unit="" data-plural_unit="" data-formatter="half_baths" data-base-name="half_baths" type="radio" value="2"><label for="from_half_baths-64f1b89702338-2">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">2+</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_half_baths es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_half_baths-64f1b89702338-3" name="from_half_baths" class="js-es-search-field js-es-search-field--half_baths es-field__input es-field__input" data-single_unit="" data-plural_unit="" data-formatter="half_baths" data-base-name="half_baths" type="radio" value="3"><label for="from_half_baths-64f1b89702338-3">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">3+</div></label>
+                                  </div>
+                               </div>
+                           
+                               <div class="es-field es-field__from_half_baths es-field--radio-item-bordered ">
+                                   <div class="es-radio--bordered">
+<input id="from_half_baths-64f1b89702338-4" name="from_half_baths" class="js-es-search-field js-es-search-field--half_baths es-field__input es-field__input" data-single_unit="" data-plural_unit="" data-formatter="half_baths" data-base-name="half_baths" type="radio" value="4"><label for="from_half_baths-64f1b89702338-4">
+                                        <span class="es-icon es-icon_check-mark"></span><div class="es-field__label">4+</div></label>
+                                  </div>
+                               </div>
+                           </div>
+                               </div>
+                                                                                       
+                               <div class="js-es-field es-field es-field__es_amenity es-field--checkboxes  js-search-field-container">
+                                   <div class="es-field__label">Fasilitas</div>
+<div class="es-field es-field__es_amenity es-field--checkbox ">
+			
+			<input id="es_amenity-64f1b89702b22-66" name="es_amenity[0]" class="js-es-search-field js-es-search-field--es_amenity es-field__input es-field__input" value="66" data-single_unit="" data-plural_unit="" data-base-name="es_amenity" type="checkbox">
+		<!----><label for="es_amenity-64f1b89702b22-66"><div class="es-field__label">Dishwasher</div></label>
+</div>
+<div class="es-field es-field__es_amenity es-field--checkbox ">
+			
+			<input id="es_amenity-64f1b89702b22-72" name="es_amenity[1]" class="js-es-search-field js-es-search-field--es_amenity es-field__input es-field__input" value="72" data-single_unit="" data-plural_unit="" data-base-name="es_amenity" type="checkbox">
+		<!----><label for="es_amenity-64f1b89702b22-72"><div class="es-field__label">Jacuzzi</div></label>
+</div>
+<div class="es-field es-field__es_amenity es-field--checkbox ">
+			
+			<input id="es_amenity-64f1b89702b22-67" name="es_amenity[2]" class="js-es-search-field js-es-search-field--es_amenity es-field__input es-field__input" value="67" data-single_unit="" data-plural_unit="" data-base-name="es_amenity" type="checkbox">
+		<!----><label for="es_amenity-64f1b89702b22-67"><div class="es-field__label">Kulkas</div></label>
+</div>
+<div class="es-field es-field__es_amenity es-field--checkbox ">
+			
+			<input id="es_amenity-64f1b89702b22-65" name="es_amenity[3]" class="js-es-search-field js-es-search-field--es_amenity es-field__input es-field__input" value="65" data-single_unit="" data-plural_unit="" data-base-name="es_amenity" type="checkbox">
+		<!----><label for="es_amenity-64f1b89702b22-65"><div class="es-field__label">Microwave</div></label>
+</div>
+<div class="es-field es-field__es_amenity es-field--checkbox ">
+			
+			<input id="es_amenity-64f1b89702b22-71" name="es_amenity[4]" class="js-es-search-field js-es-search-field--es_amenity es-field__input es-field__input" value="71" data-single_unit="" data-plural_unit="" data-base-name="es_amenity" type="checkbox">
+		<!----><label for="es_amenity-64f1b89702b22-71"><div class="es-field__label">Oven</div></label>
+</div>
+<div class="es-field es-field__es_amenity es-field--checkbox ">
+			
+			<input id="es_amenity-64f1b89702b22-74" name="es_amenity[5]" class="js-es-search-field js-es-search-field--es_amenity es-field__input es-field__input" value="74" data-single_unit="" data-plural_unit="" data-base-name="es_amenity" type="checkbox">
+		<!----><label for="es_amenity-64f1b89702b22-74"><div class="es-field__label">Pembuangan Sampah</div></label>
+</div>
+<div class="es-field es-field__es_amenity es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_amenity-64f1b89702b22-75" name="es_amenity[6]" class="js-es-search-field js-es-search-field--es_amenity es-field__input es-field__input" value="75" data-single_unit="" data-plural_unit="" data-base-name="es_amenity" type="checkbox">
+		<!----><label for="es_amenity-64f1b89702b22-75"><div class="es-field__label">Tempat Jemuran</div></label>
+</div>
+<div class="es-field es-field__es_amenity es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_amenity-64f1b89702b22-90" name="es_amenity[7]" class="js-es-search-field js-es-search-field--es_amenity es-field__input es-field__input" value="90" data-single_unit="" data-plural_unit="" data-base-name="es_amenity" type="checkbox">
+		<!----><label for="es_amenity-64f1b89702b22-90"><div class="es-field__label">TV</div></label>
+</div>
+<div class="es-field es-field__es_amenity es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_amenity-64f1b89702b22-69" name="es_amenity[8]" class="js-es-search-field js-es-search-field--es_amenity es-field__input es-field__input" value="69" data-single_unit="" data-plural_unit="" data-base-name="es_amenity" type="checkbox">
+		<!----><label for="es_amenity-64f1b89702b22-69"><div class="es-field__label">Wifi</div></label>
+</div>
+<a href="#" class="js-es-field__show-more es-field__show-more es-field--visibility">Show all amenities<span class="es-icon es-icon_chevron-bottom"></span></a>
+                               </div>
+                                                                                       
+                               <div class="js-es-field es-field es-field__es_feature es-field--checkboxes  js-search-field-container">
+                                   <div class="es-field__label">Fitur</div>
+<div class="es-field es-field__es_feature es-field--checkbox ">
+			
+			<input id="es_feature-64f1b8970342c-54" name="es_feature[0]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="54" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-54"><div class="es-field__label">Air conditioning</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox ">
+			
+			<input id="es_feature-64f1b8970342c-58" name="es_feature[1]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="58" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-58"><div class="es-field__label">Balcony</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox ">
+			
+			<input id="es_feature-64f1b8970342c-63" name="es_feature[2]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="63" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-63"><div class="es-field__label">Bellhop</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox ">
+			
+			<input id="es_feature-64f1b8970342c-62" name="es_feature[3]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="62" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-62"><div class="es-field__label">Carbon monoxide detector</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox ">
+			
+			<input id="es_feature-64f1b8970342c-91" name="es_feature[4]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="91" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-91"><div class="es-field__label">Elevator</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox ">
+			
+			<input id="es_feature-64f1b8970342c-60" name="es_feature[5]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="60" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-60"><div class="es-field__label">Fire alarm</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_feature-64f1b8970342c-64" name="es_feature[6]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="64" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-64"><div class="es-field__label">Fireplace</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_feature-64f1b8970342c-57" name="es_feature[7]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="57" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-57"><div class="es-field__label">Garden</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_feature-64f1b8970342c-55" name="es_feature[8]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="55" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-55"><div class="es-field__label">Heating</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_feature-64f1b8970342c-61" name="es_feature[9]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="61" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-61"><div class="es-field__label">Smoke detector</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_feature-64f1b8970342c-56" name="es_feature[10]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="56" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-56"><div class="es-field__label">Swimming pool</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_feature-64f1b8970342c-59" name="es_feature[11]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="59" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-59"><div class="es-field__label">Terrace</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_feature-64f1b8970342c-92" name="es_feature[12]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="92" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-92"><div class="es-field__label">Trash Removal</div></label>
+</div>
+<div class="es-field es-field__es_feature es-field--checkbox es-field--visibility es-hidden">
+			
+			<input id="es_feature-64f1b8970342c-93" name="es_feature[13]" class="js-es-search-field js-es-search-field--es_feature es-field__input es-field__input" value="93" data-single_unit="" data-plural_unit="" data-base-name="es_feature" type="checkbox">
+		<!----><label for="es_feature-64f1b8970342c-93"><div class="es-field__label">Wifi</div></label>
+</div>
+<a href="#" class="js-es-field__show-more es-field__show-more es-field--visibility">Show all features<span class="es-icon es-icon_chevron-bottom"></span></a>
+                               </div>
+                                                                                       <div class="es-field-row es-field-row__range js-search-field-container">
+                               <div class="js-es-field es-field es-field__min_area es-field--select ">
+                                   <label for="area-min-64f1b897037bf"><div class="es-field__label">Area</div>
+			<select id="area-min-64f1b897037bf" name="min_area" placeholder="No min" class="js-es-search-field js-es-search-field--area es-field__input select2-hidden-accessible" data-single_unit="" data-plural_unit="" data-formatter="area" data-base-name="area" data-placeholder="No min" data-select2-id="area-min-64f1b897037bf" tabindex="-1" aria-hidden="true"><option value="">No min</option>
+<option value="" selected="" data-select2-id="6"></option>
+<option value="500">
+500 m²</option>
+<option value="750">
+750 m²</option>
+<option value="1000">
+1000 m²</option>
+<option value="1250">
+1250 m²</option>
+<option value="1500">
+1500 m²</option>
+<option value="1750">
+1750 m²</option>
+<option value="2000">
+2000 m²</option>
+<option value="2250">
+2250 m²</option>
+<option value="2500">
+2500 m²</option>
+<option value="2750">
+2750 m²</option>
+<option value="3000">
+3000 m²</option>
+<option value="4000">
+4000 m²</option>
+<option value="5000">
+5000 m²</option>
+<option value="7500">
+7500 m²</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="5" style="width: auto;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-area-min-64f1b897037bf-container"><span class="select2-selection__rendered" id="select2-area-min-64f1b897037bf-container" role="textbox" aria-readonly="true"><span class="select2-selection__placeholder">No min</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+		</label>
+                               </div>
+                           
+                               <div class="js-es-field es-field es-field__max_area es-field--select ">
+                                   <label for="area-max-64f1b897037bf">
+			<select id="area-max-64f1b897037bf" name="max_area" placeholder="No max" class="js-es-search-field js-es-search-field--area es-field__input select2-hidden-accessible" data-single_unit="" data-plural_unit="" data-formatter="area" data-base-name="area" data-placeholder="No max" data-select2-id="area-max-64f1b897037bf" tabindex="-1" aria-hidden="true"><option value="">No max</option>
+<option value="" selected="" data-select2-id="8"></option>
+<option value="750">
+750 m²</option>
+<option value="1000">
+1000 m²</option>
+<option value="1250">
+1250 m²</option>
+<option value="1500">
+1500 m²</option>
+<option value="1750">
+1750 m²</option>
+<option value="2000">
+2000 m²</option>
+<option value="2250">
+2250 m²</option>
+<option value="2500">
+2500 m²</option>
+<option value="2750">
+2750 m²</option>
+<option value="3000">
+3000 m²</option>
+<option value="4000">
+4000 m²</option>
+<option value="5000">
+5000 m²</option>
+<option value="7500">
+7500 m²</option>
+<option value="10000">
+10000 m²</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="7" style="width: auto;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-area-max-64f1b897037bf-container"><span class="select2-selection__rendered" id="select2-area-max-64f1b897037bf-container" role="textbox" aria-readonly="true"><span class="select2-selection__placeholder">No max</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+		</label>
+                               </div>
+                           </div>                                                            <div class="es-field-row es-field-row__range js-search-field-container">
+                               <div class="js-es-field es-field es-field__min_lot_size es-field--select ">
+                                   <label for="lot_size-min-64f1b897052c0"><div class="es-field__label">Lot size</div>
+			<select id="lot_size-min-64f1b897052c0" name="min_lot_size" placeholder="No min" class="js-es-search-field js-es-search-field--lot_size es-field__input select2-hidden-accessible" data-single_unit="" data-plural_unit="" data-formatter="lot_size" data-base-name="lot_size" data-placeholder="No min" data-select2-id="lot_size-min-64f1b897052c0" tabindex="-1" aria-hidden="true"><option value="">No min</option>
+<option value="" selected="" data-select2-id="10"></option>
+<option value="500">
+500 m²</option>
+<option value="750">
+750 m²</option>
+<option value="1000">
+1000 m²</option>
+<option value="1250">
+1250 m²</option>
+<option value="1500">
+1500 m²</option>
+<option value="1750">
+1750 m²</option>
+<option value="2000">
+2000 m²</option>
+<option value="2250">
+2250 m²</option>
+<option value="2500">
+2500 m²</option>
+<option value="2750">
+2750 m²</option>
+<option value="3000">
+3000 m²</option>
+<option value="4000">
+4000 m²</option>
+<option value="5000">
+5000 m²</option>
+<option value="7500">
+7500 m²</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="9" style="width: auto;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-lot_size-min-64f1b897052c0-container"><span class="select2-selection__rendered" id="select2-lot_size-min-64f1b897052c0-container" role="textbox" aria-readonly="true"><span class="select2-selection__placeholder">No min</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+		</label>
+                               </div>
+                           
+                               <div class="js-es-field es-field es-field__max_lot_size es-field--select ">
+                                   <label for="lot_size-max-64f1b897052c0">
+			<select id="lot_size-max-64f1b897052c0" name="max_lot_size" placeholder="No max" class="js-es-search-field js-es-search-field--lot_size es-field__input select2-hidden-accessible" data-single_unit="" data-plural_unit="" data-formatter="lot_size" data-base-name="lot_size" data-placeholder="No max" data-select2-id="lot_size-max-64f1b897052c0" tabindex="-1" aria-hidden="true"><option value="">No max</option>
+<option value="" selected="" data-select2-id="12"></option>
+<option value="750">
+750 m²</option>
+<option value="1000">
+1000 m²</option>
+<option value="1250">
+1250 m²</option>
+<option value="1500">
+1500 m²</option>
+<option value="1750">
+1750 m²</option>
+<option value="2000">
+2000 m²</option>
+<option value="2250">
+2250 m²</option>
+<option value="2500">
+2500 m²</option>
+<option value="2750">
+2750 m²</option>
+<option value="3000">
+3000 m²</option>
+<option value="4000">
+4000 m²</option>
+<option value="5000">
+5000 m²</option>
+<option value="7500">
+7500 m²</option>
+<option value="10000">
+10000 m²</option></select><span class="select2 select2-container select2-container--default" dir="ltr" data-select2-id="11" style="width: auto;"><span class="selection"><span class="select2-selection select2-selection--single" role="combobox" aria-haspopup="true" aria-expanded="false" tabindex="0" aria-disabled="false" aria-labelledby="select2-lot_size-max-64f1b897052c0-container"><span class="select2-selection__rendered" id="select2-lot_size-max-64f1b897052c0-container" role="textbox" aria-readonly="true"><span class="select2-selection__placeholder">No max</span></span><span class="select2-selection__arrow" role="presentation"><b role="presentation"></b></span></span></span><span class="dropdown-wrapper" aria-hidden="true"></span></span>
+		</label>
+                               </div>
+                           </div>                                                            <div class="es-field-row es-field-row__range js-search-field-container">
+                               <div class="es-field es-field__min_floors es-field--number ">
+                                   <label for="floors-min-64f1b89706b44"><div class="es-field__label">Floors</div>
+<input id="floors-min-64f1b89706b44" name="min_floors" placeholder="No min" class="js-es-search-field js-es-search-field--floors es-field__input" data-single_unit="" data-plural_unit="" data-formatter="floors" data-base-name="floors" data-placeholder="No min" type="number" value=""></label>
+                               </div>
+                           
+                               <div class="es-field es-field__max_floors es-field--number ">
+                                   <label for="floors-max-64f1b89706b44"><input id="floors-max-64f1b89706b44" name="max_floors" placeholder="No max" class="js-es-search-field js-es-search-field--floors es-field__input" data-single_unit="" data-plural_unit="" data-formatter="floors" data-base-name="floors" data-placeholder="No max" type="number" value=""></label>
+                               </div>
+                           </div>                                                    </div>
+                    </li>
+                                            </ul>
+            <a href="#" data-toggle-label="Less filters<span class=&quot;es-icon es-icon_chevron-top&quot;></span>" class="js-es-search__collapse-link es-search__collapse-link es-secondary-color">
+		        Filters<span class="es-icon es-icon_chevron-bottom"></span>
+            </a>
+            </form>
+</div>
