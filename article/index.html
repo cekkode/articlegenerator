@@ -10,30 +10,44 @@
   <h2>AI Article Generator Adsense</h2>
   <p id="errorMessage" style="color:red;"></p>
   <form id="myForm">
-    <label for="apikey">API Key:</label><br>
-    <input type="text" id="apikey" name="apikey" placeholder="Enter your API Key here"><br>
-    <button type="button" onclick="checkAPIKey()">Check API</button><br>
-    <label for="model">Model:</label><br>
-    <select id="model" name="model">
-      <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-      <option value="gpt-4">gpt-4</option>
-    </select><br>
-    <label for="maxtoken">Max Token:</label><br>
-    <input type="number" id="maxtoken" name="maxtoken" value="7000" placeholder="Enter the maximum token count"><br>
-    <label for="titleMaxToken">Title Max Token:</label><br>
-    <input type="number" id="titleMaxToken" name="titleMaxToken" value="20"
-      placeholder="Enter the maximum token count for title"><br>
-    <label for="subheadingMaxToken">Subheading Max Token:</label><br>
-    <input type="number" id="subheadingMaxToken" name="subheadingMaxToken" value="1000"
-      placeholder="Enter the maximum token count for subheading"><br>
-    <label for="myFile">Upload a TXT file:</label><br>
-    <input type="file" id="myFile" name="filename"><br>
-    <label for="myText">Or paste your text here:</label><br>
-    <textarea id="myText" rows="4" cols="50" placeholder="Paste your text here"></textarea><br>
-    <label for="titlePrompt">Title Prompt:</label><br>
-    <input type="text" id="titlePrompt" name="titlePrompt"
-      value="tulis ulang topik ini menjadi judul artikel yang menarik: "><br>
-    <input type="submit" value="Submit">
+    <div>
+      <label for="apikey">API Key:</label>
+      <input type="text" id="apikey" name="apikey" placeholder="Enter your API Key here">
+      <button type="button" onclick="checkAPIKey()">Check API</button>
+    </div>
+    <div>
+      <label for="model">Model:</label>
+      <select id="model" name="model">
+        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+        <option value="gpt-4">gpt-4</option>
+      </select>
+    </div>
+    <div>
+      <label for="maxtoken">Max Token:</label>
+      <input type="number" id="maxtoken" name="maxtoken" value="7000" placeholder="Enter the maximum token count">
+    </div>
+    <div>
+      <label for="titleMaxToken">Title Max Token:</label>
+      <input type="number" id="titleMaxToken" name="titleMaxToken" value="20"
+      placeholder="Enter the maximum token count for title">
+    </div>
+    <div>
+      <label for="subheadingMaxToken">Subheading Max Token:</label>
+      <input type="number" id="subheadingMaxToken" name="subheadingMaxToken" value="1000"
+      placeholder="Enter the maximum token count for subheading">
+    </div>
+    <div>
+      <label for="myFile">Upload a TXT file:</label>
+      <input type="file" id="myFile" name="filename">
+      <label for="myText">Or paste your text here:</label>
+      <textarea id="myText" rows="4" cols="50" placeholder="Paste your text here"></textarea>
+    </div>
+    <div>
+      <label for="titlePrompt">Title Prompt:</label>
+      <input type="text" id="titlePrompt" name="titlePrompt"
+      value="tulis ulang topik ini menjadi judul artikel yang menarik: ">
+      <input type="submit" value="Submit">
+    </div>
   </form>
 
   <div id="fileContent">
