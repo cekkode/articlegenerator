@@ -12,6 +12,10 @@ form {
   @apply mx-auto max-w-lg;
 }
 
+div {
+  @apply mb-5;
+}
+
 label {
   @apply block text-sm font-medium text-gray-700;
 }
