@@ -151,45 +151,44 @@
       document.getElementById("tokenCounter").innerText = "Total Tokens: " + tokenCount;
     });
 
-    document.getElementById("aiTitle").addEventListener("click", function () {
-      var apikey = document.getElementById("apikey").value;
-      var model = document.getElementById("model").value;
-      var titleMaxToken = document.getElementById("titleMaxToken").value;
-      var titlePrompt = document.getElementById("titlePrompt").value;
-      var title;
-      for (var i = 0; i < articleCount; i++) {
-        title = document.getElementById("title" + i).value;
-        fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + apikey,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            prompt: titlePrompt + title,
-            max_tokens: titleMaxToken
-          })
-        })
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok');
-            }
-            return response.json();
-          })
-          .then(data => {
-            if (data.choices && data.choices[0]) {
-              document.getElementById("title" + i).value = data.choices[0].text.trim();
-              document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
-            } else {
-              throw new Error('Error: data.choices is undefined');
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
-          });
-      }
-    });
+document.getElementById("aiTitle").addEventListener("click", function () {
+  var apikey = document.getElementById("apikey").value;
+  var model = document.getElementById("model").value;
+  var titleMaxToken = document.getElementById("titleMaxToken").value;
+  var titlePrompt = document.getElementById("titlePrompt").value;
+  for (let i = 0; i < articleCount; i++) {
+    let title = document.getElementById("title" + i).value;
+    fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + apikey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        prompt: titlePrompt + title,
+        max_tokens: titleMaxToken
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.choices && data.choices[0]) {
+          document.getElementById("title" + i).value = data.choices[0].text.trim();
+          document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
+        } else {
+          throw new Error('Error: data.choices is undefined');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+      });
+  }
+});
 
     document.getElementById("aiHeading").addEventListener("click", function () {
       console.log("Generating subheadings...");
