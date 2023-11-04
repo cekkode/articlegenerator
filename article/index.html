@@ -169,24 +169,28 @@ document.getElementById("aiTitle").addEventListener("click", function () {
         max_tokens: titleMaxToken
       })
     })
-      .then(response => {
-        if (!response.ok) {
+    .then(response => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          // This will give you more detailed error information from the server
+          console.error('Error data:', errorData);
           throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.choices && data.choices[0]) {
-          document.getElementById("title" + i).value = data.choices[0].text.trim();
-          document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
-        } else {
-          throw new Error('Error: data.choices is undefined');
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
-      });
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.choices && data.choices[0]) {
+        document.getElementById("title" + i).value = data.choices[0].text.trim();
+        document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
+      } else {
+        throw new Error('Error: data.choices is undefined');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+    });
   }
 });
 
