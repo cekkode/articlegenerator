@@ -22,17 +22,22 @@
     input[type="text"] {
       width: 200px;
     }
+
+    .modifier-container {
+      display: flex;
+      flex-direction: column;
+    }
   </style>
 </head>
 <body>
   <div id="app">
     <div>
       <textarea id="keywords" placeholder="keywords"></textarea>
-      <div>
+      <div class="modifier-container">
         <input type="text" id="placeholder1" placeholder="placeholder 1">
         <textarea id="modifier1" placeholder="modifier 1"></textarea>
       </div>
-      <div>
+      <div class="modifier-container">
         <input type="text" id="placeholder2" placeholder="placeholder 2">
         <textarea id="modifier2" placeholder="modifier 2"></textarea>
       </div>
