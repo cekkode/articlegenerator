@@ -4,10 +4,19 @@
     <style>
         .container {
             display: flex;
+            flex-direction: row;
             justify-content: space-between;
         }
+        .line-numbers {
+            width: 30px;
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            text-align: right;
+            user-select: none;
+        }
         textarea {
-            width: 45%;
+            width: calc(50% - 30px);
             height: 200px;
         }
     </style>
@@ -19,8 +28,12 @@
         <option value="notContaining">Not Containing</option>
     </select>
     <div class="container">
-        <textarea id="pasteHere" placeholder="Paste here"></textarea>
-        <textarea id="results" placeholder="Results" readonly></textarea>
+        <pre id="lineNumbers1" class="line-numbers"></pre>
+        <textarea id="pasteHere" placeholder="Paste here" oninput="updateLineNumbers('pasteHere', 'lineNumbers1')"></textarea>
+    </div>
+    <div class="container">
+        <pre id="lineNumbers2" class="line-numbers"></pre>
+        <textarea id="results" placeholder="Results" readonly oninput="updateLineNumbers('results', 'lineNumbers2')"></textarea>
     </div>
     <button onclick="process()">Process</button>
     <button onclick="removeDuplicates()">Remove Duplicates</button>
@@ -49,6 +62,18 @@
             var uniqueLines = [...new Set(lines)];
             document.getElementById('results').value = uniqueLines.map((line, index) => (index + 1) + '. ' + line).join('\n');
         }
+
+        function updateLineNumbers(textareaId, lineNumbersId) {
+            var textarea = document.getElementById(textareaId);
+            var lineNumbers = document.getElementById(lineNumbersId);
+            var lines = textarea.value.split('\n').length;
+            lineNumbers.textContent = Array.from({length: lines}, (_, i) => i + 1).join('\n');
+        }
+
+        window.onload = function() {
+            updateLineNumbers('pasteHere', 'lineNumbers1');
+            updateLineNumbers('results', 'lineNumbers2');
+        };
     </script>
 </body>
 </html>
