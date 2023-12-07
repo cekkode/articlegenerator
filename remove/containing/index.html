@@ -23,13 +23,16 @@
         <option value="duplicateLines">Duplicate</option>
     </select>
     <div class="container">
-        <textarea id="pasteHere" placeholder="Paste here"></textarea>
+        <div class="textarea-container">
+            <textarea id="pasteHere" placeholder="Paste here"></textarea>
+            <button onclick="process()">Remove</button>
+        </div>
         <div class="textarea-container">
             <textarea id="results" placeholder="Results" readonly></textarea>
             <button onclick="removeDuplicates()">Remove Duplicates</button>
         </div>
     </div>
-    <button onclick="process()">Remove</button>
+    
 
     <script>
         function process() {
