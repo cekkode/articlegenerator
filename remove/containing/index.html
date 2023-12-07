@@ -17,12 +17,13 @@
     <select id="option">
         <option value="containing">Containing</option>
         <option value="notContaining">Not Containing</option>
+        <option value="duplicateLines">Duplicate</option>
     </select>
     <div class="container">
         <textarea id="pasteHere" placeholder="Paste here"></textarea>
         <textarea id="results" placeholder="Results" readonly></textarea>
     </div>
-    <button onclick="process()">Process</button>
+    <button onclick="process()">Remove</button>
     <button onclick="removeDuplicates()">Remove Duplicates</button>
 
     <script>
@@ -32,6 +33,12 @@
             var pasteHere = document.getElementById('pasteHere').value;
             var lines = pasteHere.split('\n');
             var results = [];
+
+            if (option === 'duplicateLines') {
+                var uniqueLines = [...new Set(lines)];
+                document.getElementById('results').value = uniqueLines.join('\n');
+                return;
+            }
 
             for (var i = 0; i < lines.length; i++) {
                 if ((option === 'containing' && !lines[i].includes(remove)) ||
