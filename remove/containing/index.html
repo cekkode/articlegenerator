@@ -10,6 +10,11 @@
             width: 45%;
             height: 200px;
         }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -21,10 +26,14 @@
     </select>
     <div class="container">
         <textarea id="pasteHere" placeholder="Paste here"></textarea>
-        <textarea id="results" placeholder="Results" readonly></textarea>
+        <div>
+            <textarea id="results" placeholder="Results" readonly></textarea>
+            <div class="button-container">
+                <button onclick="removeDuplicates()">Remove Duplicates</button>
+            </div>
+        </div>
     </div>
     <button onclick="process()">Remove</button>
-    <button onclick="removeDuplicates()">Remove Duplicates</button>
 
     <script>
         function process() {
