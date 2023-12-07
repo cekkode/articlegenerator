@@ -54,6 +54,10 @@
       <textarea id="results" placeholder="results" readonly></textarea>
     </div>
     <button onclick="generate()">Generate</button>
+    <input type="text" id="omegaApiKey" placeholder="Omega API Key">
+    <input type="text" id="campaignName" placeholder="Campaign Name">
+    <input type="number" id="dripfeed" placeholder="Dripfeed">
+    <button onclick="sendToOmega()">Send to Omega</button>
   </div>
 
   <script>
@@ -87,6 +91,25 @@
 
       document.getElementById('results').value = results.join('\n');
     }
+
+    function sendToOmega() {
+      var apiKey = document.getElementById('omegaApiKey').value;
+      var campaignName = encodeURIComponent(document.getElementById('campaignName').value);
+      var urls = encodeURIComponent(document.getElementById('results').value.split('\n').join('|'));
+      var dripfeed = document.getElementById('dripfeed').value;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", 'https://www.omegaindexer.com/amember/dashboard/api', true);
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onreadystatechange = function() {
+        if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+          alert("Data sent to Omega Indexer successfully");
+        }
+      }
+      xhr.send(`apikey=${apiKey}&campaignname=${campaignName}&dripfeed=${dripfeed}&urls=${urls}`);
+    }
+
+    document.getElementById('dripfeed').value = Math.ceil(document.getElementById('results').value.split('\n').length / 30);
   </script>
 </body>
 </html>
