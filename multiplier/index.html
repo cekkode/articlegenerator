@@ -7,6 +7,7 @@
       flex-direction: column;
       align-items: center;
       gap: 10px;
+      width: 100%;
     }
 
     #app > div {
@@ -47,7 +48,7 @@
     <div>
       <input type="checkbox" id="addSpace"> Add Space
     </div>
-    <div>
+    <div class="modifier-container">
       <textarea id="results" placeholder="results" readonly></textarea>
     </div>
     <button onclick="generate()">Generate</button>
