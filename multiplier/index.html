@@ -179,6 +179,8 @@ function clearTextArea() {
   document.getElementById('results').value = results.join('\n');
 }
 
+document.getElementById('dripfeed').value = Math.ceil(document.getElementById('results').value.split('\n').length / 30);
+
     function sendToOmega() {
       var apiKey = document.getElementById('omegaApiKey').value;
       var campaignName = encodeURIComponent(document.getElementById('campaignName').value);
@@ -195,8 +197,6 @@ function clearTextArea() {
       }
       xhr.send(`apikey=${apiKey}&campaignname=${campaignName}&dripfeed=${dripfeed}&urls=${urls}`);
     }
-
-    document.getElementById('dripfeed').value = Math.ceil(document.getElementById('results').value.split('\n').length / 30);
   </script>
 </body>
 </html>
