@@ -94,17 +94,25 @@
     
     // Save data to local storage
     window.onload = function() {
-      document.getElementById('keywords').value = localStorage.getItem('keywords');
-      document.getElementById('results').value = localStorage.getItem('results');
+  var inputs = document.getElementsByTagName('input');
+  var textareas = document.getElementsByTagName('textarea');
+
+  for(var i = 0; i < inputs.length; i++) {
+    if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
+      inputs[i].value = localStorage.getItem(inputs[i].id);
+      inputs[i].addEventListener('input', function() {
+        localStorage.setItem(this.id, this.value);
+      });
     }
-    
-    document.getElementById('keywords').addEventListener('input', function() {
-      localStorage.setItem('keywords', this.value);
+  }
+
+  for(var i = 0; i < textareas.length; i++) {
+    textareas[i].value = localStorage.getItem(textareas[i].id);
+    textareas[i].addEventListener('input', function() {
+      localStorage.setItem(this.id, this.value);
     });
-    
-    document.getElementById('results').addEventListener('input', function() {
-      localStorage.setItem('results', this.value);
-    });
+  }
+}
     
     // Copy to clipboard
     function copyToClipboard() {
@@ -184,6 +192,7 @@
   return true;
 }
 
+// Send results to Omega Indexer
 function sendToOmega() {
   var apiKey = document.getElementById('omegaApiKey').value;
   var campaignName = encodeURIComponent(document.getElementById('campaignName').value);
@@ -214,7 +223,10 @@ function sendToOmega() {
   xhr.send(`apikey=${apiKey}&campaignname=${campaignName}&dripfeed=${dripfeed}&urls=${urls}`);
 }
 
-
+function clearAllData() {
+  localStorage.clear();
+  location.reload();
+}
   </script>
 
   <div id="app">
@@ -233,6 +245,7 @@ function sendToOmega() {
     </div>
     <div>
       <input type="checkbox" id="addSpace"> Add Space
+      <button onclick="clearAllData()">🔄</button>
     </div>
   </div>
   <div id="app">
