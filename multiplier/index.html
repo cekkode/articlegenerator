@@ -32,13 +32,27 @@
     .modifier-container > input[type="text"] {
       width: 100%;
     }
+
+    .textarea-container {
+      position: relative;
+    }
+
+    .clear-button, .copy-button {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
   <div id="app">
-    <div>
+    <div class="textarea-container>
       <textarea id="keywords" placeholder="keywords"></textarea>
-      <button onclick="clearTextArea()">🗑️</button>
+      <button class="clear-button" onclick="clearTextArea()">🗑️</button>
       <div class="modifier-container">
         <input type="text" id="placeholder1" placeholder="placeholder 1">
         <textarea id="modifier1" placeholder="modifier 1"></textarea>
@@ -53,7 +67,7 @@
     </div>
     <div class="modifier-container">
       <textarea id="results" placeholder="results" readonly></textarea>
-      <button onclick="copyToClipboard()">📋</button>
+      <button class="copy-button" onclick="copyToClipboard()">📋</button>
     </div>
     <button onclick="generate()">Generate</button>
     <input type="text" id="omegaApiKey" placeholder="Omega API Key">
