@@ -50,9 +50,10 @@
 </head>
 <body>
   <div id="app">
-    <div class="textarea-container>
+    <div class="textarea-container">
       <textarea id="keywords" placeholder="keywords"></textarea>
-      <button class="clear-button" onclick="clearTextArea()">🗑️</button>
+      <button class="clear-btn" onclick="clearTextArea()">🗑️</button>
+    </div>
       <div class="modifier-container">
         <input type="text" id="placeholder1" placeholder="placeholder 1">
         <textarea id="modifier1" placeholder="modifier 1"></textarea>
@@ -65,9 +66,9 @@
     <div>
       <input type="checkbox" id="addSpace"> Add Space
     </div>
-    <div class="modifier-container">
+    <div class="textarea-container modifier-container">
       <textarea id="results" placeholder="results" readonly></textarea>
-      <button class="copy-button" onclick="copyToClipboard()">📋</button>
+      <button class="copy-btn" onclick="copyToClipboard()">📋</button>
     </div>
     <button onclick="generate()">Generate</button>
     <input type="text" id="omegaApiKey" placeholder="Omega API Key">
