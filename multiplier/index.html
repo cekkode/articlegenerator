@@ -225,7 +225,18 @@ function sendToOmega() {
 
 function clearAllData() {
   localStorage.clear();
-  location.reload();
+  var inputs = document.getElementsByTagName('input');
+  var textareas = document.getElementsByTagName('textarea');
+
+  for(var i = 0; i < inputs.length; i++) {
+    if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
+      inputs[i].value = '';
+    }
+  }
+
+  for(var i = 0; i < textareas.length; i++) {
+    textareas[i].value = '';
+  }
 }
   </script>
 
