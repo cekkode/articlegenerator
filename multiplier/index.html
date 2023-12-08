@@ -66,8 +66,9 @@ document.getElementById('keywords').addEventListener('input', function(e) {
   let match;
   let placeholders = [];
   while ((match = regex.exec(e.target.value)) != null) {
-    placeholders.push(match[1]);
+    placeholders.push(match[0]);
   }
+  placeholders = [...new Set(placeholders)]; // remove duplicates
   document.getElementById('placeholder1').setAttribute('list', 'suggestions');
   let datalist = document.getElementById('suggestions');
   if (!datalist) {
