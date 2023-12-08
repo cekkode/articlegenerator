@@ -61,6 +61,36 @@
   </div>
 
   <script>
+document.getElementById('keywords').addEventListener('input', function(e) {
+  const regex = /\[([^\]]+)\]/g;
+  let match;
+  let placeholders = [];
+  while ((match = regex.exec(e.target.value)) != null) {
+    placeholders.push(match[1]);
+  }
+  document.getElementById('placeholder1').setAttribute('list', 'suggestions');
+  let datalist = document.getElementById('suggestions');
+  if (!datalist) {
+    datalist = document.createElement('datalist');
+    datalist.id = 'suggestions';
+    document.body.appendChild(datalist);
+  }
+  datalist.innerHTML = '';
+  placeholders.forEach(function(placeholder) {
+    const option = document.createElement('option');
+    option.value = placeholder;
+    datalist.appendChild(option);
+  });
+});
+
+document.getElementById('placeholder1').addEventListener('input', function(e) {
+  e.target.value = e.target.value.toUpperCase();
+});
+
+document.getElementById('placeholder2').addEventListener('input', function(e) {
+  e.target.value = e.target.value.toUpperCase();
+});
+
     function generate() {
   var keywords = document.getElementById('keywords').value.split('\n');
   var modifier1 = document.getElementById('modifier1').value.split('\n');
