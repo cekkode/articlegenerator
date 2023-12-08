@@ -13,18 +13,23 @@
     #app > div {
       display: flex;
       justify-content: space-between;
+      gap: 10px;
       width: 100%;
     }
 
     textarea, input[type="text"] {
       width: 32%;
-      height: 100px;
+      height: 300px;
     }
 
     .modifier-container {
       display: flex;
       flex-direction: column;
       width: 32%;
+    }
+    .modifier-container > textarea, .modifier-container > input[type="text"] {
+      width: 100%;
+      height: 50%;
     }
 
     .textarea-container {
