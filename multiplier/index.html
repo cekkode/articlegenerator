@@ -59,7 +59,7 @@
       }
     });
     
-    document.getElementById('keywords').addEventListener('input', function(e) {
+    document.getElementById('keywords').addEventListener('keyup', function(e) {
       const regex = /\[(.*?)\]/g;
       let match;
       let placeholders = [];
