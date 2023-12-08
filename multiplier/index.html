@@ -179,7 +179,20 @@ function clearTextArea() {
   document.getElementById('results').value = results.join('\n');
 }
 
-document.getElementById('dripfeed').value = Math.ceil(document.getElementById('results').value.split('\n').length / 30);
+let results = document.getElementById('results');
+let dripfeed = document.getElementById('dripfeed');
+let generateBtn = document.querySelector('.modifier-container button');
+
+function calculateDripfeed() {
+  let resultsLength = results.value.split('\n').length;
+  dripfeed.value = Math.ceil(resultsLength / 30);
+}
+
+// Recalculate when 'results' changes
+results.addEventListener('input', calculateDripfeed);
+
+// Recalculate when 'generate' button is clicked
+generateBtn.addEventListener('click', calculateDripfeed);
 
     function sendToOmega() {
       var apiKey = document.getElementById('omegaApiKey').value;
