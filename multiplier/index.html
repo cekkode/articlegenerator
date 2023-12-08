@@ -62,35 +62,38 @@
 
   <script>
     function generate() {
-      var keywords = document.getElementById('keywords').value.split('\n');
-      var modifier1 = document.getElementById('modifier1').value.split('\n');
-      var modifier2 = document.getElementById('modifier2').value.split('\n');
-      var placeholder1 = document.getElementById('placeholder1').value;
-      var placeholder2 = document.getElementById('placeholder2').value;
-      var addSpace = document.getElementById('addSpace').checked;
-      var results = [];
+  var keywords = document.getElementById('keywords').value.split('\n');
+  var modifier1 = document.getElementById('modifier1').value.split('\n');
+  var modifier2 = document.getElementById('modifier2').value.split('\n');
+  var placeholder1 = document.getElementById('placeholder1').value;
+  var placeholder2 = document.getElementById('placeholder2').value;
+  var addSpace = document.getElementById('addSpace').checked;
+  var results = [];
 
-      keywords.forEach(function(keyword) {
-        modifier1.forEach(function(mod1) {
-          modifier2.forEach(function(mod2) {
-            var result = keyword;
-            if (placeholder1 && keyword.includes(placeholder1)) {
-              result = result.replace(placeholder1, mod1);
-            } else {
-              result += (addSpace ? ' ' : '') + mod1;
-            }
-            if (placeholder2 && result.includes(placeholder2)) {
-              result = result.replace(placeholder2, mod2);
-            } else {
-              result += (addSpace ? ' ' : '') + mod2;
-            }
-            results.push(result);
-          });
+  keywords.forEach(function(keyword) {
+    var result = keyword;
+    var placeholder1Exists = placeholder1 && keyword.includes(placeholder1);
+    var placeholder2Exists = placeholder2 && keyword.includes(placeholder2);
+
+    if (placeholder1Exists || placeholder2Exists) {
+      modifier1.forEach(function(mod1) {
+        if (placeholder1Exists) {
+          result = result.replace(placeholder1, mod1);
+        }
+        modifier2.forEach(function(mod2) {
+          if (placeholder2Exists) {
+            result = result.replace(placeholder2, mod2);
+          }
+          results.push(result);
         });
       });
-
-      document.getElementById('results').value = results.join('\n');
+    } else {
+      results.push(result);
     }
+  });
+
+  document.getElementById('results').value = results.join('\n');
+}
 
     function sendToOmega() {
       var apiKey = document.getElementById('omegaApiKey').value;
