@@ -72,10 +72,12 @@
       <button class="copy-btn" onclick="copyToClipboard()">📋</button>
     </div>
     <button onclick="generate()">Generate</button>
-    <input type="text" id="omegaApiKey" placeholder="Omega API Key">
-    <input type="text" id="campaignName" placeholder="Campaign Name">
-    <input type="number" id="dripfeed" placeholder="Dripfeed">
-    <button onclick="sendToOmega()">Send to Omega</button>
+    <div class="textarea-container modifier-container">
+      <input type="text" id="omegaApiKey" placeholder="Omega API Key">
+      <input type="text" id="campaignName" placeholder="Campaign Name">
+      <input type="number" id="dripfeed" placeholder="Dripfeed">
+      <button onclick="sendToOmega()">Send to Omega</button>
+    </div>    
   </div>
 
   <script>
