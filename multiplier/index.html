@@ -38,6 +38,7 @@
   <div id="app">
     <div>
       <textarea id="keywords" placeholder="keywords"></textarea>
+      <button onclick="clearTextArea()">🗑️</button>
       <div class="modifier-container">
         <input type="text" id="placeholder1" placeholder="placeholder 1">
         <textarea id="modifier1" placeholder="modifier 1"></textarea>
@@ -52,6 +53,7 @@
     </div>
     <div class="modifier-container">
       <textarea id="results" placeholder="results" readonly></textarea>
+      <button onclick="copyToClipboard()">📋</button>
     </div>
     <button onclick="generate()">Generate</button>
     <input type="text" id="omegaApiKey" placeholder="Omega API Key">
@@ -61,6 +63,7 @@
   </div>
 
   <script>
+// Add autosuggest in placeholder
 document.getElementById('keywords').addEventListener('input', function(e) {
   const regex = /\[([^\]]+)\]/g;
   let match;
@@ -85,6 +88,7 @@ document.getElementById('keywords').addEventListener('input', function(e) {
   });
 });
 
+// Force placeholder to be upper case
 document.getElementById('placeholder1').addEventListener('input', function(e) {
   e.target.value = e.target.value.toUpperCase();
 });
@@ -92,6 +96,34 @@ document.getElementById('placeholder1').addEventListener('input', function(e) {
 document.getElementById('placeholder2').addEventListener('input', function(e) {
   e.target.value = e.target.value.toUpperCase();
 });
+
+// Save data to local storage
+window.onload = function() {
+  document.getElementById('keywords').value = localStorage.getItem('keywords');
+  document.getElementById('results').value = localStorage.getItem('results');
+}
+
+document.getElementById('keywords').addEventListener('input', function() {
+  localStorage.setItem('keywords', this.value);
+});
+
+document.getElementById('results').addEventListener('input', function() {
+  localStorage.setItem('results', this.value);
+});
+
+// Copy to clipboard
+function copyToClipboard() {
+  var copyText = document.getElementById("results");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+}
+
+// Clear text area
+function clearTextArea() {
+  document.getElementById('keywords').value = '';
+  localStorage.removeItem('keywords');
+}
 
     function generate() {
   var keywords = document.getElementById('keywords').value.split('\n');
