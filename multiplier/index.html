@@ -70,6 +70,7 @@ document.getElementById('keywords').addEventListener('input', function(e) {
   }
   placeholders = [...new Set(placeholders)]; // remove duplicates
   document.getElementById('placeholder1').setAttribute('list', 'suggestions');
+  document.getElementById('placeholder2').setAttribute('list', 'suggestions');
   let datalist = document.getElementById('suggestions');
   if (!datalist) {
     datalist = document.createElement('datalist');
