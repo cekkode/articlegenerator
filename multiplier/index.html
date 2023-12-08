@@ -60,11 +60,11 @@
     });
     
     document.getElementById('keywords').addEventListener('input', function(e) {
-      const regex = /\[([^\]]+)\]/g;
+      const regex = /\[(.*?)\]/g;
       let match;
       let placeholders = [];
       while ((match = regex.exec(e.target.value)) != null) {
-        placeholders.push(match[0]);
+        placeholders.push(match[1]);
       }
       placeholders = [...new Set(placeholders)]; // remove duplicates
       document.getElementById('placeholder1').setAttribute('list', 'suggestions');
