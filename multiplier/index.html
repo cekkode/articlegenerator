@@ -102,7 +102,7 @@
   for(var i = 0; i < inputs.length; i++) {
     if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
       inputs[i].value = localStorage.getItem(inputs[i].id);
-      inputs[i].addEventListener('input', function() {
+      inputs[i].addEventListener('change', function() {
         localStorage.setItem(this.id, this.value);
       });
     }
@@ -110,7 +110,7 @@
 
   for(var i = 0; i < textareas.length; i++) {
     textareas[i].value = localStorage.getItem(textareas[i].id);
-    textareas[i].addEventListener('input', function() {
+    textareas[i].addEventListener('change', function() {
       localStorage.setItem(this.id, this.value);
     });
   }
@@ -130,6 +130,7 @@
       localStorage.removeItem('keywords');
     }
     
+    // Multiply keyword generator
         function generate() {
       var keywords = document.getElementById('keywords').value.split('\n');
       var modifier1 = document.getElementById('modifier1').value.split('\n');
@@ -164,6 +165,7 @@
       document.getElementById('results').value = results.join('\n');
     }
     
+    // Auto count dripfeed
     let results = document.getElementById('results');
     let dripfeed = document.getElementById('dripfeed');
     let generateBtn = document.querySelector('.modifier-container button');
