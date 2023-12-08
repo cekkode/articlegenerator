@@ -59,27 +59,29 @@
       }
     });
     
-    document.getElementById('keywords').addEventListener('keyup', function(e) {
-      const regex = /\[(.*?)\]/g;
-      let match;
-      let placeholders = [];
-      while ((match = regex.exec(e.target.value)) != null) {
-        placeholders.push(match[1]);
-      }
-      placeholders = [...new Set(placeholders)]; // remove duplicates
-      document.getElementById('placeholder1').setAttribute('list', 'suggestions');
-      document.getElementById('placeholder2').setAttribute('list', 'suggestions');
-      let datalist = document.getElementById('suggestions');
-      if (!datalist) {
-        datalist = document.createElement('datalist');
-        datalist.id = 'suggestions';
-        document.body.appendChild(datalist);
-      }
-      datalist.innerHTML = '';
-      placeholders.forEach(function(placeholder) {
-        const option = document.createElement('option');
-        option.value = placeholder;
-        datalist.appendChild(option);
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('keywords').addEventListener('keyup', function(e) {
+        const regex = /\[(.*?)\]/g;
+        let match;
+        let placeholders = [];
+        while ((match = regex.exec(e.target.value)) != null) {
+          placeholders.push(match[1]);
+        }
+        placeholders = [...new Set(placeholders)]; // remove duplicates
+        document.getElementById('placeholder1').setAttribute('list', 'suggestions');
+        document.getElementById('placeholder2').setAttribute('list', 'suggestions');
+        let datalist = document.getElementById('suggestions');
+        if (!datalist) {
+          datalist = document.createElement('datalist');
+          datalist.id = 'suggestions';
+          document.body.appendChild(datalist);
+        }
+        datalist.innerHTML = '';
+        placeholders.forEach(function(placeholder) {
+          const option = document.createElement('option');
+          option.value = placeholder;
+          datalist.appendChild(option);
+        });
       });
     });
     
