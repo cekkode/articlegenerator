@@ -87,19 +87,15 @@
 document.addEventListener('DOMContentLoaded', function() {
   const keywordsInput = document.getElementById('keywords');
   if (keywordsInput.value) {
-    updateAutosuggest(keywordsInput.value);
+    keywordsInput.dispatchEvent(new Event('input'));
   }
 });
 
 document.getElementById('keywords').addEventListener('input', function(e) {
-  updateAutosuggest(e.target.value);
-});
-
-function updateAutosuggest(value) {
   const regex = /\[([^\]]+)\]/g;
   let match;
   let placeholders = [];
-  while ((match = regex.exec(value)) != null) {
+  while ((match = regex.exec(e.target.value)) != null) {
     placeholders.push(match[0]);
   }
   placeholders = [...new Set(placeholders)]; // remove duplicates
@@ -117,7 +113,7 @@ function updateAutosuggest(value) {
     option.value = placeholder;
     datalist.appendChild(option);
   });
-}
+});
 
 // Force placeholder to be upper case
 document.getElementById('placeholder1').addEventListener('input', function(e) {
