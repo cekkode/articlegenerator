@@ -177,14 +177,14 @@ function countLines() {
   const keywordsTextArea = document.getElementById('keywords');
   const resultsTextArea = document.getElementById('results');
   
-  const keywordsLines = keywordsTextArea.value.split('\n').length;
-  const resultsLines = resultsTextArea.value.split('\n').length;
+  let keywordsLines = keywordsTextArea.value ? keywordsTextArea.value.split('\n').length : 0;
+  let resultsLines = resultsTextArea.value ? resultsTextArea.value.split('\n').length : 0;
   
   const keywordsCounterSpan = document.querySelector('.keywords-counter');
   const resultsCounterSpan = document.querySelector('.results-counter');
   
-  keywordsCounterSpan.textContent = `There are ${keywordsLines}`;
-  resultsCounterSpan.textContent = `There are ${resultsLines}`;
+  keywordsCounterSpan.textContent = `There are ${keywordsLines} lines`;
+  resultsCounterSpan.textContent = `There are ${resultsLines} lines`;
 }
 
 // Add event listener for the load event
@@ -193,6 +193,11 @@ window.addEventListener('load', countLines);
 // Update the counters whenever the textareas change
 document.getElementById('keywords').addEventListener('input', countLines);
 document.getElementById('results').addEventListener('input', countLines);
+
+// Update the counters whenever the results are generated
+document.getElementById('generateBtn').addEventListener('click', function() {
+  setTimeout(countLines, 0);
+});
 
 // Multiply keyword generator
 function generate() {
