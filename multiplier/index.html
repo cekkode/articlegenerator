@@ -50,222 +50,6 @@
   </style>
 </head>
 <body>
-  <script>
-    // Add autosuggest in placeholder
-    document.addEventListener('DOMContentLoaded', function() {
-      const keywordsInput = document.getElementById('keywords');
-      if (keywordsInput.value) {
-        keywordsInput.dispatchEvent(new Event('input'));
-      }
-    });
-    
-    document.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('keywords').addEventListener('keyup', function(e) {
-        const regex = /\[(.*?)\]/g;
-        let match;
-        let placeholders = [];
-        while ((match = regex.exec(e.target.value)) != null) {
-          placeholders.push(match[0]);
-        }
-        placeholders = [...new Set(placeholders)]; // remove duplicates
-        document.getElementById('placeholder1').setAttribute('list', 'suggestions');
-        document.getElementById('placeholder2').setAttribute('list', 'suggestions');
-        let datalist = document.getElementById('suggestions');
-        if (!datalist) {
-          datalist = document.createElement('datalist');
-          datalist.id = 'suggestions';
-          document.body.appendChild(datalist);
-        }
-        datalist.innerHTML = '';
-        placeholders.forEach(function(placeholder) {
-          const option = document.createElement('option');
-          option.value = placeholder;
-          datalist.appendChild(option);
-        });
-      });
-    });
-    
-    // Force placeholder to be upper case
-    document.getElementById('placeholder1').addEventListener('input', function(e) {
-      e.target.value = e.target.value.toUpperCase();
-    });
-    
-    document.getElementById('placeholder2').addEventListener('input', function(e) {
-      e.target.value = e.target.value.toUpperCase();
-    });
-    
-    // Save data to local storage
-    window.onload = function() {
-      var inputs = document.getElementsByTagName('input');
-      var textareas = document.getElementsByTagName('textarea');
-
-      for(var i = 0; i < inputs.length; i++) {
-        if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
-          inputs[i].value = localStorage.getItem(inputs[i].id);
-          inputs[i].addEventListener('input', function() {
-            localStorage.setItem(this.id, this.value);
-          });
-        }
-      }
-
-      for(var i = 0; i < textareas.length; i++) {
-        textareas[i].value = localStorage.getItem(textareas[i].id);
-        textareas[i].addEventListener('input', function() {
-          localStorage.setItem(this.id, this.value);
-        });
-      }
-    }
-    
-    // Copy to clipboard
-    function copyToClipboard() {
-      var copyText = document.getElementById("results");
-      copyText.select();
-      copyText.setSelectionRange(0, 99999);
-      document.execCommand("copy");
-    }
-    
-    // Clear text area
-    function clearTextArea() {
-      document.getElementById('keywords').value = '';
-      localStorage.removeItem('keywords');
-    }
-    
-// Link modifier together    
-let linkModifiers = false;
-
-function toggleLinkModifiers() {
-  linkModifiers = !linkModifiers;
-  let linkBtn = document.getElementById('linkBtn');
-  linkBtn.innerHTML = linkModifiers ? '🔗' : '🔓';
-}
-
-// Multiply keyword generator
-function generate() {
-  var keywords = document.getElementById('keywords').value.split('\n');
-  var modifier1 = document.getElementById('modifier1').value.split('\n');
-  var modifier2 = document.getElementById('modifier2').value.split('\n');
-  var placeholder1 = document.getElementById('placeholder1').value;
-  var placeholder2 = document.getElementById('placeholder2').value;
-  var addSpace = document.getElementById('addSpace').checked;
-  var results = [];
-
-  keywords.forEach(function(keyword) {
-    if (linkModifiers && modifier1.length === modifier2.length) {
-      for (let i = 0; i < modifier1.length; i++) {
-        let mod1 = modifier1[i];
-        let mod2 = modifier2[i];
-        let tempResult = keyword;
-        if (placeholder1) {
-          tempResult = tempResult.replace(placeholder1, mod1);
-        }
-        if (placeholder2) {
-          tempResult = tempResult.replace(placeholder2, mod2);
-        }
-        results.push(tempResult);
-      }
-    } else {
-      modifier1.forEach(function(mod1) {
-        let tempResult = keyword;
-        if (placeholder1) {
-          tempResult = tempResult.replace(placeholder1, mod1);
-        }
-        modifier2.forEach(function(mod2) {
-          if (placeholder2) {
-            tempResult = tempResult.replace(placeholder2, mod2);
-          }
-          results.push(tempResult);
-        });
-      });
-    }
-  });
-
-  document.getElementById('results').value = results.join('\n');
-}
-    
-    // Auto count dripfeed
-let results = document.getElementById('results');
-let dripfeed = document.getElementById('dripfeed');
-let generateBtn = document.getElementById('generateBtn');
-
-function calculateDripfeed() {
-  let resultsLength = results.value.split('\n').length;
-  dripfeed.value = Math.ceil(resultsLength / 30);
-}
-
-// Recalculate when 'results' changes
-results.addEventListener('input', calculateDripfeed);
-
-// Recalculate when 'generate' button is clicked
-generateBtn.addEventListener('click', calculateDripfeed);
-    
-    let lastSubmittedUrls = '';
-
-    function isValidUrls(urls) {
-      var urlArray = urls.split('\n');
-      var urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-
-      for (var i = 0; i < urlArray.length; i++) {
-        if (!urlRegex.test(urlArray[i])) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-// Send results to Omega Indexer
-function sendToOmega() {
-  var apiKey = document.getElementById('omegaApiKey').value;
-  var campaignName = encodeURIComponent(document.getElementById('campaignName').value);
-  var urls = document.getElementById('results').value;
-  var dripfeed = document.getElementById('dripfeed').value;
-
-  if (!isValidUrls(urls)) {
-    alert("Please enter valid URLs");
-    return;
-  }
-
-  if (urls === lastSubmittedUrls) {
-    alert("You've already submitted these URLs");
-    return;
-  }
-
-  lastSubmittedUrls = urls;
-  urls = encodeURIComponent(urls.split('\n').join('|'));
-
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", 'https://www.omegaindexer.com/amember/dashboard/api', true);
-  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xhr.onreadystatechange = function() {
-    if (this.readyState === XMLHttpRequest.DONE) {
-      console.log('Status:', this.status);
-      console.log('Response:', this.responseText);
-      if (this.status === 200) {
-        alert("Data sent to Omega Indexer successfully");
-      }
-    }
-  }
-  xhr.send(`apikey=${apiKey}&campaignname=${campaignName}&dripfeed=${dripfeed}&urls=${urls}`);
-}
-
-// Clear all data button
-function clearAllData() {
-  localStorage.clear();
-  var inputs = document.getElementsByTagName('input');
-  var textareas = document.getElementsByTagName('textarea');
-
-  for(var i = 0; i < inputs.length; i++) {
-    if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
-      inputs[i].value = '';
-    }
-  }
-
-  for(var i = 0; i < textareas.length; i++) {
-    textareas[i].value = '';
-  }
-}
-  </script>
-
 <div id="app1">
   <div class="textarea-container modifier-container">
     <textarea id="keywords" placeholder="keywords"></textarea>
@@ -299,6 +83,220 @@ function clearAllData() {
   </div>    
 </div>
 
+<script>
+  // Add autosuggest in placeholder
+  document.addEventListener('DOMContentLoaded', function() {
+    const keywordsInput = document.getElementById('keywords');
+    if (keywordsInput.value) {
+      keywordsInput.dispatchEvent(new Event('input'));
+    }
+  });
   
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('keywords').addEventListener('keyup', function(e) {
+      const regex = /\[(.*?)\]/g;
+      let match;
+      let placeholders = [];
+      while ((match = regex.exec(e.target.value)) != null) {
+        placeholders.push(match[0]);
+      }
+      placeholders = [...new Set(placeholders)]; // remove duplicates
+      document.getElementById('placeholder1').setAttribute('list', 'suggestions');
+      document.getElementById('placeholder2').setAttribute('list', 'suggestions');
+      let datalist = document.getElementById('suggestions');
+      if (!datalist) {
+        datalist = document.createElement('datalist');
+        datalist.id = 'suggestions';
+        document.body.appendChild(datalist);
+      }
+      datalist.innerHTML = '';
+      placeholders.forEach(function(placeholder) {
+        const option = document.createElement('option');
+        option.value = placeholder;
+        datalist.appendChild(option);
+      });
+    });
+  });
+  
+  // Force placeholder to be upper case
+  document.getElementById('placeholder1').addEventListener('input', function(e) {
+    e.target.value = e.target.value.toUpperCase();
+  });
+  
+  document.getElementById('placeholder2').addEventListener('input', function(e) {
+    e.target.value = e.target.value.toUpperCase();
+  });
+  
+  // Save data to local storage
+  window.onload = function() {
+    var inputs = document.getElementsByTagName('input');
+    var textareas = document.getElementsByTagName('textarea');
+
+    for(var i = 0; i < inputs.length; i++) {
+      if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
+        inputs[i].value = localStorage.getItem(inputs[i].id);
+        inputs[i].addEventListener('input', function() {
+          localStorage.setItem(this.id, this.value);
+        });
+      }
+    }
+
+    for(var i = 0; i < textareas.length; i++) {
+      textareas[i].value = localStorage.getItem(textareas[i].id);
+      textareas[i].addEventListener('input', function() {
+        localStorage.setItem(this.id, this.value);
+      });
+    }
+  }
+  
+  // Copy to clipboard
+  function copyToClipboard() {
+    var copyText = document.getElementById("results");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+  }
+  
+  // Clear text area
+  function clearTextArea() {
+    document.getElementById('keywords').value = '';
+    localStorage.removeItem('keywords');
+  }
+  
+// Link modifier together    
+var linkModifiers = false;
+
+function toggleLinkModifiers() {
+linkModifiers = !linkModifiers;
+let linkBtn = document.getElementById('linkBtn');
+linkBtn.innerHTML = linkModifiers ? '🔗' : '🔓';
+}
+
+// Multiply keyword generator
+function generate() {
+var keywords = document.getElementById('keywords').value.split('\n');
+var modifier1 = document.getElementById('modifier1').value.split('\n');
+var modifier2 = document.getElementById('modifier2').value.split('\n');
+var placeholder1 = document.getElementById('placeholder1').value;
+var placeholder2 = document.getElementById('placeholder2').value;
+var addSpace = document.getElementById('addSpace').checked;
+var results = [];
+
+keywords.forEach(function(keyword) {
+  if (linkModifiers && modifier1.length === modifier2.length) {
+    for (let i = 0; i < modifier1.length; i++) {
+      let mod1 = modifier1[i];
+      let mod2 = modifier2[i];
+      let tempResult = keyword;
+      if (placeholder1) {
+        tempResult = tempResult.replace(placeholder1, mod1);
+      }
+      if (placeholder2) {
+        tempResult = tempResult.replace(placeholder2, mod2);
+      }
+      results.push(tempResult);
+    }
+  } else {
+    modifier1.forEach(function(mod1) {
+      let tempResult = keyword;
+      if (placeholder1) {
+        tempResult = tempResult.replace(placeholder1, mod1);
+      }
+      modifier2.forEach(function(mod2) {
+        if (placeholder2) {
+          tempResult = tempResult.replace(placeholder2, mod2);
+        }
+        results.push(tempResult);
+      });
+    });
+  }
+});
+
+document.getElementById('results').value = results.join('\n');
+}
+  
+  // Auto count dripfeed
+let results = document.getElementById('results');
+let dripfeed = document.getElementById('dripfeed');
+let generateBtn = document.getElementById('generateBtn');
+
+function calculateDripfeed() {
+let resultsLength = results.value.split('\n').length;
+dripfeed.value = Math.ceil(resultsLength / 30);
+}
+
+// Recalculate when 'results' changes
+results.addEventListener('input', calculateDripfeed);
+
+// Recalculate when 'generate' button is clicked
+generateBtn.addEventListener('click', calculateDripfeed);
+  
+  let lastSubmittedUrls = '';
+
+  function isValidUrls(urls) {
+    var urlArray = urls.split('\n');
+    var urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+
+    for (var i = 0; i < urlArray.length; i++) {
+      if (!urlRegex.test(urlArray[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+// Send results to Omega Indexer
+function sendToOmega() {
+var apiKey = document.getElementById('omegaApiKey').value;
+var campaignName = encodeURIComponent(document.getElementById('campaignName').value);
+var urls = document.getElementById('results').value;
+var dripfeed = document.getElementById('dripfeed').value;
+
+if (!isValidUrls(urls)) {
+  alert("Please enter valid URLs");
+  return;
+}
+
+if (urls === lastSubmittedUrls) {
+  alert("You've already submitted these URLs");
+  return;
+}
+
+lastSubmittedUrls = urls;
+urls = encodeURIComponent(urls.split('\n').join('|'));
+
+var xhr = new XMLHttpRequest();
+xhr.open("POST", 'https://www.omegaindexer.com/amember/dashboard/api', true);
+xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+xhr.onreadystatechange = function() {
+  if (this.readyState === XMLHttpRequest.DONE) {
+    console.log('Status:', this.status);
+    console.log('Response:', this.responseText);
+    if (this.status === 200) {
+      alert("Data sent to Omega Indexer successfully");
+    }
+  }
+}
+xhr.send(`apikey=${apiKey}&campaignname=${campaignName}&dripfeed=${dripfeed}&urls=${urls}`);
+}
+
+// Clear all data button
+function clearAllData() {
+localStorage.clear();
+var inputs = document.getElementsByTagName('input');
+var textareas = document.getElementsByTagName('textarea');
+
+for(var i = 0; i < inputs.length; i++) {
+  if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
+    inputs[i].value = '';
+  }
+}
+
+for(var i = 0; i < textareas.length; i++) {
+  textareas[i].value = '';
+}
+}
+</script>  
 </body>
 </html>
