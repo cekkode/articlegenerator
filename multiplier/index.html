@@ -135,7 +135,8 @@ let linkModifiers = false;
 
 function toggleLinkModifiers() {
   linkModifiers = !linkModifiers;
-  document.getElementById('linkBtn').innerText = linkModifiers ? '🔗' : '🔓';
+  let linkBtn = document.getElementById('linkBtn');
+  linkBtn.innerHTML = linkModifiers ? '🔗' : '🔓';
 }
 
 // Multiply keyword generator
