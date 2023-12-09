@@ -102,7 +102,7 @@
       for(var i = 0; i < inputs.length; i++) {
         if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
           inputs[i].value = localStorage.getItem(inputs[i].id);
-          inputs[i].addEventListener('change', function() {
+          inputs[i].addEventListener('input', function() {
             localStorage.setItem(this.id, this.value);
           });
         }
@@ -110,7 +110,7 @@
 
       for(var i = 0; i < textareas.length; i++) {
         textareas[i].value = localStorage.getItem(textareas[i].id);
-        textareas[i].addEventListener('change', function() {
+        textareas[i].addEventListener('input', function() {
           localStorage.setItem(this.id, this.value);
         });
       }
@@ -132,38 +132,38 @@
     
     // Multiply keyword generator
         function generate() {
-      var keywords = document.getElementById('keywords').value.split('\n');
-      var modifier1 = document.getElementById('modifier1').value.split('\n');
-      var modifier2 = document.getElementById('modifier2').value.split('\n');
-      var placeholder1 = document.getElementById('placeholder1').value;
-      var placeholder2 = document.getElementById('placeholder2').value;
-      var addSpace = document.getElementById('addSpace').checked;
-      var results = [];
-    
-      keywords.forEach(function(keyword) {
-        var result = keyword;
-        var placeholder1Exists = placeholder1 && keyword.includes(placeholder1);
-        var placeholder2Exists = placeholder2 && keyword.includes(placeholder2);
-    
-        if (placeholder1Exists || placeholder2Exists) {
-          modifier1.forEach(function(mod1) {
-            if (placeholder1Exists) {
-              result = result.replace(placeholder1, mod1);
-            }
-            modifier2.forEach(function(mod2) {
-              if (placeholder2Exists) {
-                result = result.replace(placeholder2, mod2);
-              }
+          var keywords = document.getElementById('keywords').value.split('\n');
+          var modifier1 = document.getElementById('modifier1').value.split('\n');
+          var modifier2 = document.getElementById('modifier2').value.split('\n');
+          var placeholder1 = document.getElementById('placeholder1').value;
+          var placeholder2 = document.getElementById('placeholder2').value;
+          var addSpace = document.getElementById('addSpace').checked;
+          var results = [];
+        
+          keywords.forEach(function(keyword) {
+            var result = keyword;
+            var placeholder1Exists = placeholder1 && keyword.includes(placeholder1);
+            var placeholder2Exists = placeholder2 && keyword.includes(placeholder2);
+        
+            if (placeholder1Exists || placeholder2Exists) {
+              modifier1.forEach(function(mod1) {
+                if (placeholder1Exists) {
+                  result = result.replace(placeholder1, mod1);
+                }
+                modifier2.forEach(function(mod2) {
+                  if (placeholder2Exists) {
+                    result = result.replace(placeholder2, mod2);
+                  }
+                  results.push(result);
+                });
+              });
+            } else {
               results.push(result);
-            });
+            }
           });
-        } else {
-          results.push(result);
+        
+          document.getElementById('results').value = results.join('\n');
         }
-      });
-    
-      document.getElementById('results').value = results.join('\n');
-    }
     
     // Auto count dripfeed
 let results = document.getElementById('results');
