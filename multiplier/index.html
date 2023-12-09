@@ -96,25 +96,25 @@
     
     // Save data to local storage
     window.onload = function() {
-  var inputs = document.getElementsByTagName('input');
-  var textareas = document.getElementsByTagName('textarea');
+      var inputs = document.getElementsByTagName('input');
+      var textareas = document.getElementsByTagName('textarea');
 
-  for(var i = 0; i < inputs.length; i++) {
-    if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
-      inputs[i].value = localStorage.getItem(inputs[i].id);
-      inputs[i].addEventListener('change', function() {
-        localStorage.setItem(this.id, this.value);
-      });
+      for(var i = 0; i < inputs.length; i++) {
+        if(inputs[i].type.toLowerCase() == 'text' || inputs[i].type.toLowerCase() == 'number') {
+          inputs[i].value = localStorage.getItem(inputs[i].id);
+          inputs[i].addEventListener('change', function() {
+            localStorage.setItem(this.id, this.value);
+          });
+        }
+      }
+
+      for(var i = 0; i < textareas.length; i++) {
+        textareas[i].value = localStorage.getItem(textareas[i].id);
+        textareas[i].addEventListener('change', function() {
+          localStorage.setItem(this.id, this.value);
+        });
+      }
     }
-  }
-
-  for(var i = 0; i < textareas.length; i++) {
-    textareas[i].value = localStorage.getItem(textareas[i].id);
-    textareas[i].addEventListener('change', function() {
-      localStorage.setItem(this.id, this.value);
-    });
-  }
-}
     
     // Copy to clipboard
     function copyToClipboard() {
@@ -227,6 +227,7 @@ function sendToOmega() {
   xhr.send(`apikey=${apiKey}&campaignname=${campaignName}&dripfeed=${dripfeed}&urls=${urls}`);
 }
 
+// Clear all data button
 function clearAllData() {
   localStorage.clear();
   var inputs = document.getElementsByTagName('input');
