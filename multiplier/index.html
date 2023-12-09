@@ -204,6 +204,11 @@ document.getElementById('generateBtn').addEventListener('click', function() {
   setTimeout(countLines, 0);
 });
 
+// Update the counters whenever the data is cleared
+document.querySelector('.clear-btn').addEventListener('click', function() {
+  setTimeout(countLines, 0);
+});
+
 // Multiply keyword generator
 function generate() {
 var keywords = document.getElementById('keywords').value.split('\n');
