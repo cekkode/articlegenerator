@@ -2,66 +2,165 @@
 <html>
 
 <head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" type="text/css" href="style.css">
+
 </head>
 
 <body>
+  <div class="" style="padding:30px 20px; ">
 
-  <h2>AI Article Generator Adsense</h2>
-  <p id="errorMessage" style="color:red;"></p>
-  <form id="myForm">
-    <div>
-      <label for="apikey">API Key:</label>
-      <input type="text" id="apikey" name="apikey" placeholder="Enter your API Key here">
-      <button type="button" onclick="checkAPIKey()">Check API</button>
-    </div>
-    <div>
-      <label for="model">Model:</label>
-      <select id="model" name="model">
-        <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-        <option value="gpt-4">gpt-4</option>
-      </select>
-    </div>
-    <div>
-      <label for="maxtoken">Max Token:</label>
-      <input type="number" id="maxtoken" name="maxtoken" value="7000" placeholder="Enter the maximum token count">
-    </div>
-    <div>
-      <label for="titleMaxToken">Title Max Token:</label>
-      <input type="number" id="titleMaxToken" name="titleMaxToken" value="20"
-      placeholder="Enter the maximum token count for title">
-    </div>
-    <div>
-      <label for="subheadingMaxToken">Subheading Max Token:</label>
-      <input type="number" id="subheadingMaxToken" name="subheadingMaxToken" value="1000"
-      placeholder="Enter the maximum token count for subheading">
-    </div>
-    <div>
-      <label for="myFile">Upload a TXT file:</label>
-      <input type="file" id="myFile" name="filename">
-      <label for="myText">Or paste your text here:</label>
-      <textarea id="myText" rows="4" cols="50" placeholder="Paste your text here"></textarea>
-    </div>
-    <div>
-      <label for="titlePrompt">Title Prompt:</label>
-      <input type="text" id="titlePrompt" name="titlePrompt"
-      value="tulis ulang topik ini menjadi judul artikel yang menarik: ">
-      <input type="submit" value="Submit">
-    </div>
-  </form>
 
-  <div id="fileContent">
+    <h2>AI Article Generator Adsense</h2>
+    <p id="errorMessage" style="color:red;"></p>
+    <form id="myForm">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row mb-3 ">
+            <label for="apiKey" class="col-sm-3 col-form-label">API Key</label>
+            <div class="col-sm-9">
+              <div class="row">
+                <div class="col-auto">
+                  <input type="text" class="form-control" id="apikey" name="apikey"
+                    placeholder="Enter your API Key here" value="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">
+                </div>
+
+                <div class="col-auto">
+                  <button type="button" onclick="checkAPIKey()" class="btn btn-warning">Check API</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row mb-3 ">
+            <label for="model" class="col-sm-3 col-form-label">Model</label>
+            <div class="col-sm-9">
+              <select id="model" name="model" class="form-select">
+                <option value="gpt-3.5-turbo-instruct">gpt-3.5-turbo</option>
+                <option value="gpt-4">gpt-4</option>
+              </select>
+            </div>
+          </div>
+
+
+          <div class="row mb-3 ">
+            <label for="model" class="col-sm-3 col-form-label">Upload a Txt File:</label>
+            <div class="col-sm-9">
+
+              <input type="file" id="myFile" name="filename">
+              <br>
+
+              <label for="myText">Or paste your text here:</label>
+              <textarea id="myText" rows="4" class="form-control" placeholder="Paste your text here"></textarea>
+              <br>
+              <input type="submit" value="Submit" class="btn btn-primary">
+            </div>
+          </div>
+
+
+        </div>
+
+        <div class="col-md-6">
+
+          <div class="row mb-3 ">
+            <label for="model" class="col-sm-3 col-form-label">Max Token:</label>
+            <div class="col-sm-9">
+              <input type="number" id="maxtoken" name="maxtoken" value="7000" class="form-control"
+                placeholder="Enter the maximum token count">
+            </div>
+          </div>
+
+          <div class="row mb-3 ">
+            <label for="titleMaxToken" class="col-sm-3 col-form-label">Title Max Token:</label>
+            <div class="col-sm-9">
+              <input type="number" id="titleMaxToken" name="titleMaxToken" value="20" class="form-control"
+                placeholder="Enter the maximum token count for title">
+            </div>
+          </div>
+          <div class="row mb-3 ">
+            <label for="subHeadingMaxToken" class="col-sm-3 col-form-label">Subheading Max Token:</label>
+            <div class="col-sm-9">
+
+              <input type="number" id="subHeadingMaxToken" name="subHeadingMaxToken" value="1000" class="form-control"
+                placeholder="Enter the maximum token count for subHeading">
+            </div>
+          </div>
+          <div class="row mb-3 ">
+            <label for="articleMaxToken" class="col-sm-3 col-form-label">Aricle Max Token:</label>
+            <div class="col-sm-9">
+
+              <input type="number" id="articleMaxToken" name="articleMaxToken" value="1000" class="form-control"
+                placeholder="Enter the maximum token count for Aritcle">
+            </div>
+          </div>
+
+          <div class="row mb-3 ">
+            <label for="titlePrompt" class="col-sm-3 col-form-label">Title Prompt</label>
+            <div class="col-sm-9">
+              <input type="text" id="titlePrompt" name="titlePrompt" class="form-control"
+                value="tulis ulang topik ini menjadi judul artikel yang menarik: ">
+            </div>
+          </div>
+
+          <div class="row mb-3 ">
+            <label for="subHeadingPrompt" class="col-sm-3 col-form-label">Sub Heading Prompt</label>
+            <div class="col-sm-9">
+              <input type="text" id="subHeadingPrompt" name="subHeadingPrompt" class="form-control"
+                value="tulis ulang topik ini menjadi Sub Heading artikel yang menarik: ">
+            </div>
+          </div>
+
+          <div class="row mb-3 ">
+            <label for="articlePrompt" class="col-sm-3 col-form-label">Article Prompt</label>
+            <div class="col-sm-9">
+              <input type="text" id="articlePrompt" name="articlePrompt" class="form-control"
+                value="Tulis artikel yang mengandung Sub Heading: ">
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+        <center>
+          <button id="aiTitle" class="btn btn-sm btn-info text-white">AI Title</button>
+          <button id="aiHeading" class="btn btn-sm btn-info text-white">AI Heading</button>
+          <button id="aiArticle" class="btn btn-sm btn-info text-white">AI Article</button>
+
+          <button onclick="downloadAndZip()">Download and Zip</button>
+
+          <p id="counter">Total Articles: 0</p>
+          <p id="tokenCounter">Total Tokens: 0</p>
+
+          <div class="d-none justify-content-center align-items-center" id="loadingSection">
+            <div class="spinner-border text-primary" role="status" style="margin-right: 10px;">
+              <span class="sr-only"></span>
+
+            </div>
+            Loading...
+          </div>
+        </center>
+      </div>
+      <hr>
+    </form>
+
+
+    <div id="fileContent" class="row">
+    </div>
+
   </div>
 
-  <button id="aiTitle">AI Title</button>
-  <button id="aiHeading">AI Heading</button>
 
-  <p id="counter">Total Articles: 0</p>
-  <p id="tokenCounter">Total Tokens: 0</p>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.1.5/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
   <!-- <script src="https://cdn.openai.com/libs/openai/0.27.0/openai.min.js"></script> -->
 
   <script>
+
+    let loadingSection = document.getElementById("loadingSection");
     let articleCount = 0;
     let tokenCount = 0;
     let input, textarea, fileContent;
@@ -99,6 +198,7 @@
 
     document.getElementById("myForm").addEventListener("submit", function (event) {
       event.preventDefault();
+      articleCount = 0;
       var apikey = document.getElementById("apikey").value;
       var model = document.getElementById("model").value;
       var maxtoken = document.getElementById("maxtoken").value;
@@ -113,23 +213,41 @@
         fileContent.innerHTML = '';
         for (var i = 0; i < lines.length; i++) {
           if (!lines[i].startsWith(' ') && lines[i].trim() !== '') {
-            input = document.createElement("input");
-            input.type = "text";
-            input.className = "title";
-            input.id = "title" + articleCount;
-            input.value = lines[i];
-            input.name = lines[i];
-            fileContent.appendChild(input);
-            textarea = document.createElement("textarea");
-            textarea.rows = "4";
-            textarea.cols = "50";
-            textarea.className = "subheading";
-            textarea.id = "subheading" + articleCount;
-            fileContent.appendChild(textarea);
+            console.log(articleCount);
+
+            const sectionArtikel = document.createElement('div');
+            sectionArtikel.className = "col col-md-6 mb-10";
+
+            sectionArtikel.innerHTML = `
+              <input type="text" class="title form-control" id="title${articleCount}" value="${lines[i]}" />
+              <div class="row">
+                <div class="col-md-6">
+                  <textarea rows="4" class="subHeading form-control" id="subHeading${articleCount}"></textarea>
+                </div>
+                <div class="col-md-6">
+                  <textarea rows="4" class="article form-control" id="article${articleCount}"></textarea>
+                </div>
+              </div>
+            `;
+            // input = document.createElement("input");
+            // input.type = "text";
+            // input.className = "title";
+            // input.id = "title" + articleCount;
+            // input.value = lines[i];
+            // input.name = lines[i];
+            // fileContent.appendChild(input);
+            // textarea = document.createElement("textarea");
+            // textarea.rows = "4";
+            // textarea.cols = "50";
+            // textarea.className = "subHeading";
+            // textarea.id = "subHeading" + articleCount;
+            fileContent.appendChild(sectionArtikel);
+
             articleCount++;
             tokenCount += lines[i].split(' ').length;
           } else if (lines[i].trim() !== '') {
-            textarea.value += '\n' + lines[i].trim();
+            document.getElementById(`subHeading${articleCount - 1}`).value = document.getElementById(`subHeading${articleCount - 1}`).value + (i != 0 ? '' : '\n') + lines[i].trim();
+            // textarea.value += '\n' + lines[i].trim();
             tokenCount += lines[i].split(' ').length;
           }
         }
@@ -151,8 +269,8 @@
           textarea = document.createElement("textarea");
           textarea.rows = "4";
           textarea.cols = "50";
-          textarea.className = "subheading";
-          textarea.id = "subheading" + articleCount;
+          textarea.className = "subHeading";
+          textarea.id = "subHeading" + articleCount;
           document.getElementById("fileContent").appendChild(textarea);
           articleCount++;
           tokenCount += textLines[i].split(' ').length;
@@ -165,52 +283,176 @@
       document.getElementById("tokenCounter").innerText = "Total Tokens: " + tokenCount;
     });
 
-document.getElementById("aiTitle").addEventListener("click", function () {
-  var apikey = document.getElementById("apikey").value;
-  var model = document.getElementById("model").value;
-  var titleMaxToken = document.getElementById("titleMaxToken").value;
-  var titlePrompt = document.getElementById("titlePrompt").value;
-  for (let i = 0; i < articleCount; i++) {
-    let title = document.getElementById("title" + i).value;
-    fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + apikey,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        prompt: titlePrompt + title,
-        max_tokens: titleMaxToken
-      })
-    })
-    .then(response => {
-      if (!response.ok) {
-        return response.json().then(errorData => {
-          // This will give you more detailed error information from the server
-          console.error('Error data:', errorData);
-          throw new Error('Network response was not ok');
-        });
+    document.getElementById("aiTitle").addEventListener("click", function () {
+      loadingSection.style.display = "flex";
+
+      var apikey = document.getElementById("apikey").value;
+      var model = document.getElementById("model").value;
+      var titleMaxToken = document.getElementById("titleMaxToken").value;
+      var titlePrompt = document.getElementById("titlePrompt").value;
+      for (let i = 0; i < articleCount; i++) {
+        let title = document.getElementById("title" + i).value;
+
+        // fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
+        fetch('https://api.openai.com/v1/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + apikey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            prompt: titlePrompt + title,
+            max_tokens: parseInt(titleMaxToken),
+            model: model
+          })
+        })
+          .then(response => {
+            if (!response.ok) {
+              return response.json().then(errorData => {
+                // This will give you more detailed error information from the server
+                console.error('Error data:', errorData);
+                throw new Error('Network response was not ok');
+              });
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.choices && data.choices[0]) {
+              document.getElementById("title" + i).value = data.choices[0].text.trim();
+              document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
+            } else {
+              throw new Error('Error: data.choices is undefined');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+          });
       }
-      return response.json();
-    })
-    .then(data => {
-      if (data.choices && data.choices[0]) {
-        document.getElementById("title" + i).value = data.choices[0].text.trim();
-        document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
-      } else {
-        throw new Error('Error: data.choices is undefined');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+      loadingSection.style.display = "none";
     });
-  }
-});
 
     document.getElementById("aiHeading").addEventListener("click", function () {
-      console.log("Generating subheadings...");
+      loadingSection.style.display = "flex";
+      var apikey = document.getElementById("apikey").value;
+      var model = document.getElementById("model").value;
+      var subHeadingMaxToken = document.getElementById("subHeadingMaxToken").value;
+      var subHeadingPrompt = document.getElementById("subHeadingPrompt").value;
+      for (let i = 0; i < articleCount; i++) {
+        let subHeading = document.getElementById("subHeading" + i).value;
+
+        // fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
+        fetch('https://api.openai.com/v1/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + apikey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            prompt: subHeadingPrompt + subHeading,
+            max_tokens: parseInt(subHeadingMaxToken),
+            model: model
+          })
+        })
+          .then(response => {
+            if (!response.ok) {
+              return response.json().then(errorData => {
+                // This will give you more detailed error information from the server
+                console.error('Error data:', errorData);
+                throw new Error('Network response was not ok');
+              });
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.choices && data.choices[0]) {
+              document.getElementById("subHeading" + i).value = data.choices[0].text.trim();
+              document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
+            } else {
+              throw new Error('Error: data.choices is undefined');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+          });
+      }
+      loadingSection.style.display = "none";
     });
+
+
+
+    document.getElementById("aiArticle").addEventListener("click", function () {
+      loadingSection.style.display = "flex";
+      var apikey = document.getElementById("apikey").value;
+      var model = document.getElementById("model").value;
+      var articleMaxToken = document.getElementById("articleMaxToken").value;
+      var articlePrompt = document.getElementById("articlePrompt").value;
+      for (let i = 0; i < articleCount; i++) {
+        let subHeading = document.getElementById("subHeading" + i).value;
+        let title = document.getElementById("title" + i).value;
+
+        // fetch('https://api.openai.com/v1/engines/' + model + '/completions', {
+        fetch('https://api.openai.com/v1/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + apikey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            prompt: articlePrompt + subHeading + ', dengan judul : ' + title,
+            max_tokens: parseInt(articleMaxToken),
+            model: model
+          })
+        })
+          .then(response => {
+            if (!response.ok) {
+              return response.json().then(errorData => {
+                // This will give you more detailed error information from the server
+                console.error('Error data:', errorData);
+                throw new Error('Network response was not ok');
+              });
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.choices && data.choices[0]) {
+              document.getElementById("article" + i).value = data.choices[0].text.trim();
+              document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
+            } else {
+              throw new Error('Error: data.choices is undefined');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("errorMessage").innerText = error.message; // Display the error message on the webpage
+          });
+      }
+      loadingSection.style.display = "none";
+    });
+
+
+    function downloadAndZip() {
+      // Create a new JSZip instance
+      var zip = new JSZip();
+
+
+      for (let i = 0; i < articleCount; i++) {
+
+        var article = document.getElementById("article" + i).value;
+
+        zip.file("article" + i + ".txt", article);
+      }
+
+      // Generate the zip file
+      zip.generateAsync({ type: "blob" })
+        .then(function (blob) {
+          // Save the zip file
+          saveAs(blob, "articles.zip");
+        });
+    }
+  </script>
+
   </script>
 
 </body>
