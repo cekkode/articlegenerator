@@ -54,6 +54,7 @@
   <div class="textarea-container modifier-container">
     <textarea id="keywords" placeholder="keywords"></textarea>
     <button class="clear-btn" onclick="clearTextArea()">🗑️</button>
+    <span class="keywords-counter">There are </span>
   </div>
   <div class="modifier-container">
     <input type="text" id="placeholder1" placeholder="placeholder 1">
@@ -73,6 +74,7 @@
   <div class="textarea-container modifier-container">
     <textarea id="results" placeholder="results" readonly></textarea>
     <button class="copy-btn" onclick="copyToClipboard()">📋</button>
+    <span class="results-counter">There are </span>
     <button id="generateBtn" onclick="generate()">Generate</button>
   </div>
   <div class="textarea-container modifier-container">
@@ -92,8 +94,7 @@
     }
   });
   
-  document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('keywords').addEventListener('keyup', function(e) {
+  document.getElementById('keywords').addEventListener('keyup', function(e) {
       const regex = /\[(.*?)\]/g;
       let match;
       let placeholders = [];
@@ -116,7 +117,6 @@
         datalist.appendChild(option);
       });
     });
-  });
   
   // Force placeholder to be upper case
   document.getElementById('placeholder1').addEventListener('input', function(e) {
@@ -171,6 +171,28 @@ linkModifiers = !linkModifiers;
 let linkBtn = document.getElementById('linkBtn');
 linkBtn.innerHTML = linkModifiers ? '🔗' : '㆐';
 }
+
+// Count lines in text areas
+function countLines() {
+  const keywordsTextArea = document.getElementById('keywords');
+  const resultsTextArea = document.getElementById('results');
+  
+  const keywordsLines = keywordsTextArea.value.split('\n').length;
+  const resultsLines = resultsTextArea.value.split('\n').length;
+  
+  const keywordsCounterSpan = document.querySelector('.keywords-counter');
+  const resultsCounterSpan = document.querySelector('.results-counter');
+  
+  keywordsCounterSpan.textContent = `There are ${keywordsLines}`;
+  resultsCounterSpan.textContent = `There are ${resultsLines}`;
+}
+
+// Call the function to update the counters
+countLines();
+
+// Update the counters whenever the textareas change
+document.getElementById('keywords').addEventListener('input', countLines);
+document.getElementById('results').addEventListener('input', countLines);
 
 // Multiply keyword generator
 function generate() {
