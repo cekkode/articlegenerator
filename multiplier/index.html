@@ -150,39 +150,32 @@ function generate() {
   var results = [];
 
   keywords.forEach(function(keyword) {
-    var result = keyword;
-    var placeholder1Exists = placeholder1 && keyword.includes(placeholder1);
-    var placeholder2Exists = placeholder2 && keyword.includes(placeholder2);
-
     if (linkModifiers && modifier1.length === modifier2.length) {
       for (let i = 0; i < modifier1.length; i++) {
         let mod1 = modifier1[i];
         let mod2 = modifier2[i];
-        let tempResult = result;
-        if (placeholder1Exists) {
+        let tempResult = keyword;
+        if (placeholder1) {
           tempResult = tempResult.replace(placeholder1, mod1);
         }
-        if (placeholder2Exists) {
+        if (placeholder2) {
           tempResult = tempResult.replace(placeholder2, mod2);
         }
         results.push(tempResult);
       }
     } else {
-      if (placeholder1Exists || placeholder2Exists) {
-        modifier1.forEach(function(mod1) {
-          if (placeholder1Exists) {
-            result = result.replace(placeholder1, mod1);
+      modifier1.forEach(function(mod1) {
+        let tempResult = keyword;
+        if (placeholder1) {
+          tempResult = tempResult.replace(placeholder1, mod1);
+        }
+        modifier2.forEach(function(mod2) {
+          if (placeholder2) {
+            tempResult = tempResult.replace(placeholder2, mod2);
           }
-          modifier2.forEach(function(mod2) {
-            if (placeholder2Exists) {
-              result = result.replace(placeholder2, mod2);
-            }
-            results.push(result);
-          });
+          results.push(tempResult);
         });
-      } else {
-        results.push(result);
-      }
+      });
     }
   });
 
