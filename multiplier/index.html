@@ -2,7 +2,7 @@
 <html>
 <head>
   <style>
-    #app {
+    #app, #app1, #app2 {
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -10,7 +10,7 @@
       width: 100%;
     }
 
-    #app > div {
+    #app > div, #app1 > div, #app2 > div {
       display: flex;
       justify-content: space-between;
       gap: 10px;
@@ -166,35 +166,35 @@
     }
     
     // Auto count dripfeed
-    let results = document.getElementById('results');
-    let dripfeed = document.getElementById('dripfeed');
-    let generateBtn = document.querySelector('.modifier-container button');
-    
-    function calculateDripfeed() {
-      let resultsLength = results.value.split('\n').length;
-      dripfeed.value = Math.ceil(resultsLength / 30);
-    }
-    
-    // Recalculate when 'results' changes
-    results.addEventListener('input', calculateDripfeed);
-    
-    // Recalculate when 'generate' button is clicked
-    generateBtn.addEventListener('click', calculateDripfeed);
+let results = document.getElementById('results');
+let dripfeed = document.getElementById('dripfeed');
+let generateBtn = document.getElementById('generateBtn');
+
+function calculateDripfeed() {
+  let resultsLength = results.value.split('\n').length;
+  dripfeed.value = Math.ceil(resultsLength / 30);
+}
+
+// Recalculate when 'results' changes
+results.addEventListener('input', calculateDripfeed);
+
+// Recalculate when 'generate' button is clicked
+generateBtn.addEventListener('click', calculateDripfeed);
     
     let lastSubmittedUrls = '';
 
     function isValidUrls(urls) {
-  var urlArray = urls.split('\n');
-  var urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+      var urlArray = urls.split('\n');
+      var urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
 
-  for (var i = 0; i < urlArray.length; i++) {
-    if (!urlRegex.test(urlArray[i])) {
-      return false;
+      for (var i = 0; i < urlArray.length; i++) {
+        if (!urlRegex.test(urlArray[i])) {
+          return false;
+        }
+      }
+
+      return true;
     }
-  }
-
-  return true;
-}
 
 // Send results to Omega Indexer
 async function sendToOmega() {
@@ -253,38 +253,38 @@ function clearAllData() {
 }
   </script>
 
-  <div id="app">
-    <div class="textarea-container modifier-container">
-      <textarea id="keywords" placeholder="keywords"></textarea>
-      <button class="clear-btn" onclick="clearTextArea()">🗑️</button>
+<div id="app1">
+  <div class="textarea-container modifier-container">
+    <textarea id="keywords" placeholder="keywords"></textarea>
+    <button class="clear-btn" onclick="clearTextArea()">🗑️</button>
+  </div>
+    <div class="modifier-container">
+      <input type="text" id="placeholder1" placeholder="placeholder 1">
+      <textarea id="modifier1" placeholder="modifier 1"></textarea>
     </div>
-      <div class="modifier-container">
-        <input type="text" id="placeholder1" placeholder="placeholder 1">
-        <textarea id="modifier1" placeholder="modifier 1"></textarea>
-      </div>
-      <div class="modifier-container">
-        <input type="text" id="placeholder2" placeholder="placeholder 2">
-        <textarea id="modifier2" placeholder="modifier 2"></textarea>
-      </div>
-    </div>
-    <div>
-      <input type="checkbox" id="addSpace"> Add Space
-      <button onclick="clearAllData()">🔄</button>
+    <div class="modifier-container">
+      <input type="text" id="placeholder2" placeholder="placeholder 2">
+      <textarea id="modifier2" placeholder="modifier 2"></textarea>
     </div>
   </div>
-  <div id="app">
-    <div class="textarea-container modifier-container">
-      <textarea id="results" placeholder="results" readonly></textarea>
-      <button class="copy-btn" onclick="copyToClipboard()">📋</button>
-      <button onclick="generate()">Generate</button>
-    </div>
-    <div class="textarea-container modifier-container">
-      <input type="text" id="omegaApiKey" placeholder="Omega API Key">
-      <input type="text" id="campaignName" placeholder="Campaign Name">
-      <input type="number" id="dripfeed" placeholder="Dripfeed">
-      <button onclick="sendToOmega()">Send to Omega</button>
-    </div>    
+  <div>
+    <input type="checkbox" id="addSpace"> Add Space
+    <button onclick="clearAllData()">🔄</button>
   </div>
+</div>
+<div id="app2">
+  <div class="textarea-container modifier-container">
+    <textarea id="results" placeholder="results" readonly></textarea>
+    <button class="copy-btn" onclick="copyToClipboard()">📋</button>
+    <button id="generateBtn" onclick="generate()">Generate</button>
+  </div>
+  <div class="textarea-container modifier-container">
+    <input type="text" id="omegaApiKey" placeholder="Omega API Key">
+    <input type="text" id="campaignName" placeholder="Campaign Name">
+    <input type="number" id="dripfeed" placeholder="Dripfeed">
+    <button onclick="sendToOmega()">Send to Omega</button>
+  </div>    
+</div>
 
   
 </body>
