@@ -187,8 +187,8 @@ function countLines() {
   resultsCounterSpan.textContent = `There are ${resultsLines}`;
 }
 
-// Call the function to update the counters
-countLines();
+// Call the function when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', countLines);
 
 // Update the counters whenever the textareas change
 document.getElementById('keywords').addEventListener('input', countLines);
