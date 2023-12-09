@@ -130,40 +130,63 @@
       localStorage.removeItem('keywords');
     }
     
-    // Multiply keyword generator
-        function generate() {
-          var keywords = document.getElementById('keywords').value.split('\n');
-          var modifier1 = document.getElementById('modifier1').value.split('\n');
-          var modifier2 = document.getElementById('modifier2').value.split('\n');
-          var placeholder1 = document.getElementById('placeholder1').value;
-          var placeholder2 = document.getElementById('placeholder2').value;
-          var addSpace = document.getElementById('addSpace').checked;
-          var results = [];
-        
-          keywords.forEach(function(keyword) {
-            var result = keyword;
-            var placeholder1Exists = placeholder1 && keyword.includes(placeholder1);
-            var placeholder2Exists = placeholder2 && keyword.includes(placeholder2);
-        
-            if (placeholder1Exists || placeholder2Exists) {
-              modifier1.forEach(function(mod1) {
-                if (placeholder1Exists) {
-                  result = result.replace(placeholder1, mod1);
-                }
-                modifier2.forEach(function(mod2) {
-                  if (placeholder2Exists) {
-                    result = result.replace(placeholder2, mod2);
-                  }
-                  results.push(result);
-                });
-              });
-            } else {
-              results.push(result);
-            }
-          });
-        
-          document.getElementById('results').value = results.join('\n');
+// Link modifier together    
+let linkModifiers = false;
+
+function toggleLinkModifiers() {
+  linkModifiers = !linkModifiers;
+  document.getElementById('linkBtn').innerText = linkModifiers ? '🔗' : '🔓';
+}
+
+// Multiply keyword generator
+function generate() {
+  var keywords = document.getElementById('keywords').value.split('\n');
+  var modifier1 = document.getElementById('modifier1').value.split('\n');
+  var modifier2 = document.getElementById('modifier2').value.split('\n');
+  var placeholder1 = document.getElementById('placeholder1').value;
+  var placeholder2 = document.getElementById('placeholder2').value;
+  var addSpace = document.getElementById('addSpace').checked;
+  var results = [];
+
+  keywords.forEach(function(keyword) {
+    var result = keyword;
+    var placeholder1Exists = placeholder1 && keyword.includes(placeholder1);
+    var placeholder2Exists = placeholder2 && keyword.includes(placeholder2);
+
+    if (linkModifiers && modifier1.length === modifier2.length) {
+      for (let i = 0; i < modifier1.length; i++) {
+        let mod1 = modifier1[i];
+        let mod2 = modifier2[i];
+        let tempResult = result;
+        if (placeholder1Exists) {
+          tempResult = tempResult.replace(placeholder1, mod1);
         }
+        if (placeholder2Exists) {
+          tempResult = tempResult.replace(placeholder2, mod2);
+        }
+        results.push(tempResult);
+      }
+    } else {
+      if (placeholder1Exists || placeholder2Exists) {
+        modifier1.forEach(function(mod1) {
+          if (placeholder1Exists) {
+            result = result.replace(placeholder1, mod1);
+          }
+          modifier2.forEach(function(mod2) {
+            if (placeholder2Exists) {
+              result = result.replace(placeholder2, mod2);
+            }
+            results.push(result);
+          });
+        });
+      } else {
+        results.push(result);
+      }
+    }
+  });
+
+  document.getElementById('results').value = results.join('\n');
+}
     
     // Auto count dripfeed
 let results = document.getElementById('results');
@@ -254,14 +277,14 @@ function clearAllData() {
     <textarea id="keywords" placeholder="keywords"></textarea>
     <button class="clear-btn" onclick="clearTextArea()">🗑️</button>
   </div>
-    <div class="modifier-container">
-      <input type="text" id="placeholder1" placeholder="placeholder 1">
-      <textarea id="modifier1" placeholder="modifier 1"></textarea>
-    </div>
-    <div class="modifier-container">
-      <input type="text" id="placeholder2" placeholder="placeholder 2">
-      <textarea id="modifier2" placeholder="modifier 2"></textarea>
-    </div>
+  <div class="modifier-container">
+    <input type="text" id="placeholder1" placeholder="placeholder 1">
+    <textarea id="modifier1" placeholder="modifier 1"></textarea>
+  </div>
+  <button id="linkBtn" onclick="toggleLinkModifiers()">🔓</button>
+  <div class="modifier-container">
+    <input type="text" id="placeholder2" placeholder="placeholder 2">
+    <textarea id="modifier2" placeholder="modifier 2"></textarea>
   </div>
   <div>
     <input type="checkbox" id="addSpace"> Add Space
