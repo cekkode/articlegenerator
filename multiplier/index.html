@@ -233,52 +233,53 @@ generateBtn.addEventListener('click', calculateDripfeed);
   
   let lastSubmittedUrls = '';
 
+// Find out if urls in "results" is valid
   function isValidUrls(urls) {
     var urlArray = urls.split('\n');
-    var urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-
-    for (var i = 0; i < urlArray.length; i++) {
-      if (!urlRegex.test(urlArray[i])) {
-        return false;
-      }
-    }
-
-    return true;
+    var urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return urlArray.every(function(url){
+      return urlPattern.test(url);
+    });
   }
 
 // Send results to Omega Indexer
 function sendToOmega() {
-var apiKey = document.getElementById('omegaApiKey').value;
-var campaignName = encodeURIComponent(document.getElementById('campaignName').value);
-var urls = document.getElementById('results').value;
-var dripfeed = document.getElementById('dripfeed').value;
+  var apiKey = document.getElementById('omegaApiKey').value;
+  var campaignName = encodeURIComponent(document.getElementById('campaignName').value);
+  var urls = document.getElementById('results').value;
+  var dripfeed = document.getElementById('dripfeed').value;
 
-if (!isValidUrls(urls)) {
-  alert("Please enter valid URLs");
-  return;
-}
+  if (!isValidUrls(urls)) {
+    alert("Please enter valid URLs");
+    return;
+  }
 
-if (urls === lastSubmittedUrls) {
-  alert("You've already submitted these URLs");
-  return;
-}
+  if (urls === lastSubmittedUrls) {
+    alert("You've already submitted these URLs");
+    return;
+  }
 
-lastSubmittedUrls = urls;
-urls = encodeURIComponent(urls.split('\n').join('|'));
+  lastSubmittedUrls = urls;
+  urls = encodeURIComponent(urls.split('\n').join('|'));
 
-var xhr = new XMLHttpRequest();
-xhr.open("POST", 'https://www.omegaindexer.com/amember/dashboard/api', true);
-xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-xhr.onreadystatechange = function() {
-  if (this.readyState === XMLHttpRequest.DONE) {
-    console.log('Status:', this.status);
-    console.log('Response:', this.responseText);
-    if (this.status === 200) {
-      alert("Data sent to Omega Indexer successfully");
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", 'https://www.omegaindexer.com/amember/dashboard/api', true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function() {
+    if (this.readyState === XMLHttpRequest.DONE) {
+      console.log('Status:', this.status);
+      console.log('Response:', this.responseText);
+      if (this.status === 200) {
+        alert("Data sent to Omega Indexer successfully");
+      }
     }
   }
-}
-xhr.send(`apikey=${apiKey}&campaignname=${campaignName}&dripfeed=${dripfeed}&urls=${urls}`);
+  xhr.send(`apikey=${apiKey}&campaignname=${campaignName}&dripfeed=${dripfeed}&urls=${urls}`);
 }
 
 // Clear all data button
