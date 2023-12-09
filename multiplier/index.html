@@ -174,17 +174,21 @@ linkBtn.innerHTML = linkModifiers ? '🔗' : '㆐';
 
 // Count lines in text areas
 function countLines() {
-  const keywordsTextArea = document.getElementById('keywords');
-  const resultsTextArea = document.getElementById('results');
-  
-  const keywordsLines = keywordsTextArea.value.split('\n').length;
-  const resultsLines = resultsTextArea.value.split('\n').length;
-  
-  const keywordsCounterSpan = document.querySelector('.keywords-counter');
-  const resultsCounterSpan = document.querySelector('.results-counter');
-  
-  keywordsCounterSpan.textContent = `There are ${keywordsLines}`;
-  resultsCounterSpan.textContent = `There are ${resultsLines}`;
+  try {
+    const keywordsTextArea = document.getElementById('keywords');
+    const resultsTextArea = document.getElementById('results');
+    
+    const keywordsLines = keywordsTextArea.value.split('\n').length;
+    const resultsLines = resultsTextArea.value.split('\n').length;
+    
+    const keywordsCounterSpan = document.querySelector('.keywords-counter');
+    const resultsCounterSpan = document.querySelector('.results-counter');
+    
+    keywordsCounterSpan.textContent = `There are ${keywordsLines} lines`;
+    resultsCounterSpan.textContent = `There are ${resultsLines} lines`;
+  } catch (error) {
+    console.error('Error counting lines:', error);
+  }
 }
 
 // Call the function when the entire window has finished loading
