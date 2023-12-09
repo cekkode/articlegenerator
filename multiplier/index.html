@@ -174,25 +174,21 @@ linkBtn.innerHTML = linkModifiers ? '🔗' : '㆐';
 
 // Count lines in text areas
 function countLines() {
-  try {
-    const keywordsTextArea = document.getElementById('keywords');
-    const resultsTextArea = document.getElementById('results');
-    
-    const keywordsLines = keywordsTextArea.value.split('\n').length;
-    const resultsLines = resultsTextArea.value.split('\n').length;
-    
-    const keywordsCounterSpan = document.querySelector('.keywords-counter');
-    const resultsCounterSpan = document.querySelector('.results-counter');
-    
-    keywordsCounterSpan.textContent = `There are ${keywordsLines} lines`;
-    resultsCounterSpan.textContent = `There are ${resultsLines} lines`;
-  } catch (error) {
-    console.error('Error counting lines:', error);
-  }
+  const keywordsTextArea = document.getElementById('keywords');
+  const resultsTextArea = document.getElementById('results');
+  
+  const keywordsLines = keywordsTextArea.value.split('\n').length;
+  const resultsLines = resultsTextArea.value.split('\n').length;
+  
+  const keywordsCounterSpan = document.querySelector('.keywords-counter');
+  const resultsCounterSpan = document.querySelector('.results-counter');
+  
+  keywordsCounterSpan.textContent = `There are ${keywordsLines}`;
+  resultsCounterSpan.textContent = `There are ${resultsLines}`;
 }
 
-// Call the function when the entire window has finished loading
-window.onload = countLines;
+// Add event listener for the load event
+window.addEventListener('load', countLines);
 
 // Update the counters whenever the textareas change
 document.getElementById('keywords').addEventListener('input', countLines);
