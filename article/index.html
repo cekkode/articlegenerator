@@ -122,29 +122,30 @@
 
         </div>
       </div>
-      <hr>
-      <div class="row">
-        <center>
-          <button id="aiTitle" class="btn btn-sm btn-info text-white">AI Title</button>
-          <button id="aiHeading" class="btn btn-sm btn-info text-white">AI Heading</button>
-          <button id="aiArticle" class="btn btn-sm btn-info text-white">AI Article</button>
 
-          <button onclick="downloadAndZip()">Download and Zip</button>
-
-          <p id="counter">Total Articles: 0</p>
-          <p id="tokenCounter">Total Tokens: 0</p>
-
-          <div class="d-none justify-content-center align-items-center" id="loadingSection">
-            <div class="spinner-border text-primary" role="status" style="margin-right: 10px;">
-              <span class="sr-only"></span>
-
-            </div>
-            Loading...
-          </div>
-        </center>
-      </div>
-      <hr>
     </form>
+    <hr>
+    <div class="row">
+      <center>
+        <button id="aiTitle" class="btn btn-sm btn-info text-white">AI Title</button>
+        <button id="aiHeading" class="btn btn-sm btn-info text-white">AI Heading</button>
+        <button id="aiArticle" class="btn btn-sm btn-info text-white">AI Article</button>
+
+        <button onclick="downloadAndZip()">Download and Zip</button>
+
+        <p id="counter">Total Articles: 0</p>
+        <p id="tokenCounter">Total Tokens: 0</p>
+
+        <div class="d-none justify-content-center align-items-center" id="loadingSection">
+          <div class="spinner-border text-primary" role="status" style="margin-right: 10px;">
+            <span class="sr-only"></span>
+
+          </div>
+          Loading...
+        </div>
+      </center>
+    </div>
+    <hr>
 
 
     <div id="fileContent" class="row">
@@ -246,7 +247,7 @@
             articleCount++;
             tokenCount += lines[i].split(' ').length;
           } else if (lines[i].trim() !== '') {
-            document.getElementById(`subHeading${articleCount - 1}`).value = document.getElementById(`subHeading${articleCount - 1}`).value + (i != 0 ? '' : '\n') + lines[i].trim();
+            document.getElementById(`subHeading${articleCount - 1}`).value = document.getElementById(`subHeading${articleCount - 1}`).value + lines[i].trim() + '\n';
             // textarea.value += '\n' + lines[i].trim();
             tokenCount += lines[i].split(' ').length;
           }
@@ -417,7 +418,7 @@
           })
           .then(data => {
             if (data.choices && data.choices[0]) {
-              document.getElementById("article" + i).value = data.choices[0].text.trim();
+              document.getElementById("article" + i).value = title + '\n\n' + data.choices[0].text.trim();
               document.getElementById("errorMessage").innerText = ''; // Clear any previous error message
             } else {
               throw new Error('Error: data.choices is undefined');
