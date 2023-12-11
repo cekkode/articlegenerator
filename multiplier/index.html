@@ -221,8 +221,9 @@ async function gatherTitleTag() {
 
   for (let url of urls) {
     if (url.trim() !== '') {
-      const response = await fetch(`https://cors-anywhere.herokuapp.com/https://textance.herokuapp.com/title/${url}`);
-      const title = await response.text();
+      const response = await fetch(`http://tools.buzzstream.com/meta-tag-extractor?url=${encodeURIComponent(url)}`);
+      const data = await response.json();
+      const title = data.title;
       modifier2.value += title + '\n';
     } else {
       modifier2.value += '\n';
