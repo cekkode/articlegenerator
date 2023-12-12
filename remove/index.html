@@ -30,6 +30,7 @@
         </div>
         <div class="textarea-container">
             <textarea id="results" placeholder="Results" readonly></textarea>
+            <button onclick="moveResultsToPasteHere()">Move to Left</button>
             <button onclick="removeDuplicates()">Remove Duplicates</button>
         </div>
     </div>
@@ -81,6 +82,13 @@
                 removeField.style.display = 'block';
             }
         });
+
+        // Move results to pastehere
+        function moveResultsToPasteHere() {
+            var results = document.getElementById('results').value;
+            document.getElementById('pasteHere').value = results;
+            document.getElementById('results').value = '';
+        }
     </script>
 </body>
 </html>
