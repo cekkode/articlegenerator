@@ -72,7 +72,7 @@
                     results.push(lines[i].replace(remove, replaceWith));
                 } else if (option === 'notContaining' && !lines[i].includes(remove)) {
                     results.push(lines[i]);
-                } else if (option === 'startFrom' && lines[i].startsWith(remove)) {
+                } else if (option === 'startFrom' && lines[i].includes(remove)) {
                     results.push(lines[i].replace(remove, replaceWith));
                 }
             }
