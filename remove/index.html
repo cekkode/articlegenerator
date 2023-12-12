@@ -16,6 +16,7 @@
     </style>
 </head>
 <body>
+    <h1>Keyword Remove Tools</h1>
     <select id="option">
         <option value="containing">Containing</option>
         <option value="notContaining">Not Containing</option>
@@ -23,6 +24,7 @@
         <option value="startFrom">Start From</option>
     </select>
     <input type="text" id="remove" placeholder="Your Text">
+    <input type="text" id="replaceWith" placeholder="Replace With">
     <div class="container">
         <div class="textarea-container">
             <textarea id="pasteHere" placeholder="Paste here"></textarea>
@@ -41,6 +43,7 @@
         // Main process
         function process() {
             var remove = document.getElementById('remove').value;
+            var replaceWith = document.getElementById('replaceWith').value;
             var option = document.getElementById('option').value;
             var pasteHere = document.getElementById('pasteHere').value;
             var lines = pasteHere.split('\n');
@@ -61,6 +64,10 @@
                     var index = lines[i].indexOf(remove);
                     results.push(lines[i].substring(0, index));
                 }
+
+                if (replaceWith) {
+                    results[i] = results[i].replace(remove, replaceWith);
+                }
             }
 
             document.getElementById('results').value = results.join('\n');
@@ -80,7 +87,7 @@
             if (this.value === 'duplicateLines') {
                 removeField.style.display = 'none';
             } else {
-                removeField.style.display = 'block';
+                removeField.style.display = 'inline';
             }
         });
 
