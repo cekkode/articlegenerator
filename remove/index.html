@@ -30,8 +30,9 @@
         </div>
         <div class="textarea-container">
             <textarea id="results" placeholder="Results" readonly></textarea>
-            <button onclick="moveResultsToPasteHere()">Move to Left</button>
-            <button onclick="removeDuplicates()">Remove Duplicates</button>
+            <button onclick="moveResultsToPasteHere()"> ⬅️ </button>
+            <button onclick="copyResultsToClipboard()"> 📋 </button>
+            <button onclick="removeDuplicates()"> 🗑️ Duplicates</button>
         </div>
     </div>
     
@@ -88,6 +89,13 @@
             var results = document.getElementById('results').value;
             document.getElementById('pasteHere').value = results;
             document.getElementById('results').value = '';
+        }
+
+        // Copy results to clipboard
+        function copyResultsToClipboard() {
+            var results = document.getElementById('results');
+            results.select();
+            document.execCommand('copy');
         }
     </script>
 </body>
