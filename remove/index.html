@@ -17,6 +17,7 @@
 </head>
 <body>
     <h1>Keyword Remove Tools</h1>
+    <smallest>version 1.00</smallest>
     <select id="option">
         <option value="containing">Containing</option>
         <option value="notContaining">Not Containing</option>
@@ -29,6 +30,7 @@
         <div class="textarea-container">
             <textarea id="pasteHere" placeholder="Paste here"></textarea>
             <button onclick="process()">Remove</button>
+            <button onclick="refresh()"> 🔄 </button>
         </div>
         <div class="textarea-container">
             <textarea id="results" placeholder="Results" readonly></textarea>
@@ -40,6 +42,13 @@
     
 
     <script>
+       // Load data from local storage
+        window.onload = function() {
+            document.getElementById('remove').value = localStorage.getItem('remove') || '';
+            document.getElementById('replaceWith').value = localStorage.getItem('replaceWith') || '';
+            document.getElementById('pasteHere').value = localStorage.getItem('pasteHere') || '';
+        }
+
         // Main process
         function process() {
             var remove = document.getElementById('remove').value;
@@ -66,6 +75,24 @@
             }
 
             document.getElementById('results').value = results.join('\n');
+
+            // Save data to local storage
+            localStorage.setItem('remove', remove);
+            localStorage.setItem('replaceWith', replaceWith);
+            localStorage.setItem('pasteHere', pasteHere);
+        }
+
+        function refresh() {
+            // Clear input fields
+            document.getElementById('remove').value = '';
+            document.getElementById('replaceWith').value = '';
+            document.getElementById('pasteHere').value = '';
+            document.getElementById('results').value = '';
+
+            // Clear local storage
+            localStorage.removeItem('remove');
+            localStorage.removeItem('replaceWith');
+            localStorage.removeItem('pasteHere');
         }
 
         // Remove Duplicate
