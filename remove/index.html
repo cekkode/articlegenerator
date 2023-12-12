@@ -56,17 +56,12 @@
             }
 
             for (var i = 0; i < lines.length; i++) {
-                if (option === 'containing' && !lines[i].includes(remove)) {
+                if (option === 'containing' && lines[i].includes(remove)) {
+                    results.push(lines[i].replace(remove, replaceWith));
+                } else if (option === 'notContaining' && !lines[i].includes(remove)) {
                     results.push(lines[i]);
-                } else if (option === 'notContaining' && lines[i].includes(remove)) {
-                    results.push(lines[i]);
-                } else if (option === 'startFrom' && lines[i].includes(remove)) {
-                    var index = lines[i].indexOf(remove);
-                    results.push(lines[i].substring(0, index));
-                }
-
-                if (replaceWith) {
-                    results[i] = results[i].replace(remove, replaceWith);
+                } else if (option === 'startFrom' && lines[i].startsWith(remove)) {
+                    results.push(lines[i].replace(remove, replaceWith));
                 }
             }
 
