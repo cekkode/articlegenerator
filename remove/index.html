@@ -35,6 +35,7 @@
     
 
     <script>
+        // Main process
         function process() {
             var remove = document.getElementById('remove').value;
             var option = document.getElementById('option').value;
@@ -58,12 +59,23 @@
             document.getElementById('results').value = results.join('\n');
         }
 
+        // Remove Duplicate
         function removeDuplicates() {
             var results = document.getElementById('results').value;
             var lines = results.split('\n');
             var uniqueLines = [...new Set(lines)];
             document.getElementById('results').value = uniqueLines.join('\n');
         }
+
+        // When Duplicate selected, hide text line
+        document.getElementById('option').addEventListener('change', function() {
+            var removeField = document.getElementById('remove');
+            if (this.value === 'duplicateLines') {
+                removeField.style.display = 'none';
+            } else {
+                removeField.style.display = 'block';
+            }
+        });
     </script>
 </body>
 </html>
