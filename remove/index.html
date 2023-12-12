@@ -17,10 +17,15 @@
         h1 > small {
             font-size: 10px;
         }
+
+        p#resultsCount {
+            font-size: 10px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
-    <h1>Keyword Remove Tools <small>version 1.02</small></h1>
+    <h1>Keyword Remove Tools <small>version 1.03</small></h1>
     <select id="option">
         <option value="containing">Containing</option>
         <option value="notContaining">Not Containing</option>
@@ -31,12 +36,14 @@
     <input type="text" id="replaceWith" placeholder="Replace With">
     <div class="container">
         <div class="textarea-container">
-            <textarea id="pasteHere" placeholder="Paste here"></textarea>
+            <textarea id="pasteHere" placeholder="Paste here" oninput="updateLineCount('pasteHere', 'pasteHereCount')"></textarea>
+            <p id="pasteHereCount">0 lines</p>
             <button onclick="process()">Remove</button>
             <button onclick="refresh()"> 🔄 </button>
         </div>
         <div class="textarea-container">
-            <textarea id="results" placeholder="Results" readonly></textarea>
+            <textarea id="results" placeholder="Results" readonly oninput="updateLineCount('results', 'resultsCount')"></textarea>
+            <p id="resultsCount">0 lines</p>
             <button onclick="moveResultsToPasteHere()"> ⬅️ </button>
             <button onclick="copyResultsToClipboard()"> 📋 </button>
             <button onclick="removeDuplicates()"> 🗑️ Duplicates</button>
@@ -45,6 +52,13 @@
     
 
     <script>
+        // update line count
+        function updateLineCount(textareaId, countId) {
+            var textarea = document.getElementById(textareaId).value;
+            var lines = textarea.split('\n');
+            document.getElementById(countId).innerText = lines.length + ' lines';
+        }
+
        // Load data from local storage
         window.onload = function() {
             document.getElementById('remove').value = localStorage.getItem('remove') || '';
@@ -79,6 +93,7 @@
             }
 
             document.getElementById('results').value = results.join('\n');
+            updateLineCount('results', 'resultsCount');
 
             // Save data to local storage
             localStorage.setItem('remove', remove);
@@ -93,6 +108,9 @@
             document.getElementById('pasteHere').value = '';
             document.getElementById('results').value = '';
 
+            updateLineCount('pasteHere', 'pasteHereCount');
+            updateLineCount('results', 'resultsCount');
+
             // Clear local storage
             localStorage.removeItem('remove');
             localStorage.removeItem('replaceWith');
@@ -105,6 +123,7 @@
             var lines = results.split('\n');
             var uniqueLines = [...new Set(lines)];
             document.getElementById('results').value = uniqueLines.join('\n');
+            updateLineCount('results', 'resultsCount');
         }
 
         // When Duplicate selected, hide text line
@@ -122,6 +141,8 @@
             var results = document.getElementById('results').value;
             document.getElementById('pasteHere').value = results;
             document.getElementById('results').value = '';
+            updateLineCount('pasteHere', 'pasteHereCount');
+            updateLineCount('results', 'resultsCount');
         }
 
         // Copy results to clipboard
