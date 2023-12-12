@@ -20,7 +20,7 @@
     </style>
 </head>
 <body>
-    <h1>Keyword Remove Tools <small>version 1.01</small></h1>
+    <h1>Keyword Remove Tools <small>version 1.02</small></h1>
     <select id="option">
         <option value="containing">Containing</option>
         <option value="notContaining">Not Containing</option>
@@ -73,7 +73,8 @@
                 } else if (option === 'notContaining' && !lines[i].includes(remove)) {
                     results.push(lines[i]);
                 } else if (option === 'startFrom' && lines[i].includes(remove)) {
-                    results.push(lines[i].replace(remove, replaceWith));
+                    var index = lines[i].indexOf(remove);
+                    results.push(lines[i].substring(0, index) + replaceWith);
                 }
             }
 
