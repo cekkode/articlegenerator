@@ -29,7 +29,7 @@
     </style>
 </head>
 <body>
-    <h1>Keyword Remove Tools <small>version 1.03</small></h1>
+    <h1>Keyword Remove Tools <small>version 1.04</small></h1>
     <select id="option">
         <option value="containing">Containing</option>
         <option value="notContaining">Not Containing</option>
@@ -38,6 +38,7 @@
     </select>
     <input type="text" id="remove" placeholder="Your Text">
     <input type="text" id="replaceWith" placeholder="Replace With">
+    <input type="checkbox" id="upperCaseCheck" onchange="upperCaseChange()"> 🔠 
     <div class="container">
         <div class="textarea-container">
             <textarea id="pasteHere" placeholder="Paste here" oninput="updateLineCount('pasteHere', 'pasteHereCount')"></textarea>
@@ -68,6 +69,17 @@
             document.getElementById('remove').value = localStorage.getItem('remove') || '';
             document.getElementById('replaceWith').value = localStorage.getItem('replaceWith') || '';
             document.getElementById('pasteHere').value = localStorage.getItem('pasteHere') || '';
+        }
+
+        // Turn to uppercase checkbox
+        function upperCaseChange() {
+            var checkBox = document.getElementById("upperCaseCheck");
+            var replaceWith = document.getElementById("replaceWith");
+            if (checkBox.checked == true){
+                replaceWith.value = replaceWith.value.toUpperCase();
+            } else {
+                replaceWith.value = replaceWith.value.toLowerCase();
+            }
         }
 
         // Main process
