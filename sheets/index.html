@@ -6,27 +6,25 @@
 </head>
 <body>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
+    <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
-    <select id="columnTitle"></select>
+    <select id="columnTitle" style="display: none;"></select>
 
     <script>
         function parseSheet() {
             var url = document.getElementById('sheetUrl').value;
+            var sheetName = document.getElementById('sheetName').value;
             var sheetId = url.split('/')[5];
-            var sheetUrl = `https://spreadsheets.google.com/feeds/cells/${sheetId}/1/public/full?alt=json`;
+            var gid = url.split('gid=')[1];
+            var sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
 
-            $.getJSON(sheetUrl, function(data) {
-                var entry = data.feed.entry;
-                var columnTitles = [];
-                var i = 0;
-
-                while(entry[i].gs$cell.row == '1') {
-                    columnTitles.push(entry[i].gs$cell.$t);
-                    i++;
-                }
+            $.get(sheetUrl, function(data) {
+                var lines = data.split("\n");
+                var columnTitles = lines[0].split(",");
 
                 var select = document.getElementById('columnTitle');
                 select.innerHTML = "";
+                select.style.display = "block";
 
                 for(var j = 0; j < columnTitles.length; j++) {
                     var option = document.createElement('option');
