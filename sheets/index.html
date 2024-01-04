@@ -13,7 +13,6 @@
         }
         #controls {
             width: 100%;
-            margin: 10px;
         }
 
         #controls div {
@@ -29,11 +28,12 @@
 
         #showContent {
             width: auto;
+            max-height: fit-content;
         }
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.046</h1>
+    <h1>Google Sheets Generator ver 1.047</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -47,8 +47,8 @@
             <label for="promptColumn" id="promptLabel">Prompt Column:</label>
             <select id="promptColumn"></select>
         </div>
+        <button id="showContent" onclick="showContent()">👀 Content</button>
     </div>
-    <button id="showContent" onclick="showContent()">👀 Content</button>
     <textarea id="outputContent" style="display: none;"></textarea>
     <textarea id="promptContent" style="display: none;"></textarea>
 
