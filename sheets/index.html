@@ -12,19 +12,24 @@
             margin-right: 10px;
         }
         #controls {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             width: 90%;
             margin: 10px auto;
         }
+
+        #controls div {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+
         #outputColumn, #promptColumn, #showContent {
-            width: 30%;
+            width: 100%;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.042</h1>
+    <h1>Google Sheets Generator ver 1.043</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
