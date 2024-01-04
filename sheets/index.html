@@ -3,6 +3,7 @@
 <head>
     <title>Google Sheets Parser</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
     <style>
         textarea {
             width: 45%;
@@ -10,15 +11,16 @@
             float: left;
             margin-right: 10px;
         }
-        #outputColumn, #promptColumn {
+        #outputColumn, #promptColumn, #showContent {
             width: 45%;
             float: left;
             margin-right: 10px;
+            vertical-align: top;
         }
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.02</h1>
+    <h1>Google Sheets Generator ver 1.0</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -49,8 +51,9 @@
             var sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
 
             $.get(sheetUrl, function(data) {
-                lines = data.split("\n");
-                var columnTitles = lines[0].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                var results = Papa.parse(data, {header: true});
+                lines = results.data;
+                var columnTitles = Object.keys(lines[0]);
 
                 var outputSelect = document.getElementById('outputColumn');
                 var promptSelect = document.getElementById('promptColumn');
@@ -78,15 +81,14 @@
         }
 
         function showContent() {
-            var outputIndex = document.getElementById('outputColumn').selectedIndex;
-            var promptIndex = document.getElementById('promptColumn').selectedIndex;
+            var outputIndex = document.getElementById('outputColumn').value;
+            var promptIndex = document.getElementById('promptColumn').value;
             var outputContent = "";
             var promptContent = "";
 
-            for(var i = 1; i < lines.length; i++) {
-                var cells = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                outputContent += cells[outputIndex] + "\n";
-                promptContent += cells[promptIndex] + "\n";
+            for(var i = 0; i < lines.length; i++) {
+                outputContent += lines[i][outputIndex] + "\n";
+                promptContent += lines[i][promptIndex] + "\n";
             }
 
             document.getElementById('outputContent').style.display = "block";
