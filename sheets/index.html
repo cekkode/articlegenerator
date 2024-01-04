@@ -9,9 +9,14 @@
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
     <p id="loading" style="display: none;">Loading...</p>
-    <select id="columnTitle" style="display: none;"></select>
+    <select id="outputColumn" style="display: none;"></select>
+    <select id="promptColumn" style="display: none;"></select>
+    <button id="showContent" style="display: none;" onclick="showContent()">👀 Content</button>
+    <textarea id="outputContent" style="display: none;"></textarea>
+    <textarea id="promptContent" style="display: none;"></textarea>
 
     <script>
+        var lines = [];
         function parseSheet() {
             var url = document.getElementById('sheetUrl').value;
             var sheetName = document.getElementById('sheetName').value;
@@ -28,23 +33,48 @@
             var sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
 
             $.get(sheetUrl, function(data) {
-                var lines = data.split("\n");
+                lines = data.split("\n");
                 var columnTitles = lines[0].split(",");
 
-                var select = document.getElementById('columnTitle');
-                select.innerHTML = "";
-                select.style.display = "block";
+                var outputSelect = document.getElementById('outputColumn');
+                var promptSelect = document.getElementById('promptColumn');
+                outputSelect.innerHTML = "";
+                promptSelect.innerHTML = "";
+                outputSelect.style.display = "block";
+                promptSelect.style.display = "block";
+                document.getElementById('showContent').style.display = "block";
 
                 for(var j = 0; j < columnTitles.length; j++) {
-                    var option = document.createElement('option');
-                    option.text = columnTitles[j];
-                    select.add(option);
+                    var option1 = document.createElement('option');
+                    var option2 = document.createElement('option');
+                    option1.text = columnTitles[j];
+                    option2.text = columnTitles[j];
+                    outputSelect.add(option1);
+                    promptSelect.add(option2);
                 }
                 document.getElementById('loading').style.display = 'none';
             }).fail(function() {
                 alert('Failed to fetch data. Please check the URL and Sheet Name.');
                 document.getElementById('loading').style.display = 'none';
             });
+        }
+
+        function showContent() {
+            var outputIndex = document.getElementById('outputColumn').selectedIndex;
+            var promptIndex = document.getElementById('promptColumn').selectedIndex;
+            var outputContent = "";
+            var promptContent = "";
+
+            for(var i = 1; i < lines.length; i++) {
+                var cells = lines[i].split(",");
+                outputContent += cells[outputIndex] + "\n";
+                promptContent += cells[promptIndex] + "\n";
+            }
+
+            document.getElementById('outputContent').style.display = "block";
+            document.getElementById('promptContent').style.display = "block";
+            document.getElementById('outputContent').value = outputContent;
+            document.getElementById('promptContent').value = promptContent;
         }
     </script>
 </body>
