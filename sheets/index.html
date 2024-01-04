@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Sheets Parser</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
+    <button onclick="parseSheet()">Get</button>
+    <select id="columnTitle"></select>
+
+    <script>
+        function parseSheet() {
+            var url = document.getElementById('sheetUrl').value;
+            var sheetId = url.split('/')[5];
+            var sheetUrl = `https://spreadsheets.google.com/feeds/cells/${sheetId}/1/public/full?alt=json`;
+
+            $.getJSON(sheetUrl, function(data) {
+                var entry = data.feed.entry;
+                var columnTitles = [];
+                var i = 0;
+
+                while(entry[i].gs$cell.row == '1') {
+                    columnTitles.push(entry[i].gs$cell.$t);
+                    i++;
+                }
+
+                var select = document.getElementById('columnTitle');
+                select.innerHTML = "";
+
+                for(var j = 0; j < columnTitles.length; j++) {
+                    var option = document.createElement('option');
+                    option.text = columnTitles[j];
+                    select.add(option);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
