@@ -3,14 +3,24 @@
 <head>
     <title>Google Sheets Parser</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        textarea {
+            width: 45%;
+            height: 200px;
+            float: left;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.0</h1>
+    <h1>Google Sheets Generator ver 1.01</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
     <p id="loading" style="display: none;">Loading...</p>
+    <label for="outputColumn">Output Column:</label>
     <select id="outputColumn" style="display: none;"></select>
+    <label for="promptColumn">Prompt Column:</label>
     <select id="promptColumn" style="display: none;"></select>
     <button id="showContent" style="display: none;" onclick="showContent()">👀 Content</button>
     <textarea id="outputContent" style="display: none;"></textarea>
@@ -67,7 +77,7 @@
             var promptContent = "";
 
             for(var i = 1; i < lines.length; i++) {
-                var cells = lines[i].split(",");
+                var cells = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 outputContent += cells[outputIndex] + "\n";
                 promptContent += cells[promptIndex] + "\n";
             }
