@@ -8,10 +8,12 @@
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
+    <p id="loading" style="display: none;">Loading...</p>
     <select id="columnTitle" style="display: none;"></select>
 
     <script>
         function parseSheet() {
+            document.getElementById('loading').style.display = 'block';
             var url = document.getElementById('sheetUrl').value;
             var sheetName = document.getElementById('sheetName').value;
             var sheetId = url.split('/')[5];
@@ -31,6 +33,10 @@
                     option.text = columnTitles[j];
                     select.add(option);
                 }
+                document.getElementById('loading').style.display = 'none';
+            }).fail(function() {
+                alert('Failed to fetch data. Please check the URL and Sheet Name.');
+                document.getElementById('loading').style.display = 'none';
             });
         }
     </script>
