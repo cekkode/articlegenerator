@@ -10,17 +10,22 @@
             float: left;
             margin-right: 10px;
         }
+        #outputColumn, #promptColumn {
+            width: 45%;
+            float: left;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.01</h1>
+    <h1>Google Sheets Generator ver 1.02</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
     <p id="loading" style="display: none;">Loading...</p>
-    <label for="outputColumn">Output Column:</label>
+    <label for="outputColumn" id="outputLabel" style="display: none;">Output Column:</label>
     <select id="outputColumn" style="display: none;"></select>
-    <label for="promptColumn">Prompt Column:</label>
+    <label for="promptColumn" id="promptLabel" style="display: none;">Prompt Column:</label>
     <select id="promptColumn" style="display: none;"></select>
     <button id="showContent" style="display: none;" onclick="showContent()">👀 Content</button>
     <textarea id="outputContent" style="display: none;"></textarea>
@@ -45,7 +50,7 @@
 
             $.get(sheetUrl, function(data) {
                 lines = data.split("\n");
-                var columnTitles = lines[0].split(",");
+                var columnTitles = lines[0].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
 
                 var outputSelect = document.getElementById('outputColumn');
                 var promptSelect = document.getElementById('promptColumn');
@@ -53,6 +58,8 @@
                 promptSelect.innerHTML = "";
                 outputSelect.style.display = "block";
                 promptSelect.style.display = "block";
+                document.getElementById('outputLabel').style.display = "block";
+                document.getElementById('promptLabel').style.display = "block";
                 document.getElementById('showContent').style.display = "block";
 
                 for(var j = 0; j < columnTitles.length; j++) {
