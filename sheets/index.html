@@ -65,11 +65,6 @@
                 var promptSelect = document.getElementById('promptColumn');
                 outputSelect.innerHTML = "";
                 promptSelect.innerHTML = "";
-                outputSelect.style.display = "block";
-                promptSelect.style.display = "block";
-                document.getElementById('outputLabel').style.display = "block";
-                document.getElementById('promptLabel').style.display = "block";
-                document.getElementById('showContent').style.display = "block";
 
                 for(var j = 0; j < columnTitles.length; j++) {
                     var option1 = document.createElement('option');
@@ -79,6 +74,7 @@
                     outputSelect.add(option1);
                     promptSelect.add(option2);
                 }
+                document.getElementById('controls').style.display = 'flex';
                 document.getElementById('loading').style.display = 'none';
             }).fail(function() {
                 alert('Failed to fetch data. Please check the URL and Sheet Name.');
