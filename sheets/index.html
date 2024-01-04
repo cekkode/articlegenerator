@@ -11,25 +11,31 @@
             float: left;
             margin-right: 10px;
         }
+        #controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            margin: 10px auto;
+        }
         #outputColumn, #promptColumn, #showContent {
-            width: 45%;
-            float: left;
-            margin-right: 10px;
-            vertical-align: top;
+            width: 30%;
         }
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.03</h1>
+    <h1>Google Sheets Generator ver 1.04</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
     <p id="loading" style="display: none;">Loading...</p>
-    <label for="outputColumn" id="outputLabel" style="display: none;">Output Column:</label>
-    <select id="outputColumn" style="display: none;"></select>
-    <label for="promptColumn" id="promptLabel" style="display: none;">Prompt Column:</label>
-    <select id="promptColumn" style="display: none;"></select>
-    <button id="showContent" style="display: none;" onclick="showContent()">👀 Content</button>
+    <div id="controls" style="display: none;">
+        <label for="outputColumn" id="outputLabel">Output Column:</label>
+        <select id="outputColumn"></select>
+        <label for="promptColumn" id="promptLabel">Prompt Column:</label>
+        <select id="promptColumn"></select>
+        <button id="showContent" onclick="showContent()">👀 Content</button>
+    </div>
     <textarea id="outputContent" style="display: none;"></textarea>
     <textarea id="promptContent" style="display: none;"></textarea>
 
