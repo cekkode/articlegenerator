@@ -13,9 +13,16 @@
 
     <script>
         function parseSheet() {
-            document.getElementById('loading').style.display = 'block';
             var url = document.getElementById('sheetUrl').value;
             var sheetName = document.getElementById('sheetName').value;
+            var urlRegex = /^https:\/\/docs\.google\.com\/spreadsheets\/d\/(.+)\/edit#gid=(.+)$/;
+
+            if (!urlRegex.test(url)) {
+                alert('Invalid URL. The correct format is: https://docs.google.com/spreadsheets/d/{sheetId}/edit#gid={gid}');
+                return;
+            }
+
+            document.getElementById('loading').style.display = 'block';
             var sheetId = url.split('/')[5];
             var gid = url.split('gid=')[1];
             var sheetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
