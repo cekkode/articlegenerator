@@ -31,10 +31,21 @@
             width: auto;
             max-height: fit-content;
         }
+
+        #outputContent, #promptContent {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.057</h1>
+    <h1>Google Sheets Generator ver 1.058</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -50,8 +61,8 @@
         </div>
         <button id="showContent" onclick="showContent()">👀 Content</button>
     </div>
-    <textarea id="outputContent" style="display: none;"></textarea>
-    <textarea id="promptContent" style="display: none;"></textarea>
+    <div id="outputContent" style="display: none;"></div>
+    <div id="promptContent" style="display: none;"></div>
 
     <script async defer src="https://apis.google.com/js/api.js"
     onload="this.onload=function(){};handleClientLoad()"
@@ -126,8 +137,8 @@
             var promptContent = "";
 
             for(var i = 1; i < lines.length; i++) {
-                outputContent += lines[i][outputIndex] + "<hr>";
-                promptContent += lines[i][promptIndex] + "<hr>";
+                outputContent += "<p>" + lines[i][outputIndex] + "</p><hr>";
+                promptContent += "<p>" + lines[i][promptIndex] + "</p><hr>";
             }
 
             document.getElementById('outputContent').style.display = "block";
@@ -135,6 +146,14 @@
             document.getElementById('outputContent').innerHTML = outputContent;
             document.getElementById('promptContent').innerHTML = promptContent;
         }
+
+        document.getElementById('outputContent').addEventListener('click', function() {
+            window.getSelection().selectAllChildren(this);
+        });
+
+        document.getElementById('promptContent').addEventListener('click', function() {
+            window.getSelection().selectAllChildren(this);
+        });
     </script>
 </body>
 </html>
