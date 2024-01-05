@@ -34,7 +34,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.056</h1>
+    <h1>Google Sheets Generator ver 1.057</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -87,7 +87,7 @@
 
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: sheetId,
-                range: sheetName + '!A1:Z1000' // Adjust the range as needed
+                range: sheetName + '!A1:Z' // Adjust the range as needed
             }).then(function(response) {
                 var range = response.result;
                 if (range.values.length > 0) {
