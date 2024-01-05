@@ -37,7 +37,7 @@
     <h1>Google Sheets Generator ver 1.053</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
-    <button onclick="parseSheet()">Get</button>
+    <button onclick="handleClientLoad()">Get</button>
     <p id="loading" style="display: none;">Loading...</p>
     <div id="controls" style="display: none;">
         <div>
@@ -53,8 +53,25 @@
     <textarea id="outputContent" style="display: none;"></textarea>
     <textarea id="promptContent" style="display: none;"></textarea>
 
+    <script async defer src="https://apis.google.com/js/api.js"
+    onload="this.onload=function(){};handleClientLoad()"
+    onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+
     <script>
         var lines = [];
+        function handleClientLoad() {
+            gapi.load('client:auth2', initClient);
+        }
+
+        function initClient() {
+            gapi.client.init({
+                apiKey: 'AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo',
+                discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
+            }).then(function () {
+                parseSheet();
+            });
+        }
         function parseSheet() {
             var url = document.getElementById('sheetUrl').value;
             var sheetName = document.getElementById('sheetName').value;
@@ -69,47 +86,37 @@
             var sheetId = url.split('/')[5];
             var gid = url.split('gid=')[1];
 
-            gapi.load('client:auth2', initClient);
+            gapi.client.sheets.spreadsheets.values.get({
+                spreadsheetId: sheetId,
+                range: sheetName
+            }).then(function(response) {
+                var range = response.result;
+                if (range.values.length > 0) {
+                    lines = range.values;
+                    var columnTitles = lines[0];
 
-            function initClient() {
-                gapi.client.init({
-                    apiKey: 'AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo',
-                    discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
-                }).then(function () {
-                    gapi.client.sheets.spreadsheets.values.get({
-                        spreadsheetId: sheetId,
-                        range: sheetName
-                    }).then(function(response) {
-                        var range = response.result;
-                        if (range.values.length > 0) {
-                            lines = range.values;
-                            var columnTitles = lines[0];
+                    var outputSelect = document.getElementById('outputColumn');
+                    var promptSelect = document.getElementById('promptColumn');
+                    outputSelect.innerHTML = "";
+                    promptSelect.innerHTML = "";
 
-                            var outputSelect = document.getElementById('outputColumn');
-                            var promptSelect = document.getElementById('promptColumn');
-                            outputSelect.innerHTML = "";
-                            promptSelect.innerHTML = "";
-
-                            for(var j = 0; j < columnTitles.length; j++) {
-                                var option1 = document.createElement('option');
-                                var option2 = document.createElement('option');
-                                option1.text = columnTitles[j];
-                                option2.text = columnTitles[j];
-                                outputSelect.add(option1);
-                                promptSelect.add(option2);
-                            }
-                            document.getElementById('controls').style.display = 'flex';
-                            document.getElementById('loading').style.display = 'none';
-                        } else {
-                            console.log('No data found.');
-                        }
-                    }, function(response) {
-                        console.error('Error: ' + response.result.error.message);
-                    });
-                });
-            }
+                    for(var j = 0; j < columnTitles.length; j++) {
+                        var option1 = document.createElement('option');
+                        var option2 = document.createElement('option');
+                        option1.text = columnTitles[j];
+                        option2.text = columnTitles[j];
+                        outputSelect.add(option1);
+                        promptSelect.add(option2);
+                    }
+                    document.getElementById('controls').style.display = 'flex';
+                    document.getElementById('loading').style.display = 'none';
+                } else {
+                    console.log('No data found.');
+                }
+            }, function(response) {
+                console.error('Error: ' + response.result.error.message);
+            });
         }
-
         function showContent() {
             var outputIndex = document.getElementById('outputColumn').value;
             var promptIndex = document.getElementById('promptColumn').value;
