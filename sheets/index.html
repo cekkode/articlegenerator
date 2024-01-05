@@ -34,7 +34,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.052</h1>
+    <h1>Google Sheets Generator ver 1.053</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -117,14 +117,14 @@
             var promptContent = "";
 
             for(var i = 0; i < lines.length; i++) {
-                outputContent += lines[i][outputIndex] + "\n---------------------------------\n";
-                promptContent += lines[i][promptIndex] + "\n---------------------------------\n";
+                outputContent += lines[i][outputIndex] + "<hr>";
+                promptContent += lines[i][promptIndex] + "<hr>";
             }
 
             document.getElementById('outputContent').style.display = "block";
             document.getElementById('promptContent').style.display = "block";
-            document.getElementById('outputContent').value = outputContent;
-            document.getElementById('promptContent').value = promptContent;
+            document.getElementById('outputContent').innerHTML = outputContent;
+            document.getElementById('promptContent').innerHTML = promptContent;
         }
     </script>
 </body>
