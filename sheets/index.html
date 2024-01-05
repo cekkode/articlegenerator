@@ -34,10 +34,10 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.054</h1>
+    <h1>Google Sheets Generator ver 1.055</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
-    <button onclick="handleClientLoad()">Get</button>
+    <button onclick="parseSheet()">Get</button>
     <p id="loading" style="display: none;">Loading...</p>
     <div id="controls" style="display: none;">
         <div>
@@ -68,10 +68,9 @@
             gapi.client.init({
                 apiKey: 'AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo',
                 discoveryDocs: ["https://sheets.googleapis.com/$discovery/rest?version=v4"],
-            }).then(function () {
-                parseSheet();
             });
         }
+
         function parseSheet() {
             var url = document.getElementById('sheetUrl').value;
             var sheetName = document.getElementById('sheetName').value;
@@ -117,6 +116,7 @@
                 console.error('Error: ' + response.result.error.message);
             });
         }
+
         function showContent() {
             var outputIndex = document.getElementById('outputColumn').value;
             var promptIndex = document.getElementById('promptColumn').value;
