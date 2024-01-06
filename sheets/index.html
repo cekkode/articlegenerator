@@ -60,7 +60,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.063</h1>
+    <h1>Google Sheets Generator ver 1.07</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -80,6 +80,7 @@
                 <option value="GEMINI">GEMINI</option>
                 <option value="CHATGPT">CHATGPT</option>
             </select>
+            <input type="text" id="apiKey" placeholder="API Key">
             <button id="generate" onclick="generate()">🤖 Generate</button>
         </div>
     </div>
@@ -172,11 +173,6 @@
             document.getElementById('aiModelContainer').style.display = "block"; // Show AI Model and Generate button
         }
 
-        function generate() {
-            var aiModel = document.getElementById('aiModel').value;
-            // Add your code here to use the selected AI model
-        }
-
         document.getElementById('outputContent').addEventListener('click', function() {
             window.getSelection().selectAllChildren(this);
         });
@@ -184,6 +180,130 @@
         document.getElementById('promptContent').addEventListener('click', function() {
             window.getSelection().selectAllChildren(this);
         });
+
+        async function generate() {
+            var aiModel = document.getElementById('aiModel').value;
+            var outputSelect = document.getElementById('outputColumn');
+            var promptSelect = document.getElementById('promptColumn');
+            var outputIndex = outputSelect.selectedIndex;
+            var promptIndex = promptSelect.selectedIndex;
+
+            for(var i = 1; i < lines.length; i++) {
+                if (!lines[i][outputIndex]) { // If output column is empty
+                    var prompt = lines[i][promptIndex];
+                    var output;
+                    if (aiModel === 'GEMINI') {
+                        output = await GEMINI(prompt);
+                    } else if (aiModel === 'CHATGPT') {
+                        output = await CHATGPT(prompt);
+                    }
+                    lines[i][outputIndex] = output;
+                }
+            }
+        }
+
+        function showApiKeyInput() {
+            var aiModel = document.getElementById('aiModel').value;
+            var apiKey = localStorage.getItem(aiModel + 'ApiKey');
+            document.getElementById('apiKey').value = apiKey || '';
+        }
+
+        document.getElementById('apiKey').addEventListener('input', function() {
+            var aiModel = document.getElementById('aiModel').value;
+            localStorage.setItem(aiModel + 'ApiKey', this.value);
+        });
+
+        async function GEMINI(prompt) {
+            if (!prompt) {
+                return 'Prompt is empty';
+            }
+
+            var apiKey = localStorage.getItem('GEMINI' + 'ApiKey');
+            var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+
+            var url = apiUrl + "?key=" + apiKey;
+
+            var headers = {
+                "Content-Type": "application/json"
+            };
+
+            var requestBody = {
+                "contents": [{
+                    "parts":[{
+                        "text": prompt}]}]
+            }
+
+            var options = {
+                "method": "POST",
+                "headers": headers,
+                "body": JSON.stringify(requestBody)
+            }
+
+            var response = await fetch(url, options);
+            var data = await response.json();
+
+            var output;
+            if (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+                output = data.candidates[0].content.parts[0].text;
+            } else {
+                output = 'No output returned from API';
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+
+            return output;
+        }
+
+        async function CHATGPT(prompt) {
+            if (!prompt) {
+                return 'Prompt is empty';
+            }
+
+            var systemMessage = "You're helpful content writer / Kamu adalah penulis konten yang bagus.";
+            var userMessage = prompt;
+
+            var apiKey = localStorage.getItem('CHATGPT' + 'ApiKey');
+            var apiUrl = "https://api.openai.com/v1/chat/completions";
+
+            var headers = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + apiKey
+            };
+
+            var requestBody = {
+                "model": "gpt-3.5-turbo",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": systemMessage
+                    },
+                    {
+                        "role": "user",
+                        "content": userMessage
+                    }
+                ]
+            }
+
+            var options = {
+                "method": "POST",
+                "headers": headers,
+                "body": JSON.stringify(requestBody)
+            }
+
+            var response = await fetch(apiUrl, options);
+            var data = await response.json();
+
+            var output;
+            if (data && data.choices && data.choices[0] && data.choices[0].message) {
+                output = data.choices[0].message.content;
+            } else {
+                output = 'No output returned from API';
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 20)); // 50 requests per second
+
+            return output;
+        }
     </script>
 </body>
 </html>
