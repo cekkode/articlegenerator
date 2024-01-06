@@ -55,11 +55,12 @@
             margin-block-end: 0em;
             margin-inline-start: 0px;
             margin-inline-end: 0px;
+            border-bottom: 1px dotted #ccc;
         }
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.061</h1>
+    <h1>Google Sheets Generator ver 1.062</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -153,8 +154,8 @@
             var promptContent = "";
 
             for(var i = 1; i < lines.length; i++) {
-                outputContent += "<p>" + lines[i][outputIndex] + "</p><hr>";
-                promptContent += "<p>" + lines[i][promptIndex] + "</p><hr>";
+                outputContent += "<p>" + lines[i][outputIndex] + "</p>";
+                promptContent += "<p>" + lines[i][promptIndex] + "</p>";
             }
 
             document.getElementById('outputContent').style.display = "block";
