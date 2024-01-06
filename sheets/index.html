@@ -20,6 +20,7 @@
             display: flex;
             flex-direction: column;
             margin-right: 10px;
+            justify-content: space-between;
         }
 
         #outputColumn, #promptColumn {
@@ -32,11 +33,16 @@
             max-height: fit-content;
         }
 
+        #contentContainer {
+            display: flex;
+            justify-content: space-between;
+        }
+
         #outputContent, #promptContent {
-            width: 100%;
+            width: 48%;
             height: 200px;
             border: 1px solid #ccc;
-            padding: 10px;
+            padding: 2px;
             box-sizing: border-box;
             overflow-y: auto;
             white-space: pre-wrap;
@@ -45,7 +51,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.058</h1>
+    <h1>Google Sheets Generator ver 1.059</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -61,8 +67,10 @@
         </div>
         <button id="showContent" onclick="showContent()">👀 Content</button>
     </div>
-    <div id="outputContent" style="display: none;"></div>
-    <div id="promptContent" style="display: none;"></div>
+    <div id="contentContainer">
+        <div id="outputContent" style="display: none;"></div>
+        <div id="promptContent" style="display: none;"></div>
+    </div>
 
     <script async defer src="https://apis.google.com/js/api.js"
     onload="this.onload=function(){};handleClientLoad()"
