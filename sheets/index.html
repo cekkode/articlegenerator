@@ -158,18 +158,29 @@
             var promptSelect = document.getElementById('promptColumn');
             var outputIndex = outputSelect.selectedIndex;
             var promptIndex = promptSelect.selectedIndex;
-            var outputContent = "";
-            var promptContent = "";
+
+            var outputContainer = document.getElementById('outputContent');
+            var promptContainer = document.getElementById('promptContent');
+
+            outputContainer.innerHTML = "";
+            promptContainer.innerHTML = "";
 
             for(var i = 1; i < lines.length; i++) {
-                outputContent += "<p>" + lines[i][outputIndex] + "</p>";
-                promptContent += "<p>" + lines[i][promptIndex] + "</p>";
+                var outputDiv = document.createElement('div');
+                var promptDiv = document.createElement('div');
+
+                outputDiv.innerText = lines[i][outputIndex];
+                promptDiv.innerText = lines[i][promptIndex];
+
+                outputDiv.style.borderBottom = "1px dotted #ccc";
+                promptDiv.style.borderBottom = "1px dotted #ccc";
+
+                outputContainer.appendChild(outputDiv);
+                promptContainer.appendChild(promptDiv);
             }
 
-            document.getElementById('outputContent').style.display = "block";
-            document.getElementById('promptContent').style.display = "block";
-            document.getElementById('outputContent').innerHTML = outputContent;
-            document.getElementById('promptContent').innerHTML = promptContent;
+            outputContainer.style.display = "block";
+            promptContainer.style.display = "block";
             document.getElementById('aiModelContainer').style.display = "block"; // Show AI Model and Generate button
         }
 
