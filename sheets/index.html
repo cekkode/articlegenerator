@@ -60,7 +60,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.062</h1>
+    <h1>Google Sheets Generator ver 1.063</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -75,6 +75,13 @@
             <select id="outputColumn"></select>
         </div>
         <button id="showContent" onclick="showContent()">👀 Content</button>
+        <div id="aiModelContainer" style="display: none;">
+            <select id="aiModel">
+                <option value="GEMINI">GEMINI</option>
+                <option value="CHATGPT">CHATGPT</option>
+            </select>
+            <button id="generate" onclick="generate()">🤖 Generate</button>
+        </div>
     </div>
     <div id="contentContainer">
         <div id="promptContent" style="display: none;"></div>
@@ -162,6 +169,12 @@
             document.getElementById('promptContent').style.display = "block";
             document.getElementById('outputContent').innerHTML = outputContent;
             document.getElementById('promptContent').innerHTML = promptContent;
+            document.getElementById('aiModelContainer').style.display = "block"; // Show AI Model and Generate button
+        }
+
+        function generate() {
+            var aiModel = document.getElementById('aiModel').value;
+            // Add your code here to use the selected AI model
         }
 
         document.getElementById('outputContent').addEventListener('click', function() {
