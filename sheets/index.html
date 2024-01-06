@@ -59,25 +59,25 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.06</h1>
+    <h1>Google Sheets Generator ver 1.061</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
     <p id="loading" style="display: none;">Loading...</p>
     <div id="controls" style="display: none;">
         <div>
-            <label for="outputColumn" id="outputLabel">Output Column:</label>
-            <select id="outputColumn"></select>
-        </div>
-        <div>
             <label for="promptColumn" id="promptLabel">Prompt Column:</label>
             <select id="promptColumn"></select>
+        </div>
+        <div>
+            <label for="outputColumn" id="outputLabel">Output Column:</label>
+            <select id="outputColumn"></select>
         </div>
         <button id="showContent" onclick="showContent()">👀 Content</button>
     </div>
     <div id="contentContainer">
-        <div id="outputContent" style="display: none;"></div>
         <div id="promptContent" style="display: none;"></div>
+        <div id="outputContent" style="display: none;"></div>
     </div>
 
     <script async defer src="https://apis.google.com/js/api.js"
