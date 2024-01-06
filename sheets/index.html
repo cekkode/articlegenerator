@@ -95,9 +95,28 @@
     </script>
 
     <script>
+        document.getElementById('sheetUrl').addEventListener('input', function() {
+            localStorage.setItem('sheetUrl', this.value);
+        });
+
+        document.getElementById('sheetName').addEventListener('input', function() {
+            localStorage.setItem('sheetName', this.value);
+        });
+
         var lines = [];
         function handleClientLoad() {
             gapi.load('client:auth2', initClient);
+
+            var storedSheetUrl = localStorage.getItem('sheetUrl');
+            var storedSheetName = localStorage.getItem('sheetName');
+
+            if (storedSheetUrl) {
+                document.getElementById('sheetUrl').value = storedSheetUrl;
+            }
+
+            if (storedSheetName) {
+                document.getElementById('sheetName').value = storedSheetName;
+            }
         }
 
         function initClient() {
@@ -123,7 +142,7 @@
 
             gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: sheetId,
-                range: sheetName + '!A1:Z' // Adjust the range as needed
+                range: sheetName + '!A1:ZZ' // Adjust the range as needed
             }).then(function(response) {
                 var range = response.result;
                 if (range.values.length > 0) {
@@ -218,6 +237,12 @@
             var apiKey = localStorage.getItem(aiModel + 'ApiKey');
             document.getElementById('apiKey').value = apiKey || '';
         }
+
+        document.getElementById('aiModel').addEventListener('change', function() {
+            var aiModel = this.value;
+            var apiKey = localStorage.getItem(aiModel + 'ApiKey');
+            document.getElementById('apiKey').value = apiKey || '';
+        });
 
         document.getElementById('apiKey').addEventListener('input', function() {
             var aiModel = document.getElementById('aiModel').value;
