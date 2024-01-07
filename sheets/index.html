@@ -60,7 +60,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.072</h1>
+    <h1>Google Sheets Generator ver 1.073</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -219,8 +219,8 @@
             var promptIndex = promptSelect.selectedIndex;
 
             for(var i = 1; i < lines.length; i++) {
-                if (!lines[i][outputIndex]) { // If output column is empty
-                    var prompt = lines[i][promptIndex];
+                var prompt = lines[i][promptIndex];
+                if (!lines[i][outputIndex] && !prompt.includes('EMPTY')) { // If output column is empty and prompt does not contain 'EMPTY'
                     var output;
                     if (aiModel === 'GEMINI') {
                         output = await GEMINI(prompt);
@@ -228,6 +228,7 @@
                         output = await CHATGPT(prompt);
                     }
                     lines[i][outputIndex] = output;
+                    showContent(); // Update the display after each line is processed
                 }
             }
         }
