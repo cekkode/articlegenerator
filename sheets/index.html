@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.075</h1>
+    <h1>Google Sheets Generator ver 1.076</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -289,7 +289,7 @@
             var outputIndex = outputSelect.selectedIndex;
             var sheetId = document.getElementById('sheetUrl').value.split('/')[5];
             var sheetName = document.getElementById('sheetName').value;
-            var range = sheetName + '!' + String.fromCharCode(65 + outputIndex) + '2:' + String.fromCharCode(65 + outputIndex); // Adjust the range as needed
+            var columnLetter = getColumnLetter(outputIndex + 1); // Adjust the range as needed
 
             var values = [];
             for(var i = 1; i < lines.length; i++) {
@@ -304,13 +304,23 @@
 
             gapi.client.sheets.spreadsheets.values.update({
                 spreadsheetId: sheetId,
-                range: range,
+                range: sheetName + '!' + columnLetter + '2:' + columnLetter,
                 valueInputOption: 'RAW',
                 resource: body
             }).then((response) => {
                 var result = response.result;
                 console.log(`${result.updatedCells} cells updated.`);
             });
+        }
+
+        function getColumnLetter(columnNumber) {
+            var temp, letter = '';
+            while (columnNumber > 0) {
+                temp = (columnNumber - 1) % 26;
+                letter = String.fromCharCode(temp + 65) + letter;
+                columnNumber = (columnNumber - temp - 1) / 26;
+            }
+            return letter;
         }
 
         async function GEMINI(prompt) {
