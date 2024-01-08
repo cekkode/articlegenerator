@@ -57,10 +57,31 @@
             margin-inline-end: 0px;
             border-bottom: 1px dotted #ccc;
         }
+
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% { -webkit-transform: rotate(0deg); }
+            100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.073</h1>
+    <h1>Google Sheets Generator ver 1.074</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -87,6 +108,10 @@
     <div id="contentContainer">
         <div id="promptContent" style="display: none;"></div>
         <div id="outputContent" style="display: none;"></div>
+    </div>
+    <div id="status"></div>
+    <div id="spinner" style="display: none;">
+        <div class="loader"></div>
     </div>
 
     <script async defer src="https://apis.google.com/js/api.js"
@@ -212,6 +237,9 @@
         });
 
         async function generate() {
+            showSpinner();
+            setStatus('Generating...');
+
             var aiModel = document.getElementById('aiModel').value;
             var outputSelect = document.getElementById('outputColumn');
             var promptSelect = document.getElementById('promptColumn');
@@ -231,6 +259,9 @@
                     showContent(); // Update the display after each line is processed
                 }
             }
+
+            hideSpinner();
+            setStatus('Done generating.');
         }
 
         function showApiKeyInput() {
@@ -340,6 +371,18 @@
             await new Promise(resolve => setTimeout(resolve, 20)); // 50 requests per second
 
             return output;
+        }
+
+        function showSpinner() {
+            document.getElementById('spinner').style.display = 'block';
+        }
+
+        function hideSpinner() {
+            document.getElementById('spinner').style.display = 'none';
+        }
+
+        function setStatus(message) {
+            document.getElementById('status').innerText = message;
         }
     </script>
 </body>
