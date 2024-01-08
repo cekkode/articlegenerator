@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.074</h1>
+    <h1>Google Sheets Generator ver 1.075</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -103,6 +103,7 @@
             </select>
             <input type="text" id="apiKey" placeholder="API Key">
             <button id="generate" onclick="generate()">🤖 Generate</button>
+            <button id="sendBack" onclick="sendBackToSheet()" style="display: none;">🔙 Sheet</button>
         </div>
     </div>
     <div id="contentContainer">
@@ -262,6 +263,7 @@
 
             hideSpinner();
             setStatus('Done generating.');
+            document.getElementById('sendBack').style.display = 'block'; // Show the "Send Back to Sheet" button
         }
 
         function showApiKeyInput() {
@@ -280,6 +282,36 @@
             var aiModel = document.getElementById('aiModel').value;
             localStorage.setItem(aiModel + 'ApiKey', this.value);
         });
+
+        function sendBackToSheet() {
+            var overwrite = confirm("Do you want to overwrite existing data in the sheet?");
+            var outputSelect = document.getElementById('outputColumn');
+            var outputIndex = outputSelect.selectedIndex;
+            var sheetId = document.getElementById('sheetUrl').value.split('/')[5];
+            var sheetName = document.getElementById('sheetName').value;
+            var range = sheetName + '!' + String.fromCharCode(65 + outputIndex) + '2:' + String.fromCharCode(65 + outputIndex); // Adjust the range as needed
+
+            var values = [];
+            for(var i = 1; i < lines.length; i++) {
+                if (overwrite || !lines[i][outputIndex]) {
+                    values.push([lines[i][outputIndex]]);
+                }
+            }
+
+            var body = {
+                values: values
+            };
+
+            gapi.client.sheets.spreadsheets.values.update({
+                spreadsheetId: sheetId,
+                range: range,
+                valueInputOption: 'RAW',
+                resource: body
+            }).then((response) => {
+                var result = response.result;
+                console.log(`${result.updatedCells} cells updated.`);
+            });
+        }
 
         async function GEMINI(prompt) {
             if (!prompt) {
