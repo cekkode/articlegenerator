@@ -164,6 +164,25 @@
         }
 
         function initClient() {
+            gapi.load('client:auth2', function() {
+                gapi.auth2.init({
+                    client_id: '558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com',
+                    scope: 'https://www.googleapis.com/auth/spreadsheets'
+                }).then(function() {
+                    var authInstance = gapi.auth2.getAuthInstance();
+                    if (!authInstance.isSignedIn.get()) {
+                        authInstance.signIn();
+                    }
+                    gapi.client.load('sheets', 'v4', function() {
+                        // The Sheets API client library has been loaded.
+                        // You can now call functions of the Sheets API.
+                    });
+                });
+            });
+        }
+        
+        /*
+        function initClient() {
             gapi.client.init({
                 apiKey: 'AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo',
                 clientId: '558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com',
@@ -176,6 +195,7 @@
                 console.error(error);
             });
         }
+        */
 
         function updateSigninStatus(isSignedIn) {
             if (!isSignedIn) {
