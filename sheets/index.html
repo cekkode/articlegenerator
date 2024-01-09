@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.077</h1>
+    <h1>Google Sheets Generator ver 1.078</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -146,7 +146,7 @@
         }
 
         function initClient() {
-            gapi.client.init({
+            gapi.load('client:auth2', {
                 apiKey: 'AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo',
                 clientId: '558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com',
                 scope: 'https://www.googleapis.com/auth/spreadsheets',
@@ -158,10 +158,7 @@
         }
 
         function updateSigninStatus(isSignedIn) {
-            if (isSignedIn) {
-                // User is signed in. You can make the API request here.
-            } else {
-                // User is not signed in. Ask the user to sign in.
+            if (!isSignedIn) {
                 gapi.auth2.getAuthInstance().signIn();
             }
         }
@@ -318,7 +315,7 @@
 
             gapi.client.sheets.spreadsheets.values.update({
                 spreadsheetId: sheetId,
-                range: sheetName + '!' + columnLetter + '2:' + columnLetter,
+                range: range,
                 valueInputOption: 'RAW',
                 resource: body
             }).then((response) => {
