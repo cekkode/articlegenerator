@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.08</h1>
+    <h1>Google Sheets Generator ver 1.081</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -243,6 +243,7 @@
             outputContainer.style.display = "block";
             promptContainer.style.display = "block";
             document.getElementById('aiModelContainer').style.display = "block"; // Show AI Model and Generate button
+            showApiKeyInput(); // Call this function when the "👀 Content" button is clicked
         }
 
         document.getElementById('outputContent').addEventListener('click', function() {
