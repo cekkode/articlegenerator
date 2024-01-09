@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.078</h1>
+    <h1>Google Sheets Generator ver 1.079</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -103,6 +103,7 @@
             </select>
             <input type="text" id="apiKey" placeholder="API Key">
             <button id="generate" onclick="generate()">🤖 Generate</button>
+            <button id="stop" onclick="stopGeneration()" style="display: none;">🛑 STOP</button>
             <button id="sendBack" onclick="sendBackToSheet()" style="display: none;">🔙 Sheet</button>
         </div>
     </div>
@@ -248,9 +249,13 @@
             window.getSelection().selectAllChildren(this);
         });
 
+        var stop = false;
+
         async function generate() {
             showSpinner();
             setStatus('Generating...');
+            document.getElementById('stop').style.display = 'block'; // Show the "STOP" button
+            stop = false;
 
             var aiModel = document.getElementById('aiModel').value;
             var outputSelect = document.getElementById('outputColumn');
@@ -259,6 +264,10 @@
             var promptIndex = promptSelect.selectedIndex;
 
             for(var i = 1; i < lines.length; i++) {
+                if (stop) {
+                    break;
+                }
+
                 var prompt = lines[i][promptIndex];
                 if (!lines[i][outputIndex] && !prompt.includes('EMPTY')) { // If output column is empty and prompt does not contain 'EMPTY'
                     var output;
@@ -275,6 +284,11 @@
             hideSpinner();
             setStatus('Done generating.');
             document.getElementById('sendBack').style.display = 'block'; // Show the "Send Back to Sheet" button
+            document.getElementById('stop').style.display = 'none'; // Hide the "STOP" button
+        }
+
+        function stopGeneration() {
+            stop = true;
         }
 
         function showApiKeyInput() {
