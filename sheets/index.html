@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.083</h1>
+    <h1>Google Sheets Generator ver 1.084</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -116,20 +116,23 @@
         <div class="loader"></div>
     </div>
 
+    <!---
     <div id="g_id_onload"
          data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
          data-callback="handleCredentialResponse">
     </div>
     <div class="g_id_signin" data-type="standard"></div>
- 
-    <!--- 
+    -->
+    <div class="g-signin2" data-onsuccess="handleCredentialResponse"></div>
+
     <script async defer src="https://apis.google.com/js/api.js"
     onload="this.onload=function(){};handleClientLoad()"
     onreadystatechange="if (this.readyState === 'complete') this.onload()">
     </script>
-    -->
+    <meta name="google-signin-client_id" content="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com">
+    <!-- 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-
+    -->
     <script>
         function handleCredentialResponse(response) {
             // Handle the response here.
