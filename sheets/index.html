@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.089</h1>
+    <h1>Google Sheets Generator ver 1.090</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -272,7 +272,7 @@
 
             outputContainer.style.display = "block";
             promptContainer.style.display = "block";
-            document.getElementById('aiModelContainer').style.display = "block"; // Show AI Model and Generate button
+            document.getElementById('aiModelContainer').style.display = "flex"; // Show AI Model and Generate button
             showApiKeyInput(); // Call this function when the "👀 Content" button is clicked
         }
 
@@ -362,23 +362,16 @@
                 values: values
             };
 
-            var range = sheetName + '!' + columnLetter + '2:' + columnLetter; // Define the range variable
+            var range = sheetName + '!' + columnLetter + '2:' + columnLetter + (values.length + 1); // Define the range variable
 
-            gapi.auth2.getAuthInstance().signIn().then(function(googleUser) {
-                var accessToken = googleUser.getAuthResponse().access_token;
-
-                gapi.client.sheets.spreadsheets.values.update({
-                    spreadsheetId: sheetId,
-                    range: range,
-                    valueInputOption: 'RAW',
-                    resource: body,
-                    headers: {
-                        Authorization: 'Bearer ' + accessToken
-                    }
-                }).then((response) => {
-                    var result = response.result;
-                    console.log(`${result.updatedCells} cells updated.`);
-                });
+            gapi.client.sheets.spreadsheets.values.update({
+                spreadsheetId: sheetId,
+                range: range,
+                valueInputOption: 'RAW',
+                resource: body
+            }).then((response) => {
+                var result = response.result;
+                console.log(`${result.updatedCells} cells updated.`);
             }).catch(function(error) {
                 console.error(error);
             });
