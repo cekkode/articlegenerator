@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.084</h1>
+    <h1>Google Sheets Generator ver 1.085</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -172,6 +172,8 @@
             }).then(function () {
                 gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
                 updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+            }).catch(function(error) {
+                console.error(error);
             });
         }
 
@@ -475,6 +477,10 @@
         function setStatus(message) {
             document.getElementById('status').innerText = message;
         }
+
+        window.onload = function() {
+            handleClientLoad();
+        };
     </script>
 </body>
 </html>
