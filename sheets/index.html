@@ -81,7 +81,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.090</h1>
+    <h1>Google Sheets Generator ver 1.091</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -190,7 +190,15 @@
 
         function updateSigninStatus(isSignedIn) {
             if (!isSignedIn) {
-                gapi.auth2.getAuthInstance().signIn();
+                gapi.auth2.getAuthInstance().signIn().then(function() {
+                    // User signed in successfully
+                }).catch(function(error) {
+                    if (error.error === 'popup_closed_by_user') {
+                        // The user closed the popup before finishing the sign in process.
+                        // Handle this situation as you see fit.
+                        console.log('Sign-in process was not completed.');
+                    }
+                });
             }
         }
 
