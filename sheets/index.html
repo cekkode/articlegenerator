@@ -4,6 +4,7 @@
     <title>Google Sheets Parser</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bottleneck@2.19.5/lib/index-browser.min.js"></script>
     <style>
         textarea {
             width: 48%;
@@ -86,7 +87,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.108</h1>
+        <h1>Google Sheets Generator ver 1.109</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -483,6 +484,14 @@
             return letter;
         }
 
+        var geminiLimiter = new Bottleneck({
+            minTime: 1000 / (60 / 60), // 60 RPM
+        });
+
+        var chatgptLimiter = new Bottleneck({
+            minTime: 1000 / (3500 / 60), // 3500 RPM
+        });
+
         async function GEMINI(prompt) {
             if (!prompt) {
                 return 'Prompt is empty';
@@ -512,7 +521,7 @@
             var response = await fetch(url, options);
             var data = await response.json();
 
-            var output;
+            var output = await geminiLimiter.schedule(() => fetch(url, options).then(response => response.json()));
             if (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
                 output = data.candidates[0].content.parts[0].text;
             } else {
@@ -563,7 +572,7 @@
             var response = await fetch(apiUrl, options);
             var data = await response.json();
 
-            var output;
+            var output = await chatgptLimiter.schedule(() => fetch(apiUrl, options).then(response => response.json()));
             if (data && data.choices && data.choices[0] && data.choices[0].message) {
                 output = data.choices[0].message.content;
             } else {
