@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.105</h1>
+        <h1>Google Sheets Generator ver 1.106</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -95,7 +95,7 @@
     </div>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
-    <button onclick="parseSheet()">Get</button>
+    <button id="getButton" onclick="parseSheet()">Get 📃</button>
     <p id="loading" style="display: none;">Loading...</p>
     <div id="controls" style="display: none;">
         <div>
@@ -308,6 +308,7 @@
                     }
                     document.getElementById('controls').style.display = 'flex';
                     document.getElementById('loading').style.display = 'none';
+                    document.getElementById('getButton').innerText = 'Re-Get 📃'; // Change the button text
                 } else {
                     console.log('No data found.');
                 }
