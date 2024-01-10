@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.109</h1>
+        <h1>Google Sheets Generator ver 1.110</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -371,36 +371,51 @@
             var outputIndex = Number(outputSelect.value); // Convert to number
             var promptIndex = Number(promptSelect.value); // Convert to number
 
-            var delay;
+            var rpm;
             if (aiModel === 'GEMINI') {
-                delay = 1000 / (60 / 60); // 60 RPM
+                rpm = 60; // 60 RPM
             } else if (aiModel === 'CHATGPT') {
-                delay = 1000 / (3500 / 60); // 3500 RPM
+                rpm = 3500; // 3500 RPM
             }
 
-            for(var i = 1; i < lines.length; i++) {
-                if (stop) {
-                    break;
-                }
+            var chunkSize = Math.floor(rpm / 60); // Number of requests per second
+            var chunks = chunkArray(lines, chunkSize);
 
-                var prompt = lines[i][promptIndex];
-                if (!lines[i][outputIndex] && !prompt.includes('EMPTY')) { // If output column is empty and prompt does not contain 'EMPTY'
-                    var output;
-                    if (aiModel === 'GEMINI') {
-                        output = await GEMINI(prompt);
-                    } else if (aiModel === 'CHATGPT') {
-                        output = await CHATGPT(prompt);
+            for (var chunk of chunks) {
+                var promises = chunk.map(async (line, i) => {
+                    if (stop) {
+                        return;
                     }
-                    lines[i][outputIndex] = output;
-                    showContent(); // Update the display after each line is processed
-                    await new Promise(resolve => setTimeout(resolve, delay)); // Delay between each request
-                }
+
+                    var prompt = line[promptIndex];
+                    if (!line[outputIndex] && !prompt.includes('EMPTY')) { // If output column is empty and prompt does not contain 'EMPTY'
+                        var output;
+                        if (aiModel === 'GEMINI') {
+                            output = await GEMINI(prompt);
+                        } else if (aiModel === 'CHATGPT') {
+                            output = await CHATGPT(prompt);
+                        }
+                        line[outputIndex] = output;
+                    }
+                });
+
+                await Promise.all(promises);
+                showContent(); // Update the display after each chunk is processed
+                await new Promise(resolve => setTimeout(resolve, 1000)); // Delay between each chunk
             }
 
             hideSpinner();
             setStatus('Done generating.');
             document.getElementById('sendBack').style.display = 'block'; // Show the "Send Back to Sheet" button
             document.getElementById('stop').style.display = 'none'; // Hide the "STOP" button
+        }
+
+        function chunkArray(array, chunkSize) {
+            var chunks = [];
+            for (var i = 0; i < array.length; i += chunkSize) {
+                chunks.push(array.slice(i, i + chunkSize));
+            }
+            return chunks;
         }
 
         function stopGeneration() {
