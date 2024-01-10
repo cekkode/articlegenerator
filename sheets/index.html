@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.101</h1>
+        <h1>Google Sheets Generator ver 1.102</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -297,12 +297,15 @@
                     promptSelect.innerHTML = "";
 
                     for(var j = 0; j < columnTitles.length; j++) {
-                        var option1 = document.createElement('option');
-                        var option2 = document.createElement('option');
-                        option1.text = columnTitles[j];
-                        option2.text = columnTitles[j];
-                        outputSelect.add(option1);
-                        promptSelect.add(option2);
+                        if (columnTitles[j].includes('COLUMN')) {
+                            var option = document.createElement('option');
+                            option.text = columnTitles[j];
+                            promptSelect.add(option);
+                        } else {
+                            var option = document.createElement('option');
+                            option.text = columnTitles[j];
+                            outputSelect.add(option);
+                        }
                     }
                     document.getElementById('controls').style.display = 'flex';
                     document.getElementById('loading').style.display = 'none';
