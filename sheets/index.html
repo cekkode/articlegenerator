@@ -85,7 +85,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.094</h1>
+    <h1>Google Sheets Generator ver 1.095</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -216,10 +216,13 @@
         }
 
         function extractAccessToken() {
-            var access_token = new URL(window.location.href).hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];
+            var hash = new URL(window.location.href).hash;
+            if (hash) {
+                var access_token = hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];
 
-            if (access_token) {
-                localStorage.setItem('access_token', access_token);
+                if (access_token) {
+                    localStorage.setItem('access_token', access_token);
+                }
             }
         }
 
