@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.104</h1>
+        <h1>Google Sheets Generator ver 1.105</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -319,8 +319,8 @@
         function showContent() {
             var outputSelect = document.getElementById('outputColumn');
             var promptSelect = document.getElementById('promptColumn');
-            var outputIndex = outputSelect.value; // Get the original index from the value of the selected option
-            var promptIndex = promptSelect.value; // Get the original index from the value of the selected option
+            var outputIndex = Number(outputSelect.value); // Convert to number
+            var promptIndex = Number(promptSelect.value); // Convert to number
 
             var outputContainer = document.getElementById('outputContent');
             var promptContainer = document.getElementById('promptContent');
@@ -367,8 +367,8 @@
             var aiModel = document.getElementById('aiModel').value;
             var outputSelect = document.getElementById('outputColumn');
             var promptSelect = document.getElementById('promptColumn');
-            var outputIndex = outputSelect.selectedIndex;
-            var promptIndex = promptSelect.selectedIndex;
+            var outputIndex = Number(outputSelect.value); // Convert to number
+            var promptIndex = Number(promptSelect.value); // Convert to number
 
             for(var i = 1; i < lines.length; i++) {
                 if (stop) {
@@ -418,7 +418,7 @@
         function sendBackToSheet() {
             var overwrite = confirm("Do you want to overwrite existing data in the sheet?");
             var outputSelect = document.getElementById('outputColumn');
-            var outputIndex = outputSelect.value; // Get the original index from the value of the selected option
+            var outputIndex = Number(outputSelect.value); // Convert to number
             var sheetId = document.getElementById('sheetUrl').value.split('/')[5];
             var sheetName = document.getElementById('sheetName').value;
             var columnLetter = getColumnLetter(outputIndex + 1); // Adjust the range as needed
