@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.106</h1>
+        <h1>Google Sheets Generator ver 1.107</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -437,7 +437,8 @@
 
             // Filter out the empty values and adjust the range accordingly
             var nonEmptyValues = values.filter(v => v[0]);
-            var range = sheetName + '!' + columnLetter + '2:' + columnLetter + (nonEmptyValues.length + 1); // Define the range variable
+            var numRows = Math.max(lines.length, nonEmptyValues.length + 1); // Use the larger of the two numbers
+            var range = sheetName + '!' + columnLetter + '2:' + columnLetter + numRows;
 
             var accessToken = gapi.auth.getToken().access_token; // Get the access token
 
