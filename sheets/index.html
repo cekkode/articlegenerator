@@ -85,7 +85,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.093</h1>
+    <h1>Google Sheets Generator ver 1.094</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -178,7 +178,7 @@
                 }).then(function() {
                     var authInstance = gapi.auth2.getAuthInstance();
                     if (!authInstance.isSignedIn.get()) {
-                        authInstance.signIn();
+                        initiateOAuthFlow(); // Initiate the OAuth 2.0 flow
                     }
                     gapi.client.load('sheets', 'v4', function() {
                         // The Sheets API client library has been loaded.
@@ -205,6 +205,43 @@
                 });
             }
         }
+
+        function initiateOAuthFlow() {
+            var client_id = '558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com';
+            var scope = 'https://www.googleapis.com/auth/spreadsheets';
+            var redirect_uri = window.location.href; // The current URL
+            var url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=token&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}`;
+
+            window.location.href = url;
+        }
+
+        function extractAccessToken() {
+            var access_token = new URL(window.location.href).hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];
+
+            if (access_token) {
+                localStorage.setItem('access_token', access_token);
+            }
+        }
+
+        function checkTokenValidity() {
+            var access_token = localStorage.getItem('access_token');
+
+            fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${access_token}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    // If there's an error, the token is invalid or expired. Initiate the OAuth 2.0 flow again.
+                    alert('Your access token has expired. Please re-authorize.');
+                    initiateOAuthFlow();
+                } else {
+                    // If there's no error, the token is valid. You can proceed with the operation.
+                    sendBackToSheet();
+                }
+            })
+            .catch(error => console.error(error));
+        }
+
+        document.getElementById('sendBack').addEventListener('click', checkTokenValidity);
 
         function parseSheet() {
             if (!gapi.client.sheets) {
@@ -504,6 +541,7 @@
         }
 
         window.onload = function() {
+            extractAccessToken();
             handleClientLoad();
         };
     </script>
