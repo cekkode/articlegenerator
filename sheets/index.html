@@ -4,7 +4,6 @@
     <title>Google Sheets Parser</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bottleneck@2.19.5/lib/index-browser.min.js"></script>
     <style>
         textarea {
             width: 48%;
@@ -372,6 +371,13 @@
             var outputIndex = Number(outputSelect.value); // Convert to number
             var promptIndex = Number(promptSelect.value); // Convert to number
 
+            var delay;
+            if (aiModel === 'GEMINI') {
+                delay = 1000 / (60 / 60); // 60 RPM
+            } else if (aiModel === 'CHATGPT') {
+                delay = 1000 / (3500 / 60); // 3500 RPM
+            }
+
             for(var i = 1; i < lines.length; i++) {
                 if (stop) {
                     break;
@@ -387,6 +393,7 @@
                     }
                     lines[i][outputIndex] = output;
                     showContent(); // Update the display after each line is processed
+                    await new Promise(resolve => setTimeout(resolve, delay)); // Delay between each request
                 }
             }
 
@@ -398,6 +405,98 @@
 
         function stopGeneration() {
             stop = true;
+        }
+
+        async function GEMINI(prompt) {
+            if (!prompt) {
+                return 'Prompt is empty';
+            }
+
+            var apiKey = localStorage.getItem('GEMINI' + 'ApiKey');
+            var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+
+            var url = apiUrl + "?key=" + apiKey;
+
+            var headers = {
+                "Content-Type": "application/json"
+            };
+
+            var requestBody = {
+                "contents": [{
+                    "parts":[{
+                        "text": prompt}]}]
+            }
+
+            var options = {
+                "method": "POST",
+                "headers": headers,
+                "body": JSON.stringify(requestBody)
+            }
+
+            var response = await fetch(url, options);
+            var data = await response.json();
+
+            var output;
+            if (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
+                output = data.candidates[0].content.parts[0].text;
+            } else {
+                output = 'No output returned from API';
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+
+            return output;
+        }
+
+        async function CHATGPT(prompt) {
+            if (!prompt) {
+                return 'Prompt is empty';
+            }
+
+            var systemMessage = "You're helpful content writer / Kamu adalah penulis konten yang bagus.";
+            var userMessage = prompt;
+
+            var apiKey = localStorage.getItem('CHATGPT' + 'ApiKey');
+            var apiUrl = "https://api.openai.com/v1/chat/completions";
+
+            var headers = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + apiKey
+            };
+
+            var requestBody = {
+                "model": "gpt-3.5-turbo",
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": systemMessage
+                    },
+                    {
+                        "role": "user",
+                        "content": userMessage
+                    }
+                ]
+            }
+
+            var options = {
+                "method": "POST",
+                "headers": headers,
+                "body": JSON.stringify(requestBody)
+            }
+
+            var response = await fetch(apiUrl, options);
+            var data = await response.json();
+
+            var output;
+            if (data && data.choices && data.choices[0] && data.choices[0].message) {
+                output = data.choices[0].message.content;
+            } else {
+                output = 'No output returned from API';
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 20)); // 50 requests per second
+
+            return output;
         }
 
         function showApiKeyInput() {
@@ -482,106 +581,6 @@
                 columnNumber = (columnNumber - temp - 1) / 26;
             }
             return letter;
-        }
-
-        var geminiLimiter = new Bottleneck({
-            minTime: 1000 / (60 / 60), // 60 RPM
-        });
-
-        var chatgptLimiter = new Bottleneck({
-            minTime: 1000 / (3500 / 60), // 3500 RPM
-        });
-
-        async function GEMINI(prompt) {
-            if (!prompt) {
-                return 'Prompt is empty';
-            }
-
-            var apiKey = localStorage.getItem('GEMINI' + 'ApiKey');
-            var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
-
-            var url = apiUrl + "?key=" + apiKey;
-
-            var headers = {
-                "Content-Type": "application/json"
-            };
-
-            var requestBody = {
-                "contents": [{
-                    "parts":[{
-                        "text": prompt}]}]
-            }
-
-            var options = {
-                "method": "POST",
-                "headers": headers,
-                "body": JSON.stringify(requestBody)
-            }
-
-            var response = await fetch(url, options);
-            var data = await response.json();
-
-            var output = await geminiLimiter.schedule(() => fetch(url, options).then(response => response.json()));
-            if (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0]) {
-                output = data.candidates[0].content.parts[0].text;
-            } else {
-                output = 'No output returned from API';
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
-
-            return output;
-        }
-
-        async function CHATGPT(prompt) {
-            if (!prompt) {
-                return 'Prompt is empty';
-            }
-
-            var systemMessage = "You're helpful content writer / Kamu adalah penulis konten yang bagus.";
-            var userMessage = prompt;
-
-            var apiKey = localStorage.getItem('CHATGPT' + 'ApiKey');
-            var apiUrl = "https://api.openai.com/v1/chat/completions";
-
-            var headers = {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + apiKey
-            };
-
-            var requestBody = {
-                "model": "gpt-3.5-turbo",
-                "messages": [
-                    {
-                        "role": "system",
-                        "content": systemMessage
-                    },
-                    {
-                        "role": "user",
-                        "content": userMessage
-                    }
-                ]
-            }
-
-            var options = {
-                "method": "POST",
-                "headers": headers,
-                "body": JSON.stringify(requestBody)
-            }
-
-            var response = await fetch(apiUrl, options);
-            var data = await response.json();
-
-            var output = await chatgptLimiter.schedule(() => fetch(apiUrl, options).then(response => response.json()));
-            if (data && data.choices && data.choices[0] && data.choices[0].message) {
-                output = data.choices[0].message.content;
-            } else {
-                output = 'No output returned from API';
-            }
-
-            await new Promise(resolve => setTimeout(resolve, 20)); // 50 requests per second
-
-            return output;
         }
 
         function showSpinner() {
