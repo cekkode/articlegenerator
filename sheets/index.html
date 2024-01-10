@@ -416,8 +416,21 @@
             localStorage.setItem(aiModel + 'ApiKey', this.value);
         });
 
+        var overwrite;
+        document.getElementById('outputColumn').addEventListener('change', function() {
+            overwrite = undefined;
+        });
+        document.getElementById('promptColumn').addEventListener('change', function() {
+            overwrite = undefined;
+        });
+        document.getElementById('generate').addEventListener('click', function() {
+            overwrite = undefined;
+        });
+
         function sendBackToSheet() {
-            var overwrite = confirm("Do you want to overwrite existing data in the sheet?");
+            if (overwrite === undefined) {
+                overwrite = confirm("Do you want to overwrite existing data in the sheet?");
+            }
             var outputSelect = document.getElementById('outputColumn');
             var outputIndex = Number(outputSelect.value); // Convert to number
             var sheetId = document.getElementById('sheetUrl').value.split('/')[5];
@@ -453,8 +466,8 @@
                     'valueInputOption': 'RAW'
                 }
             }).then((response) => {
-                var result = response.result;
-                console.log(`${result.updatedCells} cells updated.`);
+                console.log(`${nonEmptyValues.length} cells updated.`);
+                setStatus(`${nonEmptyValues.length} cells updated.`);
             }).catch(function(error) {
                 console.error(error);
             });
