@@ -85,7 +85,7 @@
     </style>
 </head>
 <body>
-    <h1>Google Sheets Generator ver 1.095</h1>
+    <h1>Google Sheets Generator ver 1.096</h1>
     <input type="text" id="sheetUrl" placeholder="Public Google Sheet URL">
     <input type="text" id="sheetName" placeholder="Sheet Name">
     <button onclick="parseSheet()">Get</button>
@@ -210,9 +210,24 @@
             var client_id = '558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com';
             var scope = 'https://www.googleapis.com/auth/spreadsheets';
             var redirect_uri = window.location.href; // The current URL
-            var url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=token&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}`;
+            var url = `https://accounts.google.com/o/oauth2/v2/auth?response_type=token&client_id=${client_id}&scope=${scope}&redirect_uri=${redirect_uri}&prompt=none`;
 
-            window.location.href = url;
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+            iframe.src = url;
+
+            iframe.onload = function() {
+                var hash = new URL(iframe.contentWindow.location.href).hash;
+                if (hash) {
+                    var access_token = hash.split('&').filter(function(el) { if(el.match('access_token') !== null) return true; })[0].split('=')[1];
+
+                    if (access_token) {
+                        localStorage.setItem('access_token', access_token);
+                        gapi.auth.setToken({access_token: access_token});
+                    }
+                }
+            };
         }
 
         function extractAccessToken() {
@@ -416,11 +431,18 @@
 
             var range = sheetName + '!' + columnLetter + '2:' + columnLetter + (values.length + 1); // Define the range variable
 
-            gapi.client.sheets.spreadsheets.values.update({
-                spreadsheetId: sheetId,
-                range: range,
-                valueInputOption: 'RAW',
-                resource: body
+            var accessToken = gapi.auth.getToken().access_token; // Get the access token
+
+            gapi.client.request({
+                'path': 'https://sheets.googleapis.com/v4/spreadsheets/' + sheetId + '/values/' + range,
+                'method': 'PUT',
+                'headers': {
+                    'Authorization': 'Bearer ' + accessToken
+                },
+                'body': body,
+                'params': {
+                    'valueInputOption': 'RAW'
+                }
             }).then((response) => {
                 var result = response.result;
                 console.log(`${result.updatedCells} cells updated.`);
