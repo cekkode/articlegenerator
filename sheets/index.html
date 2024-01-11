@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.117</h1>
+        <h1>Google Sheets Generator ver 1.118</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -371,6 +371,11 @@
             document.getElementById('stop').style.display = 'block'; // Show the "STOP" button
             stop = false;
 
+            var total = lines.reduce((count, line) => {
+                var prompt = line[promptIndex];
+                return count + (!line[outputIndex] && !prompt.includes('EMPTY') ? 1 : 0);
+            }, 0);
+
             var aiModel = document.getElementById('aiModel').value;
             var outputSelect = document.getElementById('outputColumn');
             var promptSelect = document.getElementById('promptColumn');
@@ -408,7 +413,7 @@
                     }
 
                     showContent(); // Update the display after each line is processed
-                    setStatus(`Generating ${counter} cells from total ${lines.length} cells.`); // Update the progress display
+                    setStatus(`Generating ${counter} cells from total ${total} cells.`);
                 }
 
                 if (stop) {
