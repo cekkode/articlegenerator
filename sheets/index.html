@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.115</h1>
+        <h1>Google Sheets Generator ver 1.116</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -390,10 +390,9 @@
             var counter = 0; // Add a counter to keep track of the number of cells generated
 
             for (var chunk of chunks) {
-                var promises = chunk.map(async (line, i) => {
-                    console.log('Inside generate function, stop:', stop); // Add this line
+                for (var line of chunk) {
                     if (stop) {
-                        return;
+                        break;
                     }
 
                     var prompt = line[promptIndex];
@@ -407,9 +406,12 @@
                         line[outputIndex] = output;
                         counter++; // Increment the counter
                     }
-                });
+                }
 
-                await Promise.all(promises);
+                if (stop) {
+                    break;
+                }
+
                 showContent(); // Update the display after each chunk is processed
                 setStatus(`Generating ${counter} cells from total ${lines.length} cells.`); // Update the progress display
                 await new Promise(resolve => setTimeout(resolve, 1000)); // Delay between each chunk
