@@ -309,6 +309,7 @@
                     document.getElementById('controls').style.display = 'flex';
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('getButton').innerText = 'Re-Get 📃'; // Change the button text
+                    document.getElementById('getButton').insertAdjacentHTML('afterend', `<span> Showing "${sheetName}" sheets.</span>`);
                 } else {
                     console.log('No data found.');
                 }
