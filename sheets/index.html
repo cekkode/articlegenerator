@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.113</h1>
+        <h1>Google Sheets Generator ver 1.114</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -350,6 +350,7 @@
             document.getElementById('aiModelContainer').style.display = "flex"; // Show AI Model and Generate button
             showApiKeyInput(); // Call this function when the "👀 Content" button is clicked
             document.getElementById('copyButton').style.display = 'block'; // Show the "Copy" button
+            localStorage.setItem('lines', JSON.stringify(lines)); // Store the lines array in local storage
         }
         }
 
@@ -425,6 +426,7 @@
             setStatus(`Done generating in ${minDiff} minutes and ${secDiff} seconds.`);
             document.getElementById('sendBack').style.display = 'block'; // Show the "Send Back to Sheet" button
             document.getElementById('stop').style.display = 'none'; // Hide the "STOP" button
+            localStorage.setItem('lines', JSON.stringify(lines)); // Store the lines array in local storage after generation
         }
 
         function chunkArray(array, chunkSize) {
@@ -645,6 +647,11 @@
         window.onload = function() {
             extractAccessToken();
             handleClientLoad();
+            var storedLines = localStorage.getItem('lines');
+            if (storedLines) {
+                lines = JSON.parse(storedLines); // Load the lines array from local storage
+                showContent(); // Show the content
+            }
         };
     </script>
 </body>
