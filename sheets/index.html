@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.112</h1>
+        <h1>Google Sheets Generator ver 1.113</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -116,6 +116,7 @@
             <button id="generate" onclick="generate()">🤖 Generate</button>
             <button id="stop" onclick="stopGeneration()" style="display: none;">🛑 STOP</button>
             <button id="sendBack" onclick="sendBackToSheet()" style="display: none;">🔙 Sheet</button>
+            <button id="copyButton" onclick="copyToClipboard()" style="display: none;">📋 Copy</button>
         </div>
     </div>
     <div id="contentContainer">
@@ -348,6 +349,8 @@
             promptContainer.style.display = "block";
             document.getElementById('aiModelContainer').style.display = "flex"; // Show AI Model and Generate button
             showApiKeyInput(); // Call this function when the "👀 Content" button is clicked
+            document.getElementById('copyButton').style.display = 'block'; // Show the "Copy" button
+        }
         }
 
         document.getElementById('outputContent').addEventListener('click', function() {
@@ -602,6 +605,19 @@
             }).catch(function(error) {
                 console.error(error);
             });
+        }
+
+        function copyToClipboard() {
+            var outputSelect = document.getElementById('outputColumn');
+            var outputIndex = Number(outputSelect.value); // Convert to number
+            var outputData = lines.map(line => line[outputIndex]).join('\n'); // Join the output data with newline character
+            var dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = outputData;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            alert('Data copied to clipboard');
         }
 
         function getColumnLetter(columnNumber) {
