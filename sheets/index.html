@@ -388,6 +388,7 @@
 
             for (var chunk of chunks) {
                 var promises = chunk.map(async (line, i) => {
+                    console.log('Inside generate function, stop:', stop); // Add this line
                     if (stop) {
                         return;
                     }
@@ -431,8 +432,10 @@
             return chunks;
         }
 
+        var stop = false;
         function stopGeneration() {
             stop = true;
+            console.log('Stop button clicked, stop:', stop); // Add this line
         }
 
         async function GEMINI(prompt) {
