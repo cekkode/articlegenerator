@@ -373,6 +373,7 @@
         var startTime, endTime;
 
         async function generate() {
+            document.getElementById('stop').disabled = false; // Enable the "STOP" button
             showSpinner();
             startTime = new Date();
             setStatus('Generating...');
@@ -455,6 +456,7 @@
         var stop = false;
         function stopGeneration() {
             stop = true;
+            document.getElementById('stop').disabled = true; // Disable the "STOP" button
             console.log('Stop button clicked, stop:', stop); // Add this line
         }
 
