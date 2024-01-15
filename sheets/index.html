@@ -665,7 +665,9 @@
             var storedLines = localStorage.getItem('lines');
             if (storedLines) {
                 lines = JSON.parse(storedLines); // Load the lines array from local storage
-                showContent(); // Show the content
+                // Hide the prompt and output content
+                document.getElementById('promptContent').style.display = 'none';
+                document.getElementById('outputContent').style.display = 'none';
             }
         };
     </script>
