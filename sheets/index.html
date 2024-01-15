@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.122</h1>
+        <h1>Google Sheets Generator ver 1.123</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -373,6 +373,7 @@
         var startTime, endTime;
 
         async function generate() {
+            try {
             document.getElementById('stop').disabled = false; // Enable the "STOP" button
             showSpinner();
             startTime = new Date();
@@ -382,7 +383,7 @@
 
             var total = lines.reduce((count, line) => {
                 var prompt = line[promptIndex];
-                return count + (!line[outputIndex] && !prompt.includes('EMPTY') ? 1 : 0);
+                return count + (!line[outputIndex] && prompt && !prompt.includes('EMPTY') ? 1 : 0);
             }, 0);
 
             var aiModel = document.getElementById('aiModel').value;
@@ -406,11 +407,11 @@
             for (var chunk of chunks) {
                 for (var line of chunk) {
                     if (stop) {
-                        break;
+                        throw new Error('Generation stopped by user.');
                     }
 
                     var prompt = line[promptIndex];
-                    if (!line[outputIndex] && !prompt.includes('EMPTY')) { // If output column is empty and prompt does not contain 'EMPTY'
+                    if (!line[outputIndex] && prompt && !prompt.includes('EMPTY')) {
                         var output;
                         if (aiModel === 'GEMINI') {
                             output = await GEMINI(prompt);
@@ -418,18 +419,18 @@
                             output = await CHATGPT(prompt);
                         }
                         line[outputIndex] = output;
-                        counter++; // Increment the counter
+                        counter++;
                     }
 
-                    showContent(); // Update the display after each line is processed
+                    showContent();
                     setStatus(`Generating ${counter} cells from total ${total} cells.`);
                 }
 
                 if (stop) {
-                    break;
+                    throw new Error('Generation stopped by user.');
                 }
 
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Delay between each chunk
+                await new Promise(resolve => setTimeout(resolve, 1000));
             }
 
             endTime = new Date();
@@ -443,7 +444,10 @@
             document.getElementById('sendBack').style.display = 'block'; // Show the "Send Back to Sheet" button
             document.getElementById('stop').style.display = 'none'; // Hide the "STOP" button
             localStorage.setItem('lines', JSON.stringify(lines)); // Store the lines array in local storage after generation
-        }
+            } catch (error) {
+                setStatus(`Generation stopped: ${error.message}`);
+            }
+        }   
 
         function chunkArray(array, chunkSize) {
             var chunks = [];
