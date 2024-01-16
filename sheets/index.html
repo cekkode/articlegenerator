@@ -86,7 +86,7 @@
 </head>
 <body>
     <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1>Google Sheets Generator ver 1.126</h1>
+        <h1>Google Sheets Generator ver 1.127</h1>
         <div id="g_id_onload"
             data-client_id="558588622491-62n0kp94h9ac1qg971co7s71uvf98spp.apps.googleusercontent.com"
             data-callback="handleCredentialResponse">
@@ -658,7 +658,7 @@
         function copyToClipboard() {
             var outputSelect = document.getElementById('outputColumn');
             var outputIndex = Number(outputSelect.value); // Convert to number
-            var outputData = lines.map(line => line[outputIndex]).filter(Boolean).join('\n'); // Filter out empty cells and join the output data with newline character
+            var outputData = lines.slice(1).map(line => line[outputIndex]).filter(Boolean).join('\r\n'); // Exclude the column title and filter out empty cells, then join the output data with carriage return and newline characters
             var dummy = document.createElement('textarea');
             document.body.appendChild(dummy);
             dummy.value = outputData;
