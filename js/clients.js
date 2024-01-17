@@ -1,13 +1,20 @@
 // Include PapaParse library
 var script = document.createElement('script');
-script.src = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js';
+script.src = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js';
 document.getElementsByTagName('head')[0].appendChild(script);
+
+// Version of the script
+var version = "1.0.0";
+console.log("Script Version: " + version);
 
 // Wait for PapaParse to load
 script.onload = function () {
     var domain = window.location.hostname;
     var sheetId = '1bwvWm-HABNjnDPpbCr77XQ1dmw1XmsSwOaAWvxIv5t4';
     var url = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/gviz/tq?tqx=out:csv&sheet=' + domain;
+
+    // Use CORS proxy server
+    url = 'https://cors-anywhere.herokuapp.com/' + url;
 
     Papa.parse(url, {
         download: true,
@@ -26,6 +33,12 @@ script.onload = function () {
                     break;
                 }
             }
+        },
+        error: function(err, file, inputElem, reason) {
+            console.log("Error:", err);
+            console.log("File:", file);
+            console.log("Input Element:", inputElem);
+            console.log("Reason:", reason);
         }
     });
 };
