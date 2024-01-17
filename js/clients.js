@@ -1,5 +1,5 @@
 // Version of the script
-var version = "1.1.6";
+var version = "1.1.7";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
@@ -22,15 +22,17 @@ if (domainParts.length === 3 && domainParts[1].length === 2) {
 var sheetId = '1bwvWm-HABNjnDPpbCr77XQ1dmw1XmsSwOaAWvxIv5t4';
 var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + sheetId + '/values/' + mainDomain + '?key=' + apiKey;
 
+var storedVersion = localStorage.getItem('version');
 var data = localStorage.getItem('sheetData');
 var lastFetch = localStorage.getItem('lastFetch');
 
-if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000) {
+if (data && lastFetch && new Date().getTime() - lastFetch < 365 * 24 * 60 * 60 * 1000 && version === storedVersion) {
     processData(JSON.parse(data));
 } else {
     fetch(url)
         .then(response => response.json())
         .then(data => {
+            localStorage.setItem('version', version);
             localStorage.setItem('sheetData', JSON.stringify(data));
             localStorage.setItem('lastFetch', new Date().getTime());
             processData(data);
