@@ -4,7 +4,7 @@ script.src = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.m
 document.getElementsByTagName('head')[0].appendChild(script);
 
 // Version of the script
-var version = "1.0.1";
+var version = "1.0.2";
 console.log("Script Version: " + version);
 
 // Wait for PapaParse to load
@@ -35,10 +35,14 @@ script.onload = function () {
             }
         },
         error: function(err, file, inputElem, reason) {
-            console.log("Error:", err);
-            console.log("File:", file);
-            console.log("Input Element:", inputElem);
-            console.log("Reason:", reason);
+            console.error("Error:", err);
+            console.error("File:", file);
+            console.error("Input Element:", inputElem);
+            console.error("Reason:", reason);
         }
     });
+};
+
+script.onerror = function() {
+    console.error("Failed to load PapaParse library");
 };
