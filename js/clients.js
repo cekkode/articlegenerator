@@ -1,5 +1,5 @@
 // Version of the script
-var version = "1.1.5";
+var version = "1.1.6";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
@@ -22,50 +22,63 @@ if (domainParts.length === 3 && domainParts[1].length === 2) {
 var sheetId = '1bwvWm-HABNjnDPpbCr77XQ1dmw1XmsSwOaAWvxIv5t4';
 var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + sheetId + '/values/' + mainDomain + '?key=' + apiKey;
 
-fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        var page = window.location.pathname;
-        var pageParts = page.split('/');
-        var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
+var data = localStorage.getItem('sheetData');
+var lastFetch = localStorage.getItem('lastFetch');
 
-        var headers = data.values[0];
-        var locationIndex = headers.indexOf('📍');
-        var personIndex = subdomain ? headers.indexOf(subdomain + ':🧑🏻') : headers.indexOf('🧑🏻');
-        var phoneIndex = subdomain ? headers.indexOf(subdomain + ':📞') : headers.indexOf('📞');
-        var messageIndex = subdomain ? headers.indexOf(subdomain + ':💬') : headers.indexOf('💬');
-        var tagIndex = subdomain ? headers.indexOf(subdomain + ':🏷️') : headers.indexOf('🏷️');
+if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000) {
+    processData(JSON.parse(data));
+} else {
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            localStorage.setItem('sheetData', JSON.stringify(data));
+            localStorage.setItem('lastFetch', new Date().getTime());
+            processData(data);
+        })
+        .catch(err => console.error(err));
+}
 
-        for (var i = 1; i < data.values.length; i++) {
-            if (data.values[i][locationIndex] && (data.values[i][locationIndex].toLowerCase().includes(pageName.toLowerCase()) || data.values[i][locationIndex].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
-                var person = data.values[i][personIndex];
-                var phone = data.values[i][phoneIndex];
-                var message = data.values[i][messageIndex];
-                var tag = data.values[i][tagIndex];
+function processData(data) {
+    var page = window.location.pathname;
+    var pageParts = page.split('/');
+    var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
 
-                console.log('🧑🏻: ' + person);
-                console.log('📞: ' + phone);
-                console.log('💬: ' + message);
-                console.log('🏷️: ' + tag);
+    var headers = data.values[0];
+    var locationIndex = headers.indexOf('📍');
+    var personIndex = subdomain ? headers.indexOf(subdomain + ':🧑🏻') : headers.indexOf('🧑🏻');
+    var phoneIndex = subdomain ? headers.indexOf(subdomain + ':📞') : headers.indexOf('📞');
+    var messageIndex = subdomain ? headers.indexOf(subdomain + ':💬') : headers.indexOf('💬');
+    var tagIndex = subdomain ? headers.indexOf(subdomain + ':🏷️') : headers.indexOf('🏷️');
 
-                var whatsappFloating = document.querySelector('.whatsapp-floating a');
-                var tlpFloating = document.querySelector('.tlp-floating a');
+    for (var i = 1; i < data.values.length; i++) {
+        if (data.values[i][locationIndex] && (data.values[i][locationIndex].toLowerCase().includes(pageName.toLowerCase()) || data.values[i][locationIndex].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
+            var person = data.values[i][personIndex];
+            var phone = data.values[i][phoneIndex];
+            var message = data.values[i][messageIndex];
+            var tag = data.values[i][tagIndex];
 
-                var displayPhone = phone.startsWith('62') ? '0' + phone.slice(2) : phone;
-                displayPhone = displayPhone.replace(/(\d{4})/g, '$1 ').trim();
+            console.log('🧑🏻: ' + person);
+            console.log('📞: ' + phone);
+            console.log('💬: ' + message);
+            console.log('🏷️: ' + tag);
 
-                if (whatsappFloating) {
-                    whatsappFloating.href = message.startsWith('https://') ? message : 'https://' + message;
-                    whatsappFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-Y1SNUYeVK44/XhZwF187--I/AAAAAAAAHfA/lfOZFsZCF885e8rLL6NleS8vxHTcz_v1ACLcBGAsYHQ/s1600/whatsapp%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${displayPhone} (${person})</span>`;
-                }
+            var whatsappFloating = document.querySelector('.whatsapp-floating a');
+            var tlpFloating = document.querySelector('.tlp-floating a');
 
-                if (tlpFloating) {
-                    tlpFloating.href = 'tel:' + phone;
-                    tlpFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-37NtuGBQHdw/XhZwF_W04vI/AAAAAAAAHe8/6QEm7CRzPoMfN01Yl3stD89xpmuFUcTyQCLcBGAsYHQ/s1600/phone%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${displayPhone} (${person})</span>`;
-                }
+            var displayPhone = phone.startsWith('62') ? '0' + phone.slice(2) : phone;
+            displayPhone = displayPhone.replace(/(\d{4})/g, '$1 ').trim();
 
-                break;
+            if (whatsappFloating) {
+                whatsappFloating.href = message.startsWith('https://') ? message : 'https://' + message;
+                whatsappFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-Y1SNUYeVK44/XhZwF187--I/AAAAAAAAHfA/lfOZFsZCF885e8rLL6NleS8vxHTcz_v1ACLcBGAsYHQ/s1600/whatsapp%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${displayPhone} (${person})</span>`;
             }
+
+            if (tlpFloating) {
+                tlpFloating.href = 'tel:' + phone;
+                tlpFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-37NtuGBQHdw/XhZwF_W04vI/AAAAAAAAHe8/6QEm7CRzPoMfN01Yl3stD89xpmuFUcTyQCLcBGAsYHQ/s1600/phone%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${displayPhone} (${person})</span>`;
+            }
+
+            break;
         }
-    })
-    .catch(err => console.error(err));
+    }
+}
