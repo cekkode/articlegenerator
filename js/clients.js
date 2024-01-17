@@ -1,5 +1,5 @@
 // Version of the script
-var version = "1.1.4";
+var version = "1.1.5";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
@@ -52,6 +52,7 @@ fetch(url)
                 var tlpFloating = document.querySelector('.tlp-floating a');
 
                 var displayPhone = phone.startsWith('62') ? '0' + phone.slice(2) : phone;
+                displayPhone = displayPhone.replace(/(\d{4})/g, '$1 ').trim();
 
                 if (whatsappFloating) {
                     whatsappFloating.href = message.startsWith('https://') ? message : 'https://' + message;
