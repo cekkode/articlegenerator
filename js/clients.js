@@ -4,7 +4,7 @@ script.src = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.m
 document.getElementsByTagName('head')[0].appendChild(script);
 
 // Version of the script
-var version = "1.0.5";
+var version = "1.0.6";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
@@ -22,7 +22,7 @@ script.onload = function () {
         complete: function (results) {
             var data = results.data;
             var page = window.location.pathname;
-            var pageName = page.split('/')[1].split('.')[0].split('-').slice(-1)[0];
+            var pageName = page.split('/')[2].split('.')[0]; // Corrected this line
 
             for (var i = 0; i < data.length; i++) {
                 if (data[i]['📍'] && data[i]['📍'].toLowerCase().includes(pageName.toLowerCase())) {
@@ -41,8 +41,4 @@ script.onload = function () {
             console.error("Reason:", reason);
         }
     });
-};
-
-script.onerror = function() {
-    console.error("Failed to load PapaParse library");
 };
