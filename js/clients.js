@@ -1,5 +1,5 @@
 // Version of the script
-var version = "1.1.3";
+var version = "1.1.4";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
@@ -51,14 +51,16 @@ fetch(url)
                 var whatsappFloating = document.querySelector('.whatsapp-floating a');
                 var tlpFloating = document.querySelector('.tlp-floating a');
 
+                var displayPhone = phone.startsWith('62') ? '0' + phone.slice(2) : phone;
+
                 if (whatsappFloating) {
                     whatsappFloating.href = message.startsWith('https://') ? message : 'https://' + message;
-                    whatsappFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-Y1SNUYeVK44/XhZwF187--I/AAAAAAAAHfA/lfOZFsZCF885e8rLL6NleS8vxHTcz_v1ACLcBGAsYHQ/s1600/whatsapp%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${phone} (${person})</span>`;
+                    whatsappFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-Y1SNUYeVK44/XhZwF187--I/AAAAAAAAHfA/lfOZFsZCF885e8rLL6NleS8vxHTcz_v1ACLcBGAsYHQ/s1600/whatsapp%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${displayPhone} (${person})</span>`;
                 }
 
                 if (tlpFloating) {
                     tlpFloating.href = 'tel:' + phone;
-                    tlpFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-37NtuGBQHdw/XhZwF_W04vI/AAAAAAAAHe8/6QEm7CRzPoMfN01Yl3stD89xpmuFUcTyQCLcBGAsYHQ/s1600/phone%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${phone} (${person})</span>`;
+                    tlpFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-37NtuGBQHdw/XhZwF_W04vI/AAAAAAAAHe8/6QEm7CRzPoMfN01Yl3stD89xpmuFUcTyQCLcBGAsYHQ/s1600/phone%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${displayPhone} (${person})</span>`;
                 }
 
                 break;
