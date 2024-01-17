@@ -4,7 +4,7 @@ script.src = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.m
 document.getElementsByTagName('head')[0].appendChild(script);
 
 // Version of the script
-var version = "1.0.0";
+var version = "1.0.1";
 console.log("Script Version: " + version);
 
 // Wait for PapaParse to load
@@ -14,7 +14,7 @@ script.onload = function () {
     var url = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/gviz/tq?tqx=out:csv&sheet=' + domain;
 
     // Use CORS proxy server
-    url = 'https://cors-anywhere.herokuapp.com/' + url;
+    // url = 'https://cors-anywhere.herokuapp.com/' + url;
 
     Papa.parse(url, {
         download: true,
