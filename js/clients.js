@@ -1,5 +1,5 @@
 // Version of the script
-var version = "1.0.8";
+var version = "1.0.9";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
@@ -17,7 +17,8 @@ fetch(url)
     .then(response => response.json())
     .then(data => {
         var page = window.location.pathname;
-        var pageName = page.split('/')[2].split('.')[0];
+        var pageParts = page.split('/');
+        var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
 
         var headers = data.values[0];
         var personIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':🧑🏻') : headers.indexOf('🧑🏻');
@@ -26,7 +27,7 @@ fetch(url)
         var tagIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':🏷️') : headers.indexOf('🏷️');
 
         for (var i = 1; i < data.values.length; i++) {
-            if (data.values[i][personIndex] && data.values[i][personIndex].toLowerCase().includes(pageName.toLowerCase())) {
+            if (data.values[i][personIndex] && (data.values[i][personIndex].toLowerCase().includes(pageName.toLowerCase()) || data.values[i][personIndex].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
                 console.log('🧑🏻: ' + data.values[i][personIndex]);
                 console.log('📞: ' + data.values[i][phoneIndex]);
                 console.log('💬: ' + data.values[i][messageIndex]);
