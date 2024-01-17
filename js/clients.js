@@ -1,6 +1,6 @@
 // Version of the script
 var version = "1.1.7";
-console.log("Script Version: " + version);
+console.log("Client JS Script Version: " + version);
 
 // Google Cloud API key
 var apiKey = 'AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo';
