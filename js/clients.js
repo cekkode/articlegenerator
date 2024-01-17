@@ -1,13 +1,17 @@
 // Version of the script
-var version = "1.0.7";
+var version = "1.0.8";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
 var apiKey = 'AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo';
 
 var domain = window.location.hostname;
+var domainParts = domain.split('.');
+var subdomain = domainParts.length > 2 ? domainParts[0] : null;
+var mainDomain = domainParts.length > 2 ? domainParts.slice(1).join('.') : domain;
+
 var sheetId = '1bwvWm-HABNjnDPpbCr77XQ1dmw1XmsSwOaAWvxIv5t4';
-var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + sheetId + '/values/' + domain + '?key=' + apiKey;
+var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + sheetId + '/values/' + mainDomain + '?key=' + apiKey;
 
 fetch(url)
     .then(response => response.json())
@@ -16,14 +20,13 @@ fetch(url)
         var pageName = page.split('/')[2].split('.')[0];
 
         var headers = data.values[0];
-        var locationIndex = headers.indexOf('📍');
-        var personIndex = headers.indexOf('🧑🏻');
-        var phoneIndex = headers.indexOf('📞');
-        var messageIndex = headers.indexOf('💬');
-        var tagIndex = headers.indexOf('🏷️');
+        var personIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':🧑🏻') : headers.indexOf('🧑🏻');
+        var phoneIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':📞') : headers.indexOf('📞');
+        var messageIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':💬') : headers.indexOf('💬');
+        var tagIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':🏷️') : headers.indexOf('🏷️');
 
         for (var i = 1; i < data.values.length; i++) {
-            if (data.values[i][locationIndex] && data.values[i][locationIndex].toLowerCase().includes(pageName.toLowerCase())) {
+            if (data.values[i][personIndex] && data.values[i][personIndex].toLowerCase().includes(pageName.toLowerCase())) {
                 console.log('🧑🏻: ' + data.values[i][personIndex]);
                 console.log('📞: ' + data.values[i][phoneIndex]);
                 console.log('💬: ' + data.values[i][messageIndex]);
