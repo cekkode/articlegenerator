@@ -4,7 +4,7 @@ script.src = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.m
 document.getElementsByTagName('head')[0].appendChild(script);
 
 // Version of the script
-var version = "1.0.4";
+var version = "1.0.5";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
@@ -25,7 +25,7 @@ script.onload = function () {
             var pageName = page.split('/')[1].split('.')[0].split('-').slice(-1)[0];
 
             for (var i = 0; i < data.length; i++) {
-                if (data[i]['📍'].toLowerCase().includes(pageName.toLowerCase())) {
+                if (data[i]['📍'] && data[i]['📍'].toLowerCase().includes(pageName.toLowerCase())) {
                     console.log('🧑🏻: ' + data[i]['🧑🏻']);
                     console.log('📞: ' + data[i]['📞']);
                     console.log('💬: ' + data[i]['💬']);
