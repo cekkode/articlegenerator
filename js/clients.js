@@ -1,5 +1,5 @@
 // Version of the script
-var version = "1.0.9";
+var version = "1.1.0";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
@@ -7,8 +7,20 @@ var apiKey = 'AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo';
 
 var domain = window.location.hostname;
 var domainParts = domain.split('.');
-var subdomain = domainParts.length > 2 ? domainParts[0] : null;
-var mainDomain = domainParts.length > 2 ? domainParts.slice(1).join('.') : domain;
+var subdomain = null;
+var mainDomain = null;
+
+if (domainParts.length === 3 && domainParts[1].length === 2) {
+    // This is a domain like jalan.co.id
+    mainDomain = domainParts.join('.');
+} else if (domainParts.length > 2) {
+    // This is a domain with a subdomain
+    subdomain = domainParts[0].toUpperCase();
+    mainDomain = domainParts.slice(1).join('.');
+} else {
+    // This is a domain without a subdomain
+    mainDomain = domain;
+}
 
 var sheetId = '1bwvWm-HABNjnDPpbCr77XQ1dmw1XmsSwOaAWvxIv5t4';
 var url = 'https://sheets.googleapis.com/v4/spreadsheets/' + sheetId + '/values/' + mainDomain + '?key=' + apiKey;
@@ -21,10 +33,10 @@ fetch(url)
         var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
 
         var headers = data.values[0];
-        var personIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':🧑🏻') : headers.indexOf('🧑🏻');
-        var phoneIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':📞') : headers.indexOf('📞');
-        var messageIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':💬') : headers.indexOf('💬');
-        var tagIndex = subdomain ? headers.indexOf(subdomain.toUpperCase() + ':🏷️') : headers.indexOf('🏷️');
+        var personIndex = subdomain ? headers.indexOf(subdomain + ':🧑🏻') : headers.indexOf('🧑🏻');
+        var phoneIndex = subdomain ? headers.indexOf(subdomain + ':📞') : headers.indexOf('📞');
+        var messageIndex = subdomain ? headers.indexOf(subdomain + ':💬') : headers.indexOf('💬');
+        var tagIndex = subdomain ? headers.indexOf(subdomain + ':🏷️') : headers.indexOf('🏷️');
 
         for (var i = 1; i < data.values.length; i++) {
             if (data.values[i][personIndex] && (data.values[i][personIndex].toLowerCase().includes(pageName.toLowerCase()) || data.values[i][personIndex].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
