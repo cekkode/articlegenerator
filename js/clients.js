@@ -1,5 +1,5 @@
 // Version of the script
-var version = "1.1.2";
+var version = "1.1.3";
 console.log("Script Version: " + version);
 
 // Google Cloud API key
@@ -38,10 +38,29 @@ fetch(url)
 
         for (var i = 1; i < data.values.length; i++) {
             if (data.values[i][locationIndex] && (data.values[i][locationIndex].toLowerCase().includes(pageName.toLowerCase()) || data.values[i][locationIndex].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
-                console.log('🧑🏻: ' + data.values[i][personIndex]);
-                console.log('📞: ' + data.values[i][phoneIndex]);
-                console.log('💬: ' + data.values[i][messageIndex]);
-                console.log('🏷️: ' + data.values[i][tagIndex]);
+                var person = data.values[i][personIndex];
+                var phone = data.values[i][phoneIndex];
+                var message = data.values[i][messageIndex];
+                var tag = data.values[i][tagIndex];
+
+                console.log('🧑🏻: ' + person);
+                console.log('📞: ' + phone);
+                console.log('💬: ' + message);
+                console.log('🏷️: ' + tag);
+
+                var whatsappFloating = document.querySelector('.whatsapp-floating a');
+                var tlpFloating = document.querySelector('.tlp-floating a');
+
+                if (whatsappFloating) {
+                    whatsappFloating.href = message.startsWith('https://') ? message : 'https://' + message;
+                    whatsappFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-Y1SNUYeVK44/XhZwF187--I/AAAAAAAAHfA/lfOZFsZCF885e8rLL6NleS8vxHTcz_v1ACLcBGAsYHQ/s1600/whatsapp%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${phone} (${person})</span>`;
+                }
+
+                if (tlpFloating) {
+                    tlpFloating.href = 'tel:' + phone;
+                    tlpFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-37NtuGBQHdw/XhZwF_W04vI/AAAAAAAAHe8/6QEm7CRzPoMfN01Yl3stD89xpmuFUcTyQCLcBGAsYHQ/s1600/phone%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${phone} (${person})</span>`;
+                }
+
                 break;
             }
         }
