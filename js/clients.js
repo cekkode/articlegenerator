@@ -1,5 +1,5 @@
 // Version of the script
-var version = "1.1.8";
+var version = "1.1.9";
 console.log("Client JS Script Version: " + version);
 
 // Google Cloud API key
@@ -49,6 +49,7 @@ function processData(data) {
     var locationIndex = headers.indexOf('📍');
     var personIndex = subdomain ? headers.indexOf(subdomain + '🧑🏻') : headers.indexOf('🧑🏻');
     var numberIndex = subdomain ? headers.indexOf(subdomain + '#️⃣') : headers.indexOf('#️⃣');
+    var trackIndex = subdomain ? headers.indexOf(subdomain + '📊') : headers.indexOf('📊');
     var phoneIndex = subdomain ? headers.indexOf(subdomain + '📞') : headers.indexOf('📞');
     var messageIndex = subdomain ? headers.indexOf(subdomain + '💬') : headers.indexOf('💬');
     var tagIndex = subdomain ? headers.indexOf(subdomain + '🏷️') : headers.indexOf('🏷️');
@@ -57,12 +58,14 @@ function processData(data) {
         if (data.values[i][locationIndex] && (data.values[i][locationIndex].toLowerCase().includes(pageName.toLowerCase()) || data.values[i][locationIndex].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
             var person = data.values[i][personIndex];
             var number = data.values[i][numberIndex];
+            var track = data.values[i][trackIndex];
             var phone = data.values[i][phoneIndex];
             var message = data.values[i][messageIndex];
             var tag = data.values[i][tagIndex];
 
             console.log('🧑🏻: ' + person);
             console.log('#️⃣: ' + number);
+            console.log('📊: ' + track);
             console.log('📞: ' + phone);
             console.log('💬: ' + message);
             console.log('🏷️: ' + tag);
@@ -74,12 +77,12 @@ function processData(data) {
             displayNumber = displayNumber.replace(/(\d{4})/g, '$1 ').trim();
 
             if (whatsappFloating) {
-                whatsappFloating.href = message.startsWith('https://') ? message : 'https://' + message;
+                whatsappFloating.href = track.startsWith('https://') ? track + '/' + message : 'https://' + track + '/' + message;
                 whatsappFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-Y1SNUYeVK44/XhZwF187--I/AAAAAAAAHfA/lfOZFsZCF885e8rLL6NleS8vxHTcz_v1ACLcBGAsYHQ/s1600/whatsapp%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${displayNumber} (${person})</span>`;
             }
 
             if (tlpFloating) {
-                tlpFloating.href = phone.startsWith('https://') ? phone : 'https://' + phone;
+                tlpFloating.href = track.startsWith('https://') ? track + '/' + phone : 'https://' + track + '/' + phone;
                 tlpFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-37NtuGBQHdw/XhZwF_W04vI/AAAAAAAAHe8/6QEm7CRzPoMfN01Yl3stD89xpmuFUcTyQCLcBGAsYHQ/s1600/phone%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${displayNumber} (${person})</span>`;
             }
 
