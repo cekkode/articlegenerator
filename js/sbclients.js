@@ -28,7 +28,7 @@ var storedVersion = localStorage.getItem('version');
 var data = localStorage.getItem('sheetData');
 var lastFetch = localStorage.getItem('lastFetch');
 
-if (data && lastFetch && new Date().getTime() - lastFetch < 365 * 24 * 60 * 60 * 1000 && version === storedVersion) {
+if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000 && version === storedVersion) {
     processData(JSON.parse(data));
 } else {
     supabase
