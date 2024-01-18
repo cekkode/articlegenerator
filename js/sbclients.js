@@ -1,8 +1,6 @@
 var version = "0.0.2";
 console.log("Supabase Client JS Script Version: " + version);
 
-import { createClient } from '@supabase/supabase-js'
-
 // Supabase API key and URL
 const supabaseUrl = 'https://mwikqvfpuxttqjucmhoj.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM';
