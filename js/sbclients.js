@@ -1,14 +1,14 @@
-var version = "0.0.5";
+var version = "0.0.6";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest';
+script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js';
 document.head.appendChild(script);
 
 script.onload = function() {
   const supabaseUrl = 'https://mwikqvfpuxttqjucmhoj.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM';
-  const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
+  const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 var domain = window.location.hostname;
 var domainParts = domain.split('.');
