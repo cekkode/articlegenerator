@@ -1,4 +1,4 @@
-var version = "0.0.1";
+var version = "0.0.2";
 console.log("Supabase Client JS Script Version: " + version);
 
 // Supabase API key and URL
@@ -47,13 +47,13 @@ function processData(data) {
     var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
 
     for (var i = 0; i < data.length; i++) {
-        if (data[i].location && (data[i].location.toLowerCase().includes(pageName.toLowerCase()) || data[i].location.toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
-            var person = data[i].person;
-            var number = data[i].number;
-            var track = data[i].track;
-            var phone = data[i].phone;
-            var message = data[i].message;
-            var tag = data[i].tag;
+        if (data[i]['📍'] && (data[i]['📍'].toLowerCase().includes(pageName.toLowerCase()) || data[i]['📍'].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
+            var person = data[i][subdomain ? subdomain + '🧑🏻' : '🧑🏻'];
+            var number = data[i][subdomain ? subdomain + '#️⃣' : '#️⃣'];
+            var track = data[i][subdomain ? subdomain + '📊' : '📊'];
+            var phone = data[i][subdomain ? subdomain + '📞' : '📞'];
+            var message = data[i][subdomain ? subdomain + '💬' : '💬'];
+            var tag = data[i][subdomain ? subdomain + '🏷️' : '🏷️'];
 
             console.log('🧑🏻: ' + person);
             console.log('#️⃣: ' + number);
