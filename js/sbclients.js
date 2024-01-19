@@ -1,4 +1,4 @@
-var version = "0.0.12";
+var version = "0.0.13";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -39,27 +39,16 @@ if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000 
     if (error) {
         console.error('Error:', error);
     } else {
+        console.log('Fetched data:', validMainDomain); // Log the fetched data
         localStorage.setItem('version', version);
         localStorage.setItem('sheetData', JSON.stringify(validMainDomain));
         localStorage.setItem('lastFetch', new Date().getTime());
         processData(validMainDomain);
     }
-      //  .from(mainDomain)
-      //  .select('*')
-      //  .then(data => {
-      //      console.log('Data:', data);  // Add this line
-
-      //      localStorage.setItem('version', version);
-      //      localStorage.setItem('sheetData', JSON.stringify(data));
-      //      localStorage.setItem('lastFetch', new Date().getTime());
-      //      processData(data.data);
-      //  })
-      //  .catch(err => {
-      //      console.error('Error:', err);  // Add this line
-      //  });
 }
 
 function processData(data) {
+    console.log('Processing data:', data); // Log the data being processed
     var page = window.location.pathname;
     var pageParts = page.split('/');
     var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
