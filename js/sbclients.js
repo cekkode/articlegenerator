@@ -1,4 +1,4 @@
-var version = "0.0.45";
+var version = "0.0.46";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -83,21 +83,6 @@ if (row) {
     const whatsappSpan = whatsappElement.querySelector('span');
     const tlpElement = document.querySelector('.tlp-floating a');
     const tlpSpan = tlpElement.querySelector('span');
-  
-    if (row[columnPrefix + '🧑🏻'] === 'HIDE' || row[columnPrefix + '#️⃣'] === 'HIDE' || row[columnPrefix + '📊'] === 'HIDE' || row[columnPrefix + '📞'] === 'HIDE' || row[columnPrefix + '💬'] === 'HIDE' || row[columnPrefix + '🏷️'] === 'HIDE') {
-        whatsappElement.style.cssText = 'display: none; visibility: hidden;';
-        tlpElement.style.cssText = 'display: none; visibility: hidden;';
-    } else {
-    // Update the href and text content of the whatsappElement
-    whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
-    whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-
-    // Update the href and text content of the tlpElement
-    tlpElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
-    tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-    whatsappElement.style.display = 'block';
-    tlpElement.style.display = 'block';
-    }
 
     // Get all text nodes in the document
     var textNodes = [];
@@ -109,13 +94,30 @@ if (row) {
     // Define the regex pattern to match the phone number and name format
     var regex = /\d{4} \d{4} \d{4} \((.*?)\)/g;
 
+    // Flag to check if data should be hidden
+    var shouldHide = row[columnPrefix + '🧑🏻'] === 'HIDE' || row[columnPrefix + '#️⃣'] === 'HIDE' || row[columnPrefix + '📊'] === 'HIDE' || row[columnPrefix + '📞'] === 'HIDE' || row[columnPrefix + '💬'] === 'HIDE' || row[columnPrefix + '🏷️'] === 'HIDE';
+
+    if (shouldHide) {
+        whatsappElement.style.cssText = 'display: none; visibility: hidden;';
+        tlpElement.style.cssText = 'display: none; visibility: hidden;';
+    } else {
+        // Update the href and text content of the whatsappElement
+        whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+        whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+
+        // Update the href and text content of the tlpElement
+        tlpElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
+        tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+        whatsappElement.style.display = 'block';
+        tlpElement.style.display = 'block';
+    }
+
     // Iterate over each text node
     textNodes.forEach(function(node) {
         // If the node's text matches the regex pattern
         if (regex.test(node.nodeValue)) {
-            // Replace the matched text with the formattedNumber and name
-            node.nodeValue = node.nodeValue.replace(regex, formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
+            // Replace the matched text based on the shouldHide flag
+            node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : node.nodeValue.replace(regex, formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
         }
-});
-}
-}
+    });
+}}
