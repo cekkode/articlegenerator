@@ -1,4 +1,4 @@
-var version = "0.0.33";
+var version = "0.0.34";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -23,6 +23,11 @@ if (domainParts.length === 3 && domainParts[1].length === 2) {
 } else {
     mainDomain = domain;
 }
+
+var page = window.location.pathname;
+var pageParts = page.split('/');
+var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/[-\s]/g, '').toLowerCase();
+console.log('pageName:', pageName);
 
 var storedVersion = localStorage.getItem('version');
 var data = localStorage.getItem('sheetData');
