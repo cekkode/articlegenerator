@@ -1,4 +1,4 @@
-var version = "0.0.17";
+var version = "0.0.18";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -11,23 +11,23 @@ script.onload = async function() {
   const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // Test connection
-async function testConnection() {
-    try {
-        const { data, error } = await supabase
-            .from('testing')
-            .select('*')
-            .limit(1);
-        if (error) {
-            console.error('Error connecting to Supabase:', error.message);
-        } else {
-            console.log('Successfully connected to Supabase. Data:', data);
-        }
-    } catch (error) {
-        console.error('Error connecting to Supabase:', error.message);
-    }
-}
-
-testConnection();
+// async function testConnection() {
+//     try {
+//         const { data, error } = await supabase
+//             .from('testing')
+//             .select('*')
+//             .limit(1);
+//         if (error) {
+//             console.error('Error connecting to Supabase:', error.message);
+//         } else {
+//             console.log('Successfully connected to Supabase. Data:', data);
+//         }
+//     } catch (error) {
+//         console.error('Error connecting to Supabase:', error.message);
+//     }
+// }
+// 
+// testConnection();
 
 var domain = window.location.hostname;
 var domainParts = domain.split('.');
@@ -53,7 +53,7 @@ if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000 
     processData(JSON.parse(data));
 } else {
     console.log('Accessing table:', mainDomain);
-    let { data: MainDomain, error } = await supabase
+    const { data, error } = await supabase
         .from(mainDomain)
         .select('*');
     if (error) {
