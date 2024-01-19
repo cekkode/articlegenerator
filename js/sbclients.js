@@ -1,4 +1,4 @@
-var version = "0.0.46";
+var version = "0.0.47";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -79,8 +79,10 @@ if (row) {
     const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
   
     // Get the HTML elements
+    const whatsappFloat = document.querySelector('.whatsapp-floating');
     const whatsappElement = document.querySelector('.whatsapp-floating a');
     const whatsappSpan = whatsappElement.querySelector('span');
+    const tlpFloat = document.querySelector('.tlp-floating');
     const tlpElement = document.querySelector('.tlp-floating a');
     const tlpSpan = tlpElement.querySelector('span');
 
@@ -98,8 +100,8 @@ if (row) {
     var shouldHide = row[columnPrefix + '🧑🏻'] === 'HIDE' || row[columnPrefix + '#️⃣'] === 'HIDE' || row[columnPrefix + '📊'] === 'HIDE' || row[columnPrefix + '📞'] === 'HIDE' || row[columnPrefix + '💬'] === 'HIDE' || row[columnPrefix + '🏷️'] === 'HIDE';
 
     if (shouldHide) {
-        whatsappElement.style.cssText = 'display: none; visibility: hidden;';
-        tlpElement.style.cssText = 'display: none; visibility: hidden;';
+        whatsappFloat.style.cssText = 'display: none; visibility: hidden;';
+        tlpFloat.style.cssText = 'display: none; visibility: hidden;';
     } else {
         // Update the href and text content of the whatsappElement
         whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
@@ -108,8 +110,6 @@ if (row) {
         // Update the href and text content of the tlpElement
         tlpElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
         tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-        whatsappElement.style.display = 'block';
-        tlpElement.style.display = 'block';
     }
 
     // Iterate over each text node
