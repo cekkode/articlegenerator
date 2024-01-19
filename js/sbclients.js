@@ -1,4 +1,4 @@
-var version = "0.0.35";
+var version = "0.0.36";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -30,8 +30,6 @@ var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/[-\
 console.log('pageName:', pageName);
 
 var storedVersion = localStorage.getItem('version');
-var data = localStorage.getItem('sheetData');
-var lastFetch = localStorage.getItem('lastFetch');
 
 console.log('Accessing table:', mainDomain);
 const { data, error } = await supabase
