@@ -1,4 +1,4 @@
-var version = "0.0.22";
+var version = "0.0.23";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -69,10 +69,6 @@ function processData(data) {
             console.log('📞: ' + phone);
             console.log('💬: ' + message);
             console.log('🏷️: ' + tag);
-        } else {
-            console.log('No matching data found for pageName: ' + pageName);
-        }
-    }
 
             var whatsappFloating = document.querySelector('.whatsapp-floating a');
             var tlpFloating = document.querySelector('.tlp-floating a');
@@ -90,6 +86,9 @@ function processData(data) {
                 tlpFloating.innerHTML = `<img src="https://1.bp.blogspot.com/-37NtuGBQHdw/XhZwF_W04vI/AAAAAAAAHe8/6QEm7CRzPoMfN01Yl3stD89xpmuFUcTyQCLcBGAsYHQ/s1600/phone%2Bicon.png" alt="whatsapp" style="height:18px !important; margin-right:5px;  margin-top:7px;  cursor:pointer; float:left;"><span style="float:right;">${displayNumber} (${person})</span>`;
             }
 
-            break;
+            break; // This should be inside the if statement
+        } else {
+            console.log('No matching data found for pageName: ' + pageName);
         }
-    };
+    }
+}}
