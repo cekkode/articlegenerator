@@ -1,4 +1,4 @@
-var version = "0.0.44";
+var version = "0.0.45";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -85,8 +85,8 @@ if (row) {
     const tlpSpan = tlpElement.querySelector('span');
   
     if (row[columnPrefix + '🧑🏻'] === 'HIDE' || row[columnPrefix + '#️⃣'] === 'HIDE' || row[columnPrefix + '📊'] === 'HIDE' || row[columnPrefix + '📞'] === 'HIDE' || row[columnPrefix + '💬'] === 'HIDE' || row[columnPrefix + '🏷️'] === 'HIDE') {
-        whatsappElement.style.display = 'none';
-        tlpElement.style.display = 'none';
+        whatsappElement.style.cssText = 'display: none; visibility: hidden;';
+        tlpElement.style.cssText = 'display: none; visibility: hidden;';
     } else {
     // Update the href and text content of the whatsappElement
     whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
@@ -98,5 +98,24 @@ if (row) {
     whatsappElement.style.display = 'block';
     tlpElement.style.display = 'block';
     }
+
+    // Get all text nodes in the document
+    var textNodes = [];
+    var walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    while (node = walk.nextNode()) {
+        textNodes.push(node);
+    }
+
+    // Define the regex pattern to match the phone number and name format
+    var regex = /\d{4} \d{4} \d{4} \((.*?)\)/g;
+
+    // Iterate over each text node
+    textNodes.forEach(function(node) {
+        // If the node's text matches the regex pattern
+        if (regex.test(node.nodeValue)) {
+            // Replace the matched text with the formattedNumber and name
+            node.nodeValue = node.nodeValue.replace(regex, formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
+        }
+});
 }
 }
