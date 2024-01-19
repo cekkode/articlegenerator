@@ -1,4 +1,4 @@
-var version = "0.0.29";
+var version = "0.0.30";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -37,6 +37,7 @@ if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000 
     const { data, error } = await supabase
         .from(mainDomain)
         .select('*');
+        console.log('Fetched data:', data); // Log the fetched data
     if (error) {
         console.error('Error:', error);
     } else {
