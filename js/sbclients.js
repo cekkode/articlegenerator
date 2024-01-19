@@ -1,4 +1,4 @@
-var version = "0.0.37";
+var version = "0.0.38";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -41,14 +41,29 @@ const { data, error } = await supabase
 const row = data.find(item => item['📍'].toLowerCase() === pageName);
 
 if (row) {
-  // Log the required data
-  console.log('🧑🏻: ' + row['🧑🏻']);
-  console.log('#️⃣: ' + row['#️⃣']);
-  console.log('📊: ' + row['📊']);
-  console.log('📞: ' + row['📞']);
-  console.log('💬: ' + row['💬']);
-  console.log('🏷️: ' + row['🏷️']);
-} else {
-  console.log('No matching row found for pageName: ' + pageName);
-}
+    // Log the required data
+    console.log('🧑🏻: ' + row['🧑🏻']);
+    console.log('#️⃣: ' + row['#️⃣']);
+    console.log('📊: ' + row['📊']);
+    console.log('📞: ' + row['📞']);
+    console.log('💬: ' + row['💬']);
+    console.log('🏷️: ' + row['🏷️']);
+  
+    // Format the phone number
+    const formattedNumber = row['#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
+  
+    // Get the HTML elements
+    const whatsappElement = document.querySelector('.whatsapp-floating a');
+    const tlpElement = document.querySelector('.tlp-floating a');
+  
+    // Update the href and text content of the whatsappElement
+    whatsappElement.href = `https://` + row['📊'] + `/` + row['💬'];
+    whatsappElement.textContent = formattedNumber + ' (' + row['🧑🏻'] + ')';
+  
+    // Update the href and text content of the tlpElement
+    tlpElement.href = `https://` + row['📊'] + `/` + row['📞'];
+    tlpElement.textContent = formattedNumber + ' (' + row['🧑🏻'] + ')';
+  } else {
+    console.log('No matching row found for pageName: ' + pageName);
+  }
 }
