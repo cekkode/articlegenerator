@@ -1,4 +1,4 @@
-var version = "0.0.21";
+var version = "0.0.22";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -54,9 +54,6 @@ function processData(data) {
     var pageParts = page.split('/');
     var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
 
-  // Convert pageName to title case
-//  pageName = pageName.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-
     for (var i = 0; i < data.length; i++) {
         if (data[i]['📍'] && (data[i]['📍'].toLowerCase().includes(pageName.toLowerCase()) || data[i]['📍'].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
             var person = data[i][subdomain ? subdomain + '🧑🏻' : '🧑🏻'];
@@ -95,5 +92,4 @@ function processData(data) {
 
             break;
         }
-    }
-}};
+    };
