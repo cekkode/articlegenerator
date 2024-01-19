@@ -1,4 +1,4 @@
-var version = "0.0.42";
+var version = "0.0.43";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -29,6 +29,7 @@ var pageParts = page.split('/');
 var pageName = pageParts[pageParts.length - 1].replace('.html', '').toLowerCase();
 const pageNameParts = pageName.split('-');
 console.log('pageName:', pageName);
+console.log('pageNameParts:', pageNameParts);
 
 var storedVersion = localStorage.getItem('version');
 
