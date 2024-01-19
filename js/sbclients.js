@@ -1,4 +1,4 @@
-var version = "0.0.19";
+var version = "0.0.20";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -63,7 +63,7 @@ if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000 
         localStorage.setItem('version', version);
         localStorage.setItem('sheetData', JSON.stringify(mainDomain));
         localStorage.setItem('lastFetch', new Date().getTime());
-        processData(MainDomain);
+        processData(mainDomain);
     }
 }
 
