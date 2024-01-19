@@ -1,4 +1,4 @@
-var version = "0.0.39";
+var version = "0.0.40";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -41,30 +41,41 @@ const { data, error } = await supabase
 const row = data.find(item => item['📍'].toLowerCase() === pageName);
 
 if (row) {
-    // Log the required data
-    console.log('🧑🏻: ' + row['🧑🏻']);
-    console.log('#️⃣: ' + row['#️⃣']);
-    console.log('📊: ' + row['📊']);
-    console.log('📞: ' + row['📞']);
-    console.log('💬: ' + row['💬']);
-    console.log('🏷️: ' + row['🏷️']);
+    // Determine the column prefix based on whether the script is executed from a subdomain
+    let columnPrefix = subdomain ? subdomain.toUpperCase() : '';
   
+    // Check if the column with the prefix exists, if not, try with a space after the prefix
+    if (!row.hasOwnProperty(columnPrefix + '🧑🏻')) {
+      columnPrefix += ' ';
+    }
+  
+    // Check if the column with the prefix exists, if not, try with lowercase prefix
+    if (!row.hasOwnProperty(columnPrefix + '🧑🏻')) {
+      columnPrefix = subdomain ? subdomain.toLowerCase() : '';
+    }
+   
+    // Log the required data
+    console.log('🧑🏻: ' + row[columnPrefix + '🧑🏻']);
+    console.log('#️⃣: ' + row[columnPrefix + '#️⃣']);
+    console.log('📊: ' + row[columnPrefix + '📊']);
+    console.log('📞: ' + row[columnPrefix + '📞']);
+    console.log('💬: ' + row[columnPrefix + '💬']);
+    console.log('🏷️: ' + row[columnPrefix + '🏷️']);
+
     // Format the phone number
-    const formattedNumber = row['#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
+    const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
   
     // Get the HTML elements
     const whatsappElement = document.querySelector('.whatsapp-floating a');
     const whatsappSpan = whatsappElement.querySelector('span');
     const tlpElement = document.querySelector('.tlp-floating a');
     const tlpSpan = tlpElement.querySelector('span');
-
+  
     // Update the href and text content of the whatsappElement
-    whatsappElement.href = `https://` + row['📊'] + `/` + row['💬'];
-    whatsappSpan.textContent = formattedNumber + ' (' + row['🧑🏻'] + ')';
-
+    whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+    whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+  
     // Update the href and text content of the tlpElement
-    tlpElement.href = `https://` + row['📊'] + `/` + row['📞'];
-    tlpSpan.textContent = formattedNumber + ' (' + row['🧑🏻'] + ')';
-} else {
-    console.log('No matching row found for pageName: ' + pageName);
-}}
+    tlpElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
+    tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+  }}
