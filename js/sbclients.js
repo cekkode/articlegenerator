@@ -1,4 +1,4 @@
-var version = "0.0.38";
+var version = "0.0.39";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -54,16 +54,17 @@ if (row) {
   
     // Get the HTML elements
     const whatsappElement = document.querySelector('.whatsapp-floating a');
+    const whatsappSpan = whatsappElement.querySelector('span');
     const tlpElement = document.querySelector('.tlp-floating a');
-  
+    const tlpSpan = tlpElement.querySelector('span');
+
     // Update the href and text content of the whatsappElement
     whatsappElement.href = `https://` + row['📊'] + `/` + row['💬'];
-    whatsappElement.textContent = formattedNumber + ' (' + row['🧑🏻'] + ')';
-  
+    whatsappSpan.textContent = formattedNumber + ' (' + row['🧑🏻'] + ')';
+
     // Update the href and text content of the tlpElement
     tlpElement.href = `https://` + row['📊'] + `/` + row['📞'];
-    tlpElement.textContent = formattedNumber + ' (' + row['🧑🏻'] + ')';
-  } else {
+    tlpSpan.textContent = formattedNumber + ' (' + row['🧑🏻'] + ')';
+} else {
     console.log('No matching row found for pageName: ' + pageName);
-  }
-}
+}}
