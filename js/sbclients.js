@@ -1,4 +1,4 @@
-var version = "0.0.24";
+var version = "0.0.25";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -55,8 +55,9 @@ function processData(data) {
     var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/[-\s]/g, '');
 
     for (var i = 0; i < data.length; i++) {
-        var locationName = data[i]['📍'].replace(/[-\s]/g, '');
-        if (locationName.toLowerCase() === pageName.toLowerCase()) {
+        if (data[i]['📍']) {
+            var locationName = data[i]['📍'].replace(/[-\s]/g, '');
+            if (locationName.toLowerCase() === pageName.toLowerCase()) {
             var person = data[i][subdomain ? subdomain + '🧑🏻' : '🧑🏻'];
             var number = data[i][subdomain ? subdomain + '#️⃣' : '#️⃣'];
             var track = data[i][subdomain ? subdomain + '📊' : '📊'];
@@ -92,4 +93,4 @@ function processData(data) {
             console.log('No matching data found for pageName: ' + pageName);
         }
     }
-}}
+}}}
