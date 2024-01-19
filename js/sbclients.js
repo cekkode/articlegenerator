@@ -1,4 +1,4 @@
-var version = "0.0.36";
+var version = "0.0.37";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -36,4 +36,19 @@ const { data, error } = await supabase
     .from(mainDomain)
     .select('*');
     console.log('Fetched data:', data); // Log the fetched data
+
+// Find the row that matches the pageName
+const row = data.find(item => item['📍'].toLowerCase() === pageName);
+
+if (row) {
+  // Log the required data
+  console.log('🧑🏻: ' + row['🧑🏻']);
+  console.log('#️⃣: ' + row['#️⃣']);
+  console.log('📊: ' + row['📊']);
+  console.log('📞: ' + row['📞']);
+  console.log('💬: ' + row['💬']);
+  console.log('🏷️: ' + row['🏷️']);
+} else {
+  console.log('No matching row found for pageName: ' + pageName);
+}
 }
