@@ -1,4 +1,4 @@
-var version = "0.0.14";
+var version = "0.0.15";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -33,6 +33,7 @@ var lastFetch = localStorage.getItem('lastFetch');
 if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000 && version === storedVersion) {
     processData(JSON.parse(data));
 } else {
+    console.log('Accessing table:', mainDomain);
     let { data: MainDomain, error } = await supabase
         .from(mainDomain)
         .select('*');
