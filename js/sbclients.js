@@ -1,4 +1,4 @@
-var version = "0.0.43";
+var version = "0.0.44";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -27,6 +27,11 @@ if (domainParts.length === 3 && domainParts[1].length === 2) {
 var page = window.location.pathname;
 var pageParts = page.split('/');
 var pageName = pageParts[pageParts.length - 1].replace('.html', '').toLowerCase();
+
+if (pageName === '') {
+    pageName = '(DEFAULT)';
+  }
+
 const pageNameParts = pageName.split('-');
 console.log('pageName:', pageName);
 console.log('pageNameParts:', pageNameParts);
@@ -40,7 +45,13 @@ const { data, error } = await supabase
     console.log('Fetched data:', data); // Log the fetched data
 
 // Find the row that matches the pageName
-const row = data.find(item => pageNameParts.some(part => item['📍'].toLowerCase() === part));
+const row = data.find(item => {
+    if (pageName === '(DEFAULT)') {
+      return item['📍'] === pageName;
+    } else {
+      return pageNameParts.some(part => item['📍'].toLowerCase() === part);
+    }
+  });
 
 if (row) {
     // Determine the column prefix based on whether the script is executed from a subdomain
@@ -73,11 +84,19 @@ if (row) {
     const tlpElement = document.querySelector('.tlp-floating a');
     const tlpSpan = tlpElement.querySelector('span');
   
+    if (row[columnPrefix + '🧑🏻'] === 'HIDE' || row[columnPrefix + '#️⃣'] === 'HIDE' || row[columnPrefix + '📊'] === 'HIDE' || row[columnPrefix + '📞'] === 'HIDE' || row[columnPrefix + '💬'] === 'HIDE' || row[columnPrefix + '🏷️'] === 'HIDE') {
+        whatsappElement.style.display = 'none';
+        tlpElement.style.display = 'none';
+    } else {
     // Update the href and text content of the whatsappElement
     whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
     whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-  
+
     // Update the href and text content of the tlpElement
     tlpElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
     tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-  }}
+    whatsappElement.style.display = 'block';
+    tlpElement.style.display = 'block';
+    }
+}
+}
