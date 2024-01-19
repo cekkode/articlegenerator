@@ -1,4 +1,4 @@
-var version = "0.0.20";
+var version = "0.0.21";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -9,25 +9,6 @@ script.onload = async function() {
   const supabaseUrl = 'https://mwikqvfpuxttqjucmhoj.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM';
   const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-// Test connection
-// async function testConnection() {
-//     try {
-//         const { data, error } = await supabase
-//             .from('testing')
-//             .select('*')
-//             .limit(1);
-//         if (error) {
-//             console.error('Error connecting to Supabase:', error.message);
-//         } else {
-//             console.log('Successfully connected to Supabase. Data:', data);
-//         }
-//     } catch (error) {
-//         console.error('Error connecting to Supabase:', error.message);
-//     }
-// }
-// 
-// testConnection();
 
 var domain = window.location.hostname;
 var domainParts = domain.split('.');
@@ -74,7 +55,7 @@ function processData(data) {
     var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
 
   // Convert pageName to title case
-  pageName = pageName.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+//  pageName = pageName.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
     for (var i = 0; i < data.length; i++) {
         if (data[i]['📍'] && (data[i]['📍'].toLowerCase().includes(pageName.toLowerCase()) || data[i]['📍'].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
@@ -91,6 +72,10 @@ function processData(data) {
             console.log('📞: ' + phone);
             console.log('💬: ' + message);
             console.log('🏷️: ' + tag);
+        } else {
+            console.log('No matching data found for pageName: ' + pageName);
+        }
+    }
 
             var whatsappFloating = document.querySelector('.whatsapp-floating a');
             var tlpFloating = document.querySelector('.tlp-floating a');
