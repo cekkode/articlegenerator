@@ -1,4 +1,4 @@
-var version = "0.0.34";
+var version = "0.0.35";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -33,22 +33,9 @@ var storedVersion = localStorage.getItem('version');
 var data = localStorage.getItem('sheetData');
 var lastFetch = localStorage.getItem('lastFetch');
 
-if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000 && version === storedVersion) {
-    processData(JSON.parse(data));
-} else {
-    console.log('Accessing table:', mainDomain);
-    const { data, error } = await supabase
-        .from(mainDomain)
-        .select('*');
-        console.log('Fetched data:', data); // Log the fetched data
-    if (error) {
-        console.error('Error:', error);
-    } else {
-        console.log('Fetched data:', mainDomain); // Log the fetched data
-        localStorage.setItem('version', version);
-        localStorage.setItem('sheetData', JSON.stringify(mainDomain));
-        localStorage.setItem('lastFetch', new Date().getTime());
-        processData(mainDomain);
-    }
-}
+console.log('Accessing table:', mainDomain);
+const { data, error } = await supabase
+    .from(mainDomain)
+    .select('*');
+    console.log('Fetched data:', data); // Log the fetched data
 }
