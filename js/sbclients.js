@@ -1,4 +1,4 @@
-var version = "0.0.31";
+var version = "0.0.32";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -57,8 +57,10 @@ function processData(data) {
     console.log('pageName:', pageName);
 
     for (var i = 0; i < data.length; i++) {
-        if (data[i].hasOwnProperty('📍')) {
-            var locationName = data[i]['📍'].replace(/[-\s]/g, '').toLowerCase();
+        var keys = Object.keys(data[i]);
+        var locationKey = keys.find(key => key.includes('📍'));
+        if (locationKey) {
+            var locationName = data[i][locationKey].replace(/[-\s]/g, '').toLowerCase();
             console.log('locationName:', locationName); // Log locationName for each iteration
         } else {
             console.log('No location data for row:', i);
