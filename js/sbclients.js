@@ -1,4 +1,4 @@
-var version = "0.0.23";
+var version = "0.0.24";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -52,10 +52,11 @@ function processData(data) {
     console.log('Processing data:', data); // Log the data being processed
     var page = window.location.pathname;
     var pageParts = page.split('/');
-    var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
+    var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/[-\s]/g, '');
 
     for (var i = 0; i < data.length; i++) {
-        if (data[i]['📍'] && (data[i]['📍'].toLowerCase().includes(pageName.toLowerCase()) || data[i]['📍'].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
+        var locationName = data[i]['📍'].replace(/[-\s]/g, '');
+        if (locationName.toLowerCase() === pageName.toLowerCase()) {
             var person = data[i][subdomain ? subdomain + '🧑🏻' : '🧑🏻'];
             var number = data[i][subdomain ? subdomain + '#️⃣' : '#️⃣'];
             var track = data[i][subdomain ? subdomain + '📊' : '📊'];
