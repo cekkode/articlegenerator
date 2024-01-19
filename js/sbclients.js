@@ -1,4 +1,4 @@
-var version = "0.0.40";
+var version = "0.0.41";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -55,12 +55,12 @@ if (row) {
     }
    
     // Log the required data
-    console.log('🧑🏻: ' + row[columnPrefix + '🧑🏻']);
-    console.log('#️⃣: ' + row[columnPrefix + '#️⃣']);
-    console.log('📊: ' + row[columnPrefix + '📊']);
-    console.log('📞: ' + row[columnPrefix + '📞']);
-    console.log('💬: ' + row[columnPrefix + '💬']);
-    console.log('🏷️: ' + row[columnPrefix + '🏷️']);
+    console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
+    console.log(columnPrefix + '#️⃣: ' + row[columnPrefix + '#️⃣']);
+    console.log(columnPrefix + '📊: ' + row[columnPrefix + '📊']);
+    console.log(columnPrefix + '📞: ' + row[columnPrefix + '📞']);
+    console.log(columnPrefix + '💬: ' + row[columnPrefix + '💬']);
+    console.log(columnPrefix + '🏷️: ' + row[columnPrefix + '🏷️']);
 
     // Format the phone number
     const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
