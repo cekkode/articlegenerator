@@ -1,4 +1,4 @@
-var version = "0.0.11";
+var version = "0.0.12";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -36,14 +36,13 @@ if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000 
     let { data: validMainDomain, error } = await supabase
         .from(mainDomain)
         .select('*');
-
     if (error) {
         console.error('Error:', error);
     } else {
         localStorage.setItem('version', version);
-        localStorage.setItem('sheetData', JSON.stringify(github_io));
+        localStorage.setItem('sheetData', JSON.stringify(validMainDomain));
         localStorage.setItem('lastFetch', new Date().getTime());
-        processData(github_io);
+        processData(validMainDomain);
     }
       //  .from(mainDomain)
       //  .select('*')
