@@ -1,4 +1,4 @@
-var version = "0.0.41";
+var version = "0.0.42";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -26,7 +26,8 @@ if (domainParts.length === 3 && domainParts[1].length === 2) {
 
 var page = window.location.pathname;
 var pageParts = page.split('/');
-var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/[-\s]/g, '').toLowerCase();
+var pageName = pageParts[pageParts.length - 1].replace('.html', '').toLowerCase();
+const pageNameParts = pageName.split('-');
 console.log('pageName:', pageName);
 
 var storedVersion = localStorage.getItem('version');
@@ -38,7 +39,7 @@ const { data, error } = await supabase
     console.log('Fetched data:', data); // Log the fetched data
 
 // Find the row that matches the pageName
-const row = data.find(item => item['📍'].toLowerCase() === pageName);
+const row = data.find(item => pageNameParts.some(part => item['📍'].toLowerCase() === part));
 
 if (row) {
     // Determine the column prefix based on whether the script is executed from a subdomain
