@@ -1,11 +1,11 @@
-var version = "0.0.9";
+var version = "0.0.11";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
 script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js';
 document.head.appendChild(script);
 
-script.onload = function() {
+script.onload = async function() {
   const supabaseUrl = 'https://mwikqvfpuxttqjucmhoj.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM';
   const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -24,6 +24,8 @@ if (domainParts.length === 3 && domainParts[1].length === 2) {
     mainDomain = domain;
 }
 
+var validMainDomain = mainDomain.replace(/\./g, '_');
+
 var storedVersion = localStorage.getItem('version');
 var data = localStorage.getItem('sheetData');
 var lastFetch = localStorage.getItem('lastFetch');
@@ -31,15 +33,18 @@ var lastFetch = localStorage.getItem('lastFetch');
 if (data && lastFetch && new Date().getTime() - lastFetch < 24 * 60 * 60 * 1000 && version === storedVersion) {
     processData(JSON.parse(data));
 } else {
-    supabase
-        .from('github.io')
-        .select('📍')
-        .then(data => {
-            console.log('Data:', data);
-        })
-        .catch(err => {
-            console.error('Error:', err);
-        });
+    let { data: validMainDomain, error } = await supabase
+        .from(mainDomain)
+        .select('*');
+
+    if (error) {
+        console.error('Error:', error);
+    } else {
+        localStorage.setItem('version', version);
+        localStorage.setItem('sheetData', JSON.stringify(github_io));
+        localStorage.setItem('lastFetch', new Date().getTime());
+        processData(github_io);
+    }
       //  .from(mainDomain)
       //  .select('*')
       //  .then(data => {
@@ -59,6 +64,9 @@ function processData(data) {
     var page = window.location.pathname;
     var pageParts = page.split('/');
     var pageName = pageParts[pageParts.length - 1].replace('.html', '').replace(/-/g, ' ');
+
+  // Convert pageName to title case
+  pageName = pageName.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
     for (var i = 0; i < data.length; i++) {
         if (data[i]['📍'] && (data[i]['📍'].toLowerCase().includes(pageName.toLowerCase()) || data[i]['📍'].toLowerCase().includes(pageName.replace(' ', '').toLowerCase()))) {
