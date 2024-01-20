@@ -1,9 +1,43 @@
-var version = "0.0.62";
+var version = "0.0.63";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
 script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js';
 document.head.appendChild(script);
+
+// Fetch data from Supabase
+const fetchData = async () => {
+    const { data, error } = await supabase
+        .from(mainDomain)
+        .select('*');
+
+    if (error) {
+        console.error('Error fetching data:', error);
+        return null;
+    }
+
+    // Store data in localStorage
+    localStorage.setItem('data', JSON.stringify(data));
+    localStorage.setItem('timestamp', Date.now());
+    localStorage.setItem('version', version);
+
+    return data;
+};
+
+// Get data from cache or fetch new data
+const getData = async () => {
+    const cachedData = localStorage.getItem('data');
+    const timestamp = localStorage.getItem('timestamp');
+    const cachedVersion = localStorage.getItem('version');
+
+    // If data is not in cache or data is older than one week or version has changed, fetch new data
+    if (!cachedData || !timestamp || Date.now() - timestamp > 7 * 24 * 60 * 60 * 1000 || version !== cachedVersion) {
+        return await fetchData();
+    }
+
+    // Otherwise, return cached data
+    return JSON.parse(cachedData);
+};
 
 script.onload = async function() {
     const supabaseUrl = 'https://mwikqvfpuxttqjucmhoj.supabase.co';
@@ -35,14 +69,10 @@ script.onload = async function() {
     const pageNameParts = pageName.split('-');
     console.log('pageName:', pageName);
     console.log('pageNameParts:', pageNameParts);
-
-    var storedVersion = localStorage.getItem('version');
-
     console.log('Accessing table:', mainDomain);
-    const { data, error } = await supabase
-        .from(mainDomain)
-        .select('*');
-        console.log('Fetched data:', data); // Log the fetched data
+    
+    const data = await getData();
+    console.log('Fetched data:', data); // Log the fetched data
 
     // Find the row that matches the pageName
     const row = data.find(item => {
