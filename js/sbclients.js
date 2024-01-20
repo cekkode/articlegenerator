@@ -1,4 +1,4 @@
-var version = "0.0.49";
+var version = "0.0.50";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -121,12 +121,15 @@ script.onload = async function() {
             }
             // If the node's parent is an anchor tag
             if (node.parentNode && node.parentNode.nodeName === 'A') {
-                // If data should be hidden, remove the href attribute
-                if (shouldHide) {
-                    node.parentNode.removeAttribute('href');
-                } else {
-                    // Otherwise, update the href attribute
-                    node.parentNode.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+                // If the href attribute contains the specific URL
+                if (node.parentNode.href.includes('what.sapp.my.id')) {
+                    // If data should be hidden, remove the anchor tag altogether
+                    if (shouldHide) {
+                        node.parentNode.remove();
+                    } else {
+                        // Otherwise, update the href attribute
+                        node.parentNode.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+                    }
                 }
             }
         });
