@@ -1,4 +1,4 @@
-var version = "0.0.55";
+var version = "0.0.56";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -151,6 +151,22 @@ script.onload = async function() {
                     anchor.textContent = shouldHide ? node.nodeValue.replace(regex, '') : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                     // Replace the text node with the new anchor tag
                     node.parentNode.replaceChild(anchor, node);
+
+                    // Get the computed style of the anchor tag
+                    var style = window.getComputedStyle(anchor);
+                    // Get the background color
+                    var backgroundColor = style.backgroundColor;
+                    // Convert the background color to RGB
+                    var rgb = backgroundColor.replace(/[^\d,]/g, '').split(',');
+                    // Calculate the brightness
+                    var brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+                    // If the brightness is less than 125, set the color of the anchor tag to white
+                    if (brightness < 125) {
+                        anchor.style.color = 'white';
+                    } else {
+                        // Otherwise, set the color of the anchor tag to black
+                        anchor.style.color = 'black';
+                    }
                 } else if (node.parentNode) {
                     // Replace the matched text based on the shouldHide flag
                     node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
