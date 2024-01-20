@@ -1,4 +1,4 @@
-var version = "0.0.61";
+var version = "0.0.62";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -105,11 +105,11 @@ script.onload = async function() {
         } else {
             // Update the href and text content of the whatsappElement
             whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
-            whatsappSpan.textContent = '💬 ' + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+            whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
 
             // Update the href and text content of the tlpElement
             tlpElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
-            tlpSpan.textContent = '📞 ' + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+            tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
         }
 
         // Get all anchor tags in the document
@@ -153,7 +153,7 @@ script.onload = async function() {
                     // Replace the text node with the new anchor tag
                     node.parentNode.replaceChild(anchor, node);
                     // Set the text content of the anchor tag
-                    anchor.textContent = shouldHide ? node.nodeValue.replace(regex, '') : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    anchor.textContent = shouldHide ? node.nodeValue.replace(regex, '') : '📞 ' + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
 
                     // Get the computed style of the anchor tag
                     var style = window.getComputedStyle(anchor);
@@ -172,7 +172,7 @@ script.onload = async function() {
                     }
                 } else if (node.parentNode) {
                     // Replace the matched text based on the shouldHide flag
-                    node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : '📞 ' + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                 }
             }
         });
