@@ -1,4 +1,4 @@
-var version = "0.0.63";
+var version = "0.0.64";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -6,7 +6,7 @@ script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supaba
 document.head.appendChild(script);
 
 // Fetch data from Supabase
-const fetchData = async () => {
+const fetchData = async (mainDomain) => {
     const { data, error } = await supabase
         .from(mainDomain)
         .select('*');
@@ -25,14 +25,14 @@ const fetchData = async () => {
 };
 
 // Get data from cache or fetch new data
-const getData = async () => {
+const getData = async (mainDomain) => {
     const cachedData = localStorage.getItem('data');
     const timestamp = localStorage.getItem('timestamp');
     const cachedVersion = localStorage.getItem('version');
 
     // If data is not in cache or data is older than one week or version has changed, fetch new data
     if (!cachedData || !timestamp || Date.now() - timestamp > 7 * 24 * 60 * 60 * 1000 || version !== cachedVersion) {
-        return await fetchData();
+        return await fetchData(mainDomain);
     }
 
     // Otherwise, return cached data
@@ -70,8 +70,9 @@ script.onload = async function() {
     console.log('pageName:', pageName);
     console.log('pageNameParts:', pageNameParts);
     console.log('Accessing table:', mainDomain);
-    
-    const data = await getData();
+
+    // Then pass it to getData
+    const data = await getData(mainDomain);
     console.log('Fetched data:', data); // Log the fetched data
 
     // Find the row that matches the pageName
