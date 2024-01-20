@@ -1,4 +1,4 @@
-var version = "0.0.66";
+var version = "0.0.67";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -6,15 +6,27 @@ script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supaba
 document.head.appendChild(script);
 
 // Fetch data from Supabase
-const fetchData = async (supabase, mainDomain) => {
+const fetchData = async (supabase, mainDomain, columnPrefix) => {
     console.log('Fetching new data...');
     const { data, error } = await supabase
         .from(mainDomain)
-        .select('*');
+        .select(`${columnPrefix}🧑🏻, ${columnPrefix}#️⃣, ${columnPrefix}📊, ${columnPrefix}📞, ${columnPrefix}💬, ${columnPrefix}🏷️`);
 
     if (error) {
         console.error('Error fetching data:', error);
         return null;
+    }
+
+    // If no data is returned or no column with columnPrefix, then only access column which has no columnPrefix at all
+    if (!data || data.length === 0 || !data[0].hasOwnProperty(`${columnPrefix}🧑🏻`)) {
+        const { data, error } = await supabase
+            .from(mainDomain)
+            .select('🧑🏻, #️⃣, 📊, 📞, 💬, 🏷️');
+
+        if (error) {
+            console.error('Error fetching data:', error);
+            return null;
+        }
     }
 
     // Store data in localStorage
@@ -26,14 +38,14 @@ const fetchData = async (supabase, mainDomain) => {
 };
 
 // Get data from cache or fetch new data
-const getData = async (supabase, mainDomain) => {
+const getData = async (supabase, mainDomain, columnPrefix) => {
     const cachedData = localStorage.getItem('data');
     const timestamp = localStorage.getItem('timestamp');
     const cachedVersion = localStorage.getItem('version');
 
     // If data is not in cache or data is older than one week or version has changed, fetch new data
     if (!cachedData || !timestamp || Date.now() - timestamp > 7 * 24 * 60 * 60 * 1000 || version !== cachedVersion) {
-        return await fetchData(supabase, mainDomain);
+        return await fetchData(supabase, mainDomain, columnPrefix);
     }
     console.log('Using cached data...');
     // Otherwise, return cached data
@@ -72,8 +84,8 @@ script.onload = async function() {
     console.log('pageNameParts:', pageNameParts);
     console.log('Accessing table:', mainDomain);
 
-    // Then pass supabase and mainDomain to getData
-    const data = await getData(supabase, mainDomain);
+    // Then pass supabase, mainDomain, and columnPrefix to getData
+    const data = await getData(supabase, mainDomain, columnPrefix);
     console.log('Fetched data:', data); // Log the fetched data
 
     // Find the row that matches the pageName
