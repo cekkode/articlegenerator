@@ -1,4 +1,4 @@
-var version = "0.0.48";
+var version = "0.0.49";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -120,7 +120,7 @@ script.onload = async function() {
                 node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : node.nodeValue.replace(regex, formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
             }
             // If the node's parent is an anchor tag
-            if (node.parentNode.nodeName === 'A') {
+            if (node.parentNode && node.parentNode.nodeName === 'A') {
                 // If data should be hidden, remove the href attribute
                 if (shouldHide) {
                     node.parentNode.removeAttribute('href');
