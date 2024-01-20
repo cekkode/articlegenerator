@@ -1,4 +1,4 @@
-var version = "0.0.52";
+var version = "0.0.53";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -141,17 +141,19 @@ script.onload = async function() {
         textNodes.forEach(function(node) {
             // If the node's text matches the regex pattern
             if (regex.test(node.nodeValue)) {
-                // Replace the matched text based on the shouldHide flag
-                node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : node.nodeValue.replace(regex, formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
-            }
-            // If the node's parent is an anchor tag
-            if (node.parentNode && node.parentNode.nodeName === 'A') {
-                // If data should be hidden, remove the href attribute
-                if (shouldHide) {
-                    node.parentNode.removeAttribute('href');
+                // If the node's parent is not an anchor tag
+                if (node.parentNode.nodeName !== 'A') {
+                    // Create a new anchor tag
+                    var anchor = document.createElement('a');
+                    // Set the href attribute of the anchor tag
+                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+                    // Set the text content of the anchor tag
+                    anchor.textContent = node.nodeValue;
+                    // Replace the text node with the new anchor tag
+                    node.parentNode.replaceChild(anchor, node);
                 } else {
-                    // Otherwise, update the href attribute
-                    node.parentNode.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+                    // Replace the matched text based on the shouldHide flag
+                    node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : node.nodeValue.replace(regex, formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
                 }
             }
         });
