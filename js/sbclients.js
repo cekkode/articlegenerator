@@ -1,4 +1,4 @@
-var version = "0.0.51";
+var version = "0.0.52";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -118,13 +118,21 @@ script.onload = async function() {
         // Iterate over each anchor tag
         anchorTags.forEach(function(anchor) {
             // If the href attribute contains the specific URL
-            if (anchor.href.includes('what.sapp.my.id' || 'con.tact.my.id')) {
+            if (anchor.href.includes('what.sapp.my.id')) {
                 // If data should be hidden, remove the anchor tag altogether
                 if (shouldHide) {
                     anchor.remove();
                 } else {
                     // Otherwise, update the href attribute
                     anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+                }
+            } else if (anchor.href.includes('con.tact.my.id')) {
+                // If data should be hidden, remove the anchor tag altogether
+                if (shouldHide) {
+                    anchor.remove();
+                } else {
+                    // Otherwise, update the href attribute
+                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
                 }
             }
         });
