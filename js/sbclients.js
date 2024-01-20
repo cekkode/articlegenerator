@@ -1,4 +1,4 @@
-var version = "0.0.50";
+var version = "0.0.51";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -112,6 +112,23 @@ script.onload = async function() {
             tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
         }
 
+        // Get all anchor tags in the document
+        var anchorTags = document.querySelectorAll('a');
+
+        // Iterate over each anchor tag
+        anchorTags.forEach(function(anchor) {
+            // If the href attribute contains the specific URL
+            if (anchor.href.includes('what.sapp.my.id' || 'con.tact.my.id')) {
+                // If data should be hidden, remove the anchor tag altogether
+                if (shouldHide) {
+                    anchor.remove();
+                } else {
+                    // Otherwise, update the href attribute
+                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+                }
+            }
+        });
+
         // Iterate over each text node
         textNodes.forEach(function(node) {
             // If the node's text matches the regex pattern
@@ -121,15 +138,12 @@ script.onload = async function() {
             }
             // If the node's parent is an anchor tag
             if (node.parentNode && node.parentNode.nodeName === 'A') {
-                // If the href attribute contains the specific URL
-                if (node.parentNode.href.includes('what.sapp.my.id')) {
-                    // If data should be hidden, remove the anchor tag altogether
-                    if (shouldHide) {
-                        node.parentNode.remove();
-                    } else {
-                        // Otherwise, update the href attribute
-                        node.parentNode.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
-                    }
+                // If data should be hidden, remove the href attribute
+                if (shouldHide) {
+                    node.parentNode.removeAttribute('href');
+                } else {
+                    // Otherwise, update the href attribute
+                    node.parentNode.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
                 }
             }
         });
