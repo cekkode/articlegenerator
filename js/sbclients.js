@@ -1,4 +1,4 @@
-var version = "0.0.65";
+var version = "0.0.66";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -7,6 +7,7 @@ document.head.appendChild(script);
 
 // Fetch data from Supabase
 const fetchData = async (supabase, mainDomain) => {
+    console.log('Fetching new data...');
     const { data, error } = await supabase
         .from(mainDomain)
         .select('*');
@@ -34,7 +35,7 @@ const getData = async (supabase, mainDomain) => {
     if (!cachedData || !timestamp || Date.now() - timestamp > 7 * 24 * 60 * 60 * 1000 || version !== cachedVersion) {
         return await fetchData(supabase, mainDomain);
     }
-
+    console.log('Using cached data...');
     // Otherwise, return cached data
     return JSON.parse(cachedData);
 };
