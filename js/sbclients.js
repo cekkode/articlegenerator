@@ -1,4 +1,4 @@
-var version = "0.0.73";
+var version = "0.0.74";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -148,8 +148,6 @@ script.onload = async function() {
             whatsappFloat.style.cssText = 'display: none; visibility: hidden;';
             tlpFloat.style.cssText = 'display: none; visibility: hidden;';
         } else {
-            whatsappFloat.style.cssText = 'display: block; visibility: visible;';
-            tlpFloat.style.cssText = 'display: block; visibility: visible;';
             // Update the href and text content of the whatsappElement
             whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
             whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
