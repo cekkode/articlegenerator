@@ -1,4 +1,4 @@
-var version = "0.0.59";
+var version = "0.0.60";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -135,8 +135,8 @@ script.onload = async function() {
                     anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
                 }
             } else if (anchor.href.includes('mailto:')) {
-                // Remove any spaces in the href attribute
-                anchor.href = anchor.href.replace(/\s/g, '');
+                // Remove any spaces or %20 in the href attribute
+                anchor.href = anchor.href.replace(/\s/g, '').replace(/%20/g, '');
             }
         });
 
