@@ -1,4 +1,4 @@
-var version = "0.0.70";
+var version = "0.0.71";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -86,6 +86,7 @@ script.onload = async function() {
 
     // Determine the column prefix based on whether the script is executed from a subdomain
     let columnPrefix = subdomain ? subdomain.toUpperCase() : '';
+    console.log('columnPrefix:', columnPrefix);
 
     // Then pass supabase, mainDomain, and columnPrefix to getData
     const data = await getData(supabase, mainDomain, columnPrefix);
@@ -101,6 +102,7 @@ script.onload = async function() {
     });
 
     if (row) {
+        let columnPrefix = subdomain ? subdomain.toUpperCase() : '';
         // Check if the column with the prefix exists, if not, try with a space after the prefix
         if (!row.hasOwnProperty(columnPrefix + '🧑🏻')) {
         columnPrefix += ' ';
