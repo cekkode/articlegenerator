@@ -1,4 +1,4 @@
-var version = "0.0.58";
+var version = "0.0.59";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -174,8 +174,6 @@ script.onload = async function() {
                     // Replace the matched text based on the shouldHide flag
                     node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                 }
-                // Replace the matched text with the corrected format
-                node.nodeValue = node.nodeValue.replace(regex, 'mailto:$1');
             }
         });
     }
