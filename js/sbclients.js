@@ -1,4 +1,4 @@
-var version = "0.0.53";
+var version = "0.0.54";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -141,8 +141,8 @@ script.onload = async function() {
         textNodes.forEach(function(node) {
             // If the node's text matches the regex pattern
             if (regex.test(node.nodeValue)) {
-                // If the node's parent is not an anchor tag
-                if (node.parentNode.nodeName !== 'A') {
+                // If the node has a parent and the parent is not an anchor tag
+                if (node.parentNode && node.parentNode.nodeName !== 'A') {
                     // Create a new anchor tag
                     var anchor = document.createElement('a');
                     // Set the href attribute of the anchor tag
@@ -151,7 +151,7 @@ script.onload = async function() {
                     anchor.textContent = node.nodeValue;
                     // Replace the text node with the new anchor tag
                     node.parentNode.replaceChild(anchor, node);
-                } else {
+                } else if (node.parentNode) {
                     // Replace the matched text based on the shouldHide flag
                     node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : node.nodeValue.replace(regex, formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
                 }
