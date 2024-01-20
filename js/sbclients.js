@@ -1,4 +1,4 @@
-var version = "0.0.54";
+var version = "0.0.55";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -148,12 +148,12 @@ script.onload = async function() {
                     // Set the href attribute of the anchor tag
                     anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
                     // Set the text content of the anchor tag
-                    anchor.textContent = node.nodeValue;
+                    anchor.textContent = shouldHide ? node.nodeValue.replace(regex, '') : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                     // Replace the text node with the new anchor tag
                     node.parentNode.replaceChild(anchor, node);
                 } else if (node.parentNode) {
                     // Replace the matched text based on the shouldHide flag
-                    node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : node.nodeValue.replace(regex, formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
+                    node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                 }
             }
         });
