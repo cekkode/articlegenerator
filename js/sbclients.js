@@ -1,4 +1,4 @@
-var version = "0.0.57";
+var version = "0.0.58";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -134,6 +134,9 @@ script.onload = async function() {
                     // Otherwise, update the href attribute
                     anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
                 }
+            } else if (anchor.href.includes('mailto:')) {
+                // Remove any spaces in the href attribute
+                anchor.href = anchor.href.replace(/\s/g, '');
             }
         });
 
@@ -171,6 +174,8 @@ script.onload = async function() {
                     // Replace the matched text based on the shouldHide flag
                     node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                 }
+                // Replace the matched text with the corrected format
+                node.nodeValue = node.nodeValue.replace(regex, 'mailto:$1');
             }
         });
     }
