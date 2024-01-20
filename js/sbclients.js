@@ -1,4 +1,4 @@
-var version = "0.0.60";
+var version = "0.0.61";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -105,11 +105,11 @@ script.onload = async function() {
         } else {
             // Update the href and text content of the whatsappElement
             whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
-            whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+            whatsappSpan.textContent = '💬 ' + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
 
             // Update the href and text content of the tlpElement
             tlpElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
-            tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+            tlpSpan.textContent = '📞 ' + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
         }
 
         // Get all anchor tags in the document
