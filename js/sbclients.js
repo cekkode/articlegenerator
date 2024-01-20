@@ -1,4 +1,4 @@
-var version = "0.0.69";
+var version = "0.0.70";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -94,9 +94,9 @@ script.onload = async function() {
     // Find the row that matches the pageName
     const row = data.find(item => {
         if (pageName === '(DEFAULT)') {
-        return item['📍'] === pageName;
+            return item['📍'] === pageName;
         } else {
-        return pageNameParts.some(part => item['📍'].toLowerCase() === part);
+            return pageNameParts.some(part => item['📍'] && item['📍'].toLowerCase() === part);
         }
     });
 
