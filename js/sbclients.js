@@ -1,4 +1,4 @@
-var version = "0.0.68";
+var version = "0.0.69";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -10,7 +10,7 @@ const fetchData = async (supabase, mainDomain, columnPrefix) => {
     console.log('Fetching new data...');
     const { data, error } = await supabase
         .from(mainDomain)
-        .select(`${columnPrefix}🧑🏻, ${columnPrefix}#️⃣, ${columnPrefix}📊, ${columnPrefix}📞, ${columnPrefix}💬, ${columnPrefix}🏷️`);
+        .select(`"${columnPrefix}🧑🏻", "${columnPrefix}#️⃣", "${columnPrefix}📊", "${columnPrefix}📞", "${columnPrefix}💬", "${columnPrefix}🏷️"`);
 
     if (error) {
         console.error('Error fetching data:', error);
@@ -21,7 +21,7 @@ const fetchData = async (supabase, mainDomain, columnPrefix) => {
     if (!data || data.length === 0 || !data[0].hasOwnProperty(`${columnPrefix}🧑🏻`)) {
         const { data, error } = await supabase
             .from(mainDomain)
-            .select('🧑🏻, #️⃣, 📊, 📞, 💬, 🏷️');
+            .select('"🧑🏻", "#️⃣", "📊", "📞", "💬", "🏷️"');
 
         if (error) {
             console.error('Error fetching data:', error);
