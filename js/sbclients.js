@@ -88,10 +88,6 @@ script.onload = async function() {
     let columnPrefix = subdomain ? subdomain.toUpperCase() : '';
     console.log('columnPrefix:', columnPrefix);
 
-    // List of columns being accessed
-    const columns = ['📍', `${columnPrefix}🧑🏻`, `${columnPrefix}#️⃣`, `${columnPrefix}📊`, `${columnPrefix}📞`, `${columnPrefix}💬`, `${columnPrefix}🏷️`];
-    console.log('Accessing columns:', columns);
-
     // Then pass supabase, mainDomain, and columnPrefix to getData
     const data = await getData(supabase, mainDomain, columnPrefix);
     console.log('Fetched data:', data); // Log the fetched data
