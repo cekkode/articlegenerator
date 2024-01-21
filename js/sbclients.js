@@ -1,4 +1,4 @@
-var version = "0.0.75";
+var version = "0.0.76";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -43,8 +43,8 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
     const timestamp = localStorage.getItem('timestamp');
     const cachedVersion = localStorage.getItem('version');
 
-    // If data is not in cache or data is older than one week or version has changed, fetch new data
-    if (!cachedData || !timestamp || Date.now() - timestamp > 7 * 24 * 60 * 60 * 1000 || version !== cachedVersion) {
+    // If data is not in cache or data is older than one day or version has changed, fetch new data
+    if (!cachedData || !timestamp || Date.now() - timestamp > 24 * 60 * 60 * 1000 || version !== cachedVersion) {
         return await fetchData(supabase, mainDomain, columnPrefix);
     }
     console.log('Using cached data...');
