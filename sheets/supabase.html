@@ -21,7 +21,7 @@
     var supabase = supabase.createClient(supabaseUrl, supabaseKey);
     var gSheetAPIKey = "AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo";
 
-    console.log = "Google Sheets to Supabase Connector ver: " + version;
+    console.log("Google Sheets to Supabase Connector ver: " + version);
     function fetchDataFromGoogleSheets() {
       var sheetUrl = document.getElementById("sheetUrl").value;
       var sheetId = extractSheetId(sheetUrl);
