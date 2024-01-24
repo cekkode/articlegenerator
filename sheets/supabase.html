@@ -1,41 +1,72 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Google Sheets to Supabase</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
 <body>
+  <label for="sheetUrl">Google Sheet URL:</label>
+  <input type="text" id="sheetUrl" placeholder="Enter Google Sheet URL">
   <button onclick="fetchDataFromGoogleSheets()">Fetch Data</button>
 
+  <div id="tableContainer"></div>
+
   <script>
-    var version = '0.0.1'
+    var version = '0.0.1';
     var supabaseUrl = "https://mwikqvfpuxttqjucmhoj.supabase.co";
     var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM";
     var supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-    var gSheetAPIKey = "AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo";
-    var gSheetId = "your-google-sheet-id";
-    var gSheetRange = "Sheet1!A1:B10"; // Modify this based on your needs
-
+    
     function fetchDataFromGoogleSheets() {
-      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${gSheetId}/values/${gSheetRange}?key=${gSheetAPIKey}`)
+      var sheetUrl = document.getElementById("sheetUrl").value;
+      var sheetId = extractSheetId(sheetUrl);
+
+      if (!sheetId) {
+        alert("Invalid Google Sheet URL. Please make sure it's valid.");
+        return;
+      }
+
+      var sheetName = prompt("Enter sheet name to parse:");
+
+      if (!sheetName) {
+        alert("Sheet name is required.");
+        return;
+      }
+
+      var gSheetRange = sheetName + "!A:ZZ";
+
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${gSheetRange}?key=${gSheetAPIKey}`)
         .then(response => response.json())
         .then(data => {
           var rows = data.values;
-          rows.forEach(row => {
-            var data = {
-              column1: row[0],
-              column2: row[1],
-              // Add more columns as needed
-            };
-            supabase
-              .from("your-table-name")
-              .insert([data])
-              .then(response => {
-                console.log(response);
-              });
+          var headers = rows[0];
+          var htmlTable = "<table border='1'><tr>";
+
+          headers.forEach(header => {
+            htmlTable += `<th>${header}</th>`;
           });
+
+          htmlTable += "</tr>";
+
+          rows.slice(1).forEach(row => {
+            htmlTable += "<tr>";
+            row.forEach(cell => {
+              htmlTable += `<td>${cell}</td>`;
+            });
+            htmlTable += "</tr>";
+          });
+
+          htmlTable += "</table>";
+          document.getElementById("tableContainer").innerHTML = htmlTable;
         });
+    }
+
+    function extractSheetId(url) {
+      var match = url.match(/\/spreadsheets\/d\/([\w-]+)/);
+      return match ? match[1] : null;
     }
   </script>
 </body>
