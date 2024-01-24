@@ -22,7 +22,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.10';
+    var version = ' 0.0.11';
     var supabaseUrl = "https://mwikqvfpuxttqjucmhoj.supabase.co";
     var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM";
     var supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -148,7 +148,7 @@
     });
 
     // Function to push the table to Supabase
-    function pushToSupabase() {
+    async function pushToSupabase() {
       var sheetNameDropdown = document.getElementById("sheetName");
       var selectedSheetName = sheetNameDropdown.value;
 
@@ -166,17 +166,19 @@
         columns: columnTitles,
       });
 
-      // Invoke the RPC function
-      supabase.rpc('create_table', {
-        table_name: selectedSheetName,
+      // Invoke the RPC function in the suggested format
+      let { data, error } = await supabase.rpc('create_table', {
         columns: columnTitles,
-      }).then(response => {
-        console.log(response);
-        alert('Table pushed to Supabase successfully.');
-      }).catch(error => {
+        table_name: selectedSheetName,
+      });
+
+      if (error) {
         console.error(error);
         alert('Error pushing table to Supabase.');
-      });
+      } else {
+        console.log(data);
+        alert('Table pushed to Supabase successfully.');
+      }
     }
 
     // Display version in the header
