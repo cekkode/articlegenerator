@@ -22,7 +22,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.8';
+    var version = ' 0.0.9';
     var supabaseUrl = "https://mwikqvfpuxttqjucmhoj.supabase.co";
     var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM";
     var supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -51,6 +51,8 @@
       });
     }
 
+    var currentSelectedSheet; // Variable to remember the selected sheet name
+
     // Function to fetch sheet names from Google Sheets API
     function fetchSheetNames(sheetId) {
       fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?key=${gSheetAPIKey}`)
@@ -58,6 +60,12 @@
         .then(data => {
           var sheetNames = data.sheets.map(sheet => sheet.properties.title);
           populateSheetNames(sheetNames);
+
+          // Set back the selected sheet name if it was previously set
+          if (currentSelectedSheet) {
+            document.getElementById("sheetName").value = currentSelectedSheet;
+            currentSelectedSheet = null; // Reset the variable after setting it back
+          }
         });
     }
 
@@ -77,6 +85,9 @@
         alert("Invalid Google Sheet URL. Please make sure it's valid.");
         return;
       }
+
+      // Remember the currently selected sheet name
+      currentSelectedSheet = document.getElementById("sheetName").value;
 
       fetchSheetNames(sheetId); // Fetch sheet names after extracting sheet ID
 
