@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Sheets to Supabase</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest"></script>
+</head>
+<body>
+  <button onclick="fetchDataFromGoogleSheets()">Fetch Data</button>
+
+  <script>
+    var version = '0.0.1'
+    var supabaseUrl = "https://mwikqvfpuxttqjucmhoj.supabase.co";
+    var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM";
+    var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    var gSheetAPIKey = "AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo";
+    var gSheetId = "your-google-sheet-id";
+    var gSheetRange = "Sheet1!A1:B10"; // Modify this based on your needs
+
+    function fetchDataFromGoogleSheets() {
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${gSheetId}/values/${gSheetRange}?key=${gSheetAPIKey}`)
+        .then(response => response.json())
+        .then(data => {
+          var rows = data.values;
+          rows.forEach(row => {
+            var data = {
+              column1: row[0],
+              column2: row[1],
+              // Add more columns as needed
+            };
+            supabase
+              .from("your-table-name")
+              .insert([data])
+              .then(response => {
+                console.log(response);
+              });
+          });
+        });
+    }
+  </script>
+</body>
+</html>
