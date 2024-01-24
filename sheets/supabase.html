@@ -10,18 +10,50 @@
 <body>
   <label for="sheetUrl">Google Sheet URL:</label>
   <input type="text" id="sheetUrl" placeholder="Enter Google Sheet URL">
+  
+  <label for="sheetName">Select sheet name:</label>
+  <select id="sheetName"></select>
+
   <button onclick="fetchDataFromGoogleSheets()">Fetch Data</button>
 
   <div id="tableContainer"></div>
 
   <script>
-    var version = '0.0.1';
+    var version = '0.0.2';
     var supabaseUrl = "https://mwikqvfpuxttqjucmhoj.supabase.co";
     var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM";
     var supabase = supabase.createClient(supabaseUrl, supabaseKey);
     var gSheetAPIKey = "AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo";
 
-    console.log("Google Sheets to Supabase Connector ver: " + version);
+    // Function to populate the sheet names in the dropdown
+    function populateSheetNames(sheetNames) {
+      var sheetNameDropdown = document.getElementById("sheetName");
+
+      sheetNames.forEach(sheet => {
+        var option = document.createElement("option");
+        option.value = sheet;
+        option.text = sheet;
+        sheetNameDropdown.add(option);
+      });
+    }
+
+    // Function to fetch sheet names from Google Sheets API
+    function fetchSheetNames(sheetId) {
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?key=${gSheetAPIKey}`)
+        .then(response => response.json())
+        .then(data => {
+          var sheetNames = data.sheets.map(sheet => sheet.properties.title);
+          populateSheetNames(sheetNames);
+        });
+    }
+
+    // Function to extract sheet ID from URL
+    function extractSheetId(url) {
+      var match = url.match(/\/spreadsheets\/d\/([\w-]+)/);
+      return match ? match[1] : null;
+    }
+
+    // Function to fetch data from Google Sheets
     function fetchDataFromGoogleSheets() {
       var sheetUrl = document.getElementById("sheetUrl").value;
       var sheetId = extractSheetId(sheetUrl);
@@ -31,14 +63,15 @@
         return;
       }
 
-      var sheetName = prompt("Enter sheet name to parse:");
+      var sheetNameDropdown = document.getElementById("sheetName");
+      var selectedSheetName = sheetNameDropdown.value;
 
-      if (!sheetName) {
-        alert("Sheet name is required.");
+      if (!selectedSheetName) {
+        alert("Please select a sheet name.");
         return;
       }
 
-      var gSheetRange = sheetName + "!A:ZZ";
+      var gSheetRange = selectedSheetName + "!A:ZZ";
 
       fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${gSheetRange}?key=${gSheetAPIKey}`)
         .then(response => response.json())
@@ -66,10 +99,15 @@
         });
     }
 
-    function extractSheetId(url) {
-      var match = url.match(/\/spreadsheets\/d\/([\w-]+)/);
-      return match ? match[1] : null;
-    }
+    // Event listener to fetch sheet names when the URL is entered
+    document.getElementById("sheetUrl").addEventListener("change", function () {
+      var sheetUrl = this.value;
+      var sheetId = extractSheetId(sheetUrl);
+
+      if (sheetId) {
+        fetchSheetNames(sheetId);
+      }
+    });
   </script>
 </body>
 </html>
