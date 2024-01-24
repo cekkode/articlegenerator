@@ -22,7 +22,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.7';
+    var version = ' 0.0.8';
     var supabaseUrl = "https://mwikqvfpuxttqjucmhoj.supabase.co";
     var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM";
     var supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -78,6 +78,9 @@
         return;
       }
 
+      fetchSheetNames(sheetId); // Fetch sheet names after extracting sheet ID
+
+      // Fetching data logic moved here to ensure sheet names are populated
       var sheetNameDropdown = document.getElementById("sheetName");
       var selectedSheetName = sheetNameDropdown.value;
 
@@ -118,6 +121,20 @@
         });
     }
 
+    // Event listener to fetch sheet names when the URL is entered or loaded from local storage
+    document.getElementById("sheetUrl").addEventListener("change", function () {
+      fetchDataFromGoogleSheets();
+    });
+
+    // At the beginning of your script, after defining global variables
+    document.addEventListener("DOMContentLoaded", function () {
+      // Retrieve the Google Sheet URL from local storage and set it in the input field
+      var savedSheetUrl = getSheetUrlFromLocalStorage();
+      if (savedSheetUrl) {
+        document.getElementById("sheetUrl").value = savedSheetUrl;
+        fetchDataFromGoogleSheets(); // Fetch sheet names after loading from local storage
+      }
+    });
 
     // Function to push the table to Supabase
     function pushToSupabase() {
