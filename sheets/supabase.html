@@ -22,7 +22,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.4';
+    var version = ' 0.0.5';
     var supabaseUrl = "https://mwikqvfpuxttqjucmhoj.supabase.co";
     var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM";
     var supabase = supabase.createClient(supabaseUrl, supabaseKey);
@@ -135,6 +135,10 @@
 
       var headers = document.querySelectorAll("#tableContainer table th");
       var columnTitles = Array.from(headers).map(header => header.innerText);
+
+      // Log the values to the console for debugging
+      console.log("Selected Sheet Name:", selectedSheetName);
+      console.log("Column Titles:", columnTitles);
 
       // Invoke the RPC function
       supabase.rpc('create_table', {
