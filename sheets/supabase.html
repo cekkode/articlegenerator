@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv='cache-control' content='no-cache'> 
+  <meta http-equiv='expires' content='0'> 
+  <meta http-equiv='pragma' content='no-cache'>
   <title>Google Sheets to Supabase</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
@@ -29,7 +32,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.14';
+    var version = ' 0.0.15';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
