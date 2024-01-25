@@ -19,8 +19,6 @@
 
   <label for="supabaseKey">Supabase API Key:</label>
   <input type="text" id="supabaseKey" placeholder="Enter your Supabase API Key">
-
-  <button onclick="saveSupabaseCredentials()">Save Supabase Credentials</button>
   <br>
 
   <label for="sheetUrl">Google Sheet URL:</label>
@@ -31,37 +29,35 @@
     <option selected disabled>Select the sheet name</option>
   </select>
 
-  <button onclick="fetchDataFromGoogleSheets()">Fetch Data</button>
   <button onclick="pushToSupabase()">Push to Supabase</button>
 
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.17';
+    var version = ' 0.0.18';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
-
-    function saveSupabaseCredentials() {
-      var supabaseUrl = document.getElementById('supabaseUrl').value;
-      var supabaseKey = document.getElementById('supabaseKey').value;
-
-      // Validate the input fields
-      if (!supabaseUrl || !supabaseKey) {
-        alert('Please enter both Supabase Project URL and API Key.');
-        return;
-      }
-
-      // Save Supabase credentials to local storage
-      localStorage.setItem('supabaseUrl', supabaseUrl);
-      localStorage.setItem('supabaseKey', supabaseKey);
-
-      alert('Supabase credentials saved successfully!');
-    }
 
     var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
     var supabaseKey = localStorage.getItem('supabaseKey') || "";
     var supabase = supabase.createClient(supabaseUrl, supabaseKey);
     var gSheetAPIKey = "AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo";
+
+    function saveSupabaseCredentialsOnPaste() {
+      var supabaseUrlInput = document.getElementById('supabaseUrl');
+      var supabaseKeyInput = document.getElementById('supabaseKey');
+
+      supabaseUrlInput.addEventListener('input', function () {
+        localStorage.setItem('supabaseUrl', supabaseUrlInput.value);
+      });
+
+      supabaseKeyInput.addEventListener('input', function () {
+        localStorage.setItem('supabaseKey', supabaseKeyInput.value);
+      });
+    }
+
+    // Call the function to save Supabase credentials on input
+    saveSupabaseCredentialsOnPaste();
 
     // Function to save the Google Sheet URL to local storage
     function saveSheetUrlToLocalStorage(sheetUrl) {
@@ -208,4 +204,5 @@
     }
   </script>
 </body>
+
 </html>
