@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv='cache-control' content='no-cache'> 
-  <meta http-equiv='expires' content='0'> 
+  <meta http-equiv='cache-control' content='no-cache'>
+  <meta http-equiv='expires' content='0'>
   <meta http-equiv='pragma' content='no-cache'>
   <title>Google Sheets to Supabase</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 </head>
+
 <body>
   <h1 id="versionHeader">Sheets Connector to Supabase ver </h1>
   <label for="supabaseUrl">Supabase Project URL:</label>
@@ -22,10 +24,12 @@
   <br>
 
   <label for="sheetUrl">Google Sheet URL:</label>
-  <input type="text" id="sheetUrl" placeholder="Enter Google Sheet URL">
-  
+  <input type="text" id="sheetUrl" placeholder="Paste Google Sheet URL" onchange="fetchSheetNames()">
+
   <label for="sheetName">Select sheet name:</label>
-  <select id="sheetName"></select>
+  <select id="sheetName">
+    <option selected disabled>Select the sheet name</option>
+  </select>
 
   <button onclick="fetchDataFromGoogleSheets()">Fetch Data</button>
   <button onclick="pushToSupabase()">Push to Supabase</button>
@@ -33,7 +37,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.16';
+    var version = ' 0.0.17';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -72,7 +76,7 @@
     // Function to populate the sheet names in the dropdown
     function populateSheetNames(sheetNames) {
       var sheetNameDropdown = document.getElementById("sheetName");
-      sheetNameDropdown.innerHTML = ""; // Clear existing options
+      sheetNameDropdown.innerHTML = "<option selected disabled>Select the sheet name</option>"; // Clear existing options
 
       sheetNames.forEach(sheet => {
         var option = document.createElement("option");
@@ -85,31 +89,9 @@
     var currentSelectedSheet; // Variable to remember the selected sheet name
 
     // Function to fetch sheet names from Google Sheets API
-    function fetchSheetNames(sheetId) {
-      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?key=${gSheetAPIKey}`)
-        .then(response => response.json())
-        .then(data => {
-          var sheetNames = data.sheets.map(sheet => sheet.properties.title);
-          populateSheetNames(sheetNames);
-
-          // Set back the selected sheet name if it was previously set
-          if (currentSelectedSheet) {
-            document.getElementById("sheetName").value = currentSelectedSheet;
-            currentSelectedSheet = null; // Reset the variable after setting it back
-          }
-        });
-    }
-
-    // Function to extract sheet ID from URL
-    function extractSheetId(url) {
-      var match = url.match(/\/spreadsheets\/d\/([\w-]+)/);
-      return match ? match[1] : null;
-    }
-
-    // Function to fetch data from Google Sheets
-    function fetchDataFromGoogleSheets() {
+    function fetchSheetNames() {
       var sheetUrl = document.getElementById("sheetUrl").value;
-      saveSheetUrlToLocalStorage(sheetUrl);  // Save the sheet URL to local storage
+      saveSheetUrlToLocalStorage(sheetUrl); // Save the sheet URL to local storage
       var sheetId = extractSheetId(sheetUrl);
 
       if (!sheetId) {
@@ -165,7 +147,7 @@
 
     // Event listener to fetch sheet names when the URL is entered or loaded from local storage
     document.getElementById("sheetUrl").addEventListener("change", function () {
-      fetchDataFromGoogleSheets();
+      fetchSheetNames();
     });
 
     // At the beginning of your script, after defining global variables
@@ -174,7 +156,7 @@
       var savedSheetUrl = getSheetUrlFromLocalStorage();
       if (savedSheetUrl) {
         document.getElementById("sheetUrl").value = savedSheetUrl;
-        fetchDataFromGoogleSheets(); // Fetch sheet names after loading from local storage
+        fetchSheetNames(); // Fetch sheet names after loading from local storage
       }
     });
 
@@ -199,12 +181,18 @@
 
       try {
         // Invoke the RPC function in the suggested format
-        let { data, error } = await supabase.rpc('create_table', {
+        let {
+          data,
+          error
+        } = await supabase.rpc('create_table', {
           columns: columnTitles,
           table_name: selectedSheetName,
         });
 
-        console.log("Supabase Response:", { data, error });
+        console.log("Supabase Response:", {
+          data,
+          error
+        });
 
         if (error) {
           console.error(error);
