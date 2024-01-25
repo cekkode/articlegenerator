@@ -9,6 +9,13 @@
 </head>
 <body>
   <h1 id="versionHeader">Sheets Connector to Supabase ver </h1>
+  <label for="supabaseUrl">Supabase Project URL:</label>
+  <input type="text" id="supabaseUrl" placeholder="Enter your Supabase Project URL">
+
+  <label for="supabaseKey">Supabase API Key:</label>
+  <input type="text" id="supabaseKey" placeholder="Enter your Supabase API Key">
+
+  <button onclick="saveSupabaseCredentials()">Save Supabase Credentials</button>
 
   <label for="sheetUrl">Google Sheet URL:</label>
   <input type="text" id="sheetUrl" placeholder="Enter Google Sheet URL">
@@ -22,9 +29,29 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.13';
-    var supabaseUrl = "https://mwikqvfpuxttqjucmhoj.supabase.co";
-    var supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcwNTUyNTU2NSwiZXhwIjoyMDIxMTAxNTY1fQ.adaTmXqpBZ4u7bqnvLWEnydnScviY3ZwY7O4f5jsWZI";
+    var version = ' 0.0.14';
+    // Display version in the header
+    document.getElementById("versionHeader").innerText += version;
+
+    function saveSupabaseCredentials() {
+      var supabaseUrl = document.getElementById('supabaseUrl').value;
+      var supabaseKey = document.getElementById('supabaseKey').value;
+
+      // Validate the input fields
+      if (!supabaseUrl || !supabaseKey) {
+        alert('Please enter both Supabase Project URL and API Key.');
+        return;
+      }
+
+      // Save Supabase credentials to local storage
+      localStorage.setItem('supabaseUrl', supabaseUrl);
+      localStorage.setItem('supabaseKey', supabaseKey);
+
+      alert('Supabase credentials saved successfully!');
+    }
+
+    var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
+    var supabaseKey = localStorage.getItem('supabaseKey') || "";
     var supabase = supabase.createClient(supabaseUrl, supabaseKey);
     var gSheetAPIKey = "AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo";
 
@@ -187,9 +214,6 @@
         alert('Unexpected error. Check the console for details.');
       }
     }
-
-    // Display version in the header
-    document.getElementById("versionHeader").innerText += version;
   </script>
 </body>
 </html>
