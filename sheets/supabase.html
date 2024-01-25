@@ -34,13 +34,22 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.18';
+    var version = ' 0.0.19';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
     var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
     var supabaseKey = localStorage.getItem('supabaseKey') || "";
-    var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Check if supabaseUrl is present before creating the client
+    if (supabaseUrl) {
+      // Create the Supabase client
+      var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    } else {
+      console.error("Supabase URL is missing. Please save your Supabase credentials.");
+      // You might want to handle this error case appropriately, e.g., show an alert to the user.
+    }
+
     var gSheetAPIKey = "AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo";
 
     function saveSupabaseCredentialsOnPaste() {
