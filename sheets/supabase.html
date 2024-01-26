@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.29';
+    var version = ' 0.0.30';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -144,6 +144,18 @@
 
     // At the beginning of your script, after defining global variables
     document.addEventListener("DOMContentLoaded", function () {
+      // Retrieve the Supabase URL and API Key from local storage and set them in the input fields
+      var savedSupabaseUrl = localStorage.getItem('supabaseUrl');
+      var savedSupabaseKey = localStorage.getItem('supabaseKey');
+      
+      if (savedSupabaseUrl) {
+        document.getElementById("supabaseUrl").value = savedSupabaseUrl;
+      }
+      
+      if (savedSupabaseKey) {
+        document.getElementById("supabaseKey").value = savedSupabaseKey;
+      }
+
       // Retrieve the Google Sheet URL from local storage and set it in the input field
       var savedSheetUrl = getSheetUrlFromLocalStorage();
       if (savedSheetUrl) {
