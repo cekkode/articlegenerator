@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.37';
+    var version = ' 0.0.38';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -272,7 +272,7 @@
 
       try {
         // Invoke the RPC function in the suggested format
-        let { data, error } = await supabase.rpc('create_table', {
+        let { data, error } = await supabase.rpc('create_table(p_table_name := ?, columns := ?, contents := ?)', {
           columns: columnTitles,
           p_table_name: selectedSheetName,
           contents: columnContentsString
