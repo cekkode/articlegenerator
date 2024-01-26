@@ -198,7 +198,7 @@
 
           // Replace single quotes with two single quotes in each value
           columnContents = columnContents.map(row => row.map(cell => cell.replace(/'/g, "''")));
-          
+
           // Ensure each row has the same number of columns
           columnContents = columnContents.map(row => {
             while (row.length < columnTitles.length) {
