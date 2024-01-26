@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.39';
+    var version = ' 0.0.40';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -199,14 +199,11 @@
           // Replace single quotes with two single quotes in each value
           columnContents = columnContents.map(row => row.map(cell => cell.replace(/'/g, "''")));
 
-          // Convert columnContents to a string
-          columnContentsString = columnContents.map(row => row.join(';')).join(',');
-          
           // Log the payload being sent to Supabase for debugging
           console.log("Payload to Supabase:", {
             table_name: selectedSheetName,
             columns: columnTitles,
-            contents: columnContentsString
+            contents: columnContents
           });
         })
         .catch(error => {
@@ -272,10 +269,10 @@
 
       try {
         // Invoke the RPC function in the suggested format
-        let { data, error } = await supabase.rpc('create_table', {
-          p_table_name: selectedSheetName,
+        let { data, error } = await supabase.rpc('create_table(p_table_name := ?, columns := ?, contents := ?)', {
           columns: columnTitles,
-          contents: columnContentsString
+          p_table_name: selectedSheetName,
+          contents: columnContents
         });
 
         console.log("Supabase Response:", { data, error });
