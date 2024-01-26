@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.33';
+    var version = ' 0.0.34';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -191,13 +191,16 @@
           columnTitles = columnTitles.filter(title => title);
 
           // Get the column contents from the rest of the rows
-          var columnContents = data.values.slice(1);
+          var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
 
-          // Log the payload that would be sent to Supabase
+          // Convert columnContents to a string
+          var columnContentsString = columnContents.map(row => row.join(';')).join(',');
+
+          // Log the payload being sent to Supabase for debugging
           console.log("Payload to Supabase:", {
             table_name: selectedSheetName,
             columns: columnTitles,
-            contents: columnContents
+            contents: columnContentsString
           });
         })
         .catch(error => {
@@ -266,7 +269,7 @@
         let { data, error } = await supabase.rpc('create_table', {
           columns: columnTitles,
           p_table_name: selectedSheetName,
-          contents: columnContents
+          contents: columnContentsString
         });
 
         console.log("Supabase Response:", { data, error });
