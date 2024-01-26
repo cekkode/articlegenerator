@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.30';
+    var version = ' 0.0.31';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -205,10 +205,14 @@
     // Function to convert the data to HTML table
     function convertDataToHtmlTable(data) {
       var table = "<table>";
-      data.forEach(row => {
+      data.forEach((row, rowIndex) => {
         table += "<tr>";
         row.forEach(cell => {
-          table += "<td>" + cell + "</td>";
+          if (rowIndex === 0) {
+            table += "<th>" + cell + "</th>";
+          } else {
+            table += "<td>" + cell + "</td>";
+          }
         });
         table += "</tr>";
       });
