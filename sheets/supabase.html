@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.26';
+    var version = ' 0.0.27';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -204,7 +204,7 @@
       }
 
       // Create the Supabase client
-      var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+      var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
       var selectedSheetName = document.getElementById("sheetName").value;
 
