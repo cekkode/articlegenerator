@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.36';
+    var version = ' 0.0.37';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -196,9 +196,12 @@
           var rows = document.querySelectorAll("#tableContainer table tr");
           var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
 
-          // Convert columnContents to a string
-          var columnContentsString = columnContents.map(row => row.join(';')).join(',');
+          // Replace single quotes with two single quotes in each value
+          columnContents = columnContents.map(row => row.map(cell => cell.replace(/'/g, "''")));
 
+          // Convert columnContents to a string
+          columnContentsString = columnContents.map(row => row.join(';')).join(',');
+          
           // Log the payload being sent to Supabase for debugging
           console.log("Payload to Supabase:", {
             table_name: selectedSheetName,
