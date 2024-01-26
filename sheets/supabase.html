@@ -34,7 +34,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.24';
+    var version = ' 0.0.25';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -141,12 +141,52 @@
       }
     });
 
+    // Add an event listener to the sheet name selection box
+    document.getElementById("sheetName").addEventListener("change", function () {
+      // Fetch and display the HTML table when a sheet name is selected
+      fetchAndDisplayTable();
+    });
+
+    // Function to fetch and display the HTML table
+    function fetchAndDisplayTable() {
+      var sheetUrl = document.getElementById("sheetUrl").value;
+      var sheetId = extractSheetId(sheetUrl);
+      var selectedSheetName = document.getElementById("sheetName").value;
+
+      // Fetch the table data from the Google Sheets API
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${selectedSheetName}?key=${gSheetAPIKey}`)
+        .then(response => response.json())
+        .then(data => {
+          // Convert the data to HTML table and display it
+          var htmlTable = convertDataToHtmlTable(data.values);
+          document.getElementById("tableContainer").innerHTML = htmlTable;
+        })
+        .catch(error => {
+          console.error("Error fetching table data:", error);
+          alert('Error fetching table data from Google Sheets.');
+        });
+    }
+
+    // Function to convert the data to HTML table
+    function convertDataToHtmlTable(data) {
+      var table = "<table>";
+      data.forEach(row => {
+        table += "<tr>";
+        row.forEach(cell => {
+          table += "<td>" + cell + "</td>";
+        });
+        table += "</tr>";
+      });
+      table += "</table>";
+      return table;
+    }
 
     // Function to push the table to Supabase
     async function pushToSupabase() {
       var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
       var supabaseKey = localStorage.getItem('supabaseKey') || "";
 
+      // Check if supabaseUrl is present before creating the client
       if (!supabaseUrl || !supabaseKey) {
         alert("Supabase URL or API Key is missing. Please save your Supabase credentials.");
         return;
@@ -155,8 +195,7 @@
       // Create the Supabase client
       var supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-      var sheetNameDropdown = document.getElementById("sheetName");
-      var selectedSheetName = sheetNameDropdown.value;
+      var selectedSheetName = document.getElementById("sheetName").value;
 
       if (!selectedSheetName) {
         alert("Please select a sheet name.");
@@ -166,6 +205,9 @@
       var headers = document.querySelectorAll("#tableContainer table th");
       var columnTitles = Array.from(headers).map(header => header.innerText);
 
+      // Filter out empty column titles
+      columnTitles = columnTitles.filter(title => title);
+
       // Log the payload being sent to Supabase for debugging
       console.log("Payload to Supabase:", {
         table_name: selectedSheetName,
@@ -174,18 +216,12 @@
 
       try {
         // Invoke the RPC function in the suggested format
-        let {
-          data,
-          error
-        } = await supabase.rpc('create_table', {
+        let { data, error } = await supabase.rpc('create_table', {
           columns: columnTitles,
           table_name: selectedSheetName,
         });
 
-        console.log("Supabase Response:", {
-          data,
-          error
-        });
+        console.log("Supabase Response:", { data, error });
 
         if (error) {
           console.error(error);
