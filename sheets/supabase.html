@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.27';
+    var version = ' 0.0.28';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -246,6 +246,23 @@
         alert('Unexpected error. Check the console for details.');
       }
     }
+
+    // Function to save Supabase credentials on input
+    function saveSupabaseCredentialsOnInput() {
+      var supabaseUrlInput = document.getElementById('supabaseUrl');
+      var supabaseKeyInput = document.getElementById('supabaseKey');
+
+      supabaseUrlInput.addEventListener('input', function () {
+        localStorage.setItem('supabaseUrl', supabaseUrlInput.value);
+      });
+
+      supabaseKeyInput.addEventListener('input', function () {
+        localStorage.setItem('supabaseKey', supabaseKeyInput.value);
+      });
+    }
+
+    // Call the function to save Supabase credentials on input
+    saveSupabaseCredentialsOnInput();
   </script>
 </body>
 
