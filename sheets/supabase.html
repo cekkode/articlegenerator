@@ -34,7 +34,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.22';
+    var version = ' 0.0.23';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -112,6 +112,9 @@
       // Save the sheet URL to local storage
       saveSheetUrlToLocalStorage(sheetUrl);
 
+      // Extract sheetId from sheetUrl
+      var sheetId = extractSheetId(sheetUrl);
+
       // Fetch sheet names from Google Sheets API
       fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?key=${gSheetAPIKey}`)
         .then(response => response.json())
@@ -135,10 +138,9 @@
     document.getElementById("sheetUrl").addEventListener("change", function () {
       var sheetUrl = document.getElementById("sheetUrl").value;
       saveSheetUrlToLocalStorage(sheetUrl); // Save the sheet URL to local storage
-      var sheetId = extractSheetId(sheetUrl);
 
       // Fetch sheet names after extracting sheet ID
-      fetchSheetNames(sheetId);
+      fetchSheetNames();
     });
 
     // At the beginning of your script, after defining global variables
@@ -147,8 +149,7 @@
       var savedSheetUrl = getSheetUrlFromLocalStorage();
       if (savedSheetUrl) {
         document.getElementById("sheetUrl").value = savedSheetUrl;
-        var sheetId = extractSheetId(savedSheetUrl);
-        fetchSheetNames(sheetId); // Fetch sheet names after loading from local storage
+        fetchSheetNames(); // Fetch sheet names after loading from local storage
       }
     });
 
