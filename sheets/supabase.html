@@ -34,7 +34,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.19';
+    var version = ' 0.0.20';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -92,6 +92,12 @@
     }
 
     var currentSelectedSheet; // Variable to remember the selected sheet name
+
+    // Function to extract sheet ID from URL
+    function extractSheetId(url) {
+      var match = url.match(/\/spreadsheets\/d\/([\w-]+)/);
+      return match ? match[1] : null;
+    }
 
     // Function to fetch sheet names from Google Sheets API
     function fetchSheetNames() {
