@@ -34,7 +34,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.20';
+    var version = ' 0.0.21';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -100,65 +100,40 @@
     }
 
     // Function to fetch sheet names from Google Sheets API
-    function fetchSheetNames() {
-      var sheetUrl = document.getElementById("sheetUrl").value;
-      saveSheetUrlToLocalStorage(sheetUrl); // Save the sheet URL to local storage
-      var sheetId = extractSheetId(sheetUrl);
-
+    function fetchSheetNames(sheetId) {
+      // Ensure sheetId is provided
       if (!sheetId) {
-        alert("Invalid Google Sheet URL. Please make sure it's valid.");
+        alert("Invalid Google Sheet ID.");
         return;
       }
 
-      // Remember the currently selected sheet name
-      currentSelectedSheet = document.getElementById("sheetName").value;
-
-      fetchSheetNames(sheetId); // Fetch sheet names after extracting sheet ID
-
-      // Fetching data logic moved here to ensure sheet names are populated
-      var sheetNameDropdown = document.getElementById("sheetName");
-      var selectedSheetName = sheetNameDropdown.value;
-
-      if (!selectedSheetName) {
-        alert("Please select a sheet name.");
-        return;
-      }
-
-      var gSheetRange = selectedSheetName + "!A:ZZ";
-
-      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${gSheetRange}?key=${gSheetAPIKey}`)
+      // Fetch sheet names from Google Sheets API
+      fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?key=${gSheetAPIKey}`)
         .then(response => response.json())
         .then(data => {
-          var rows = data.values;
-          var headers = rows[0];
-          var htmlTable = "<table border='1'><tr>";
+          var sheetNames = data.sheets.map(sheet => sheet.properties.title);
+          populateSheetNames(sheetNames);
 
-          headers.forEach(header => {
-            htmlTable += `<th>${header}</th>`;
-          });
-
-          htmlTable += "</tr>";
-
-          rows.slice(1).forEach(row => {
-            htmlTable += "<tr>";
-            row.forEach(cell => {
-              htmlTable += `<td>${cell}</td>`;
-            });
-            htmlTable += "</tr>";
-          });
-
-          htmlTable += "</table>";
-          document.getElementById("tableContainer").innerHTML = htmlTable;
+          // Set back the selected sheet name if it was previously set
+          if (currentSelectedSheet) {
+            document.getElementById("sheetName").value = currentSelectedSheet;
+            currentSelectedSheet = null; // Reset the variable after setting it back
+          }
         })
         .catch(error => {
-          console.error("Error fetching data:", error);
-          alert('Error fetching data from Google Sheets.');
+          console.error("Error fetching sheet names:", error);
+          alert('Error fetching sheet names from Google Sheets.');
         });
     }
 
     // Event listener to fetch sheet names when the URL is entered or loaded from local storage
     document.getElementById("sheetUrl").addEventListener("change", function () {
-      fetchSheetNames();
+      var sheetUrl = document.getElementById("sheetUrl").value;
+      saveSheetUrlToLocalStorage(sheetUrl); // Save the sheet URL to local storage
+      var sheetId = extractSheetId(sheetUrl);
+
+      // Fetch sheet names after extracting sheet ID
+      fetchSheetNames(sheetId);
     });
 
     // At the beginning of your script, after defining global variables
@@ -167,9 +142,11 @@
       var savedSheetUrl = getSheetUrlFromLocalStorage();
       if (savedSheetUrl) {
         document.getElementById("sheetUrl").value = savedSheetUrl;
-        fetchSheetNames(); // Fetch sheet names after loading from local storage
+        var sheetId = extractSheetId(savedSheetUrl);
+        fetchSheetNames(sheetId); // Fetch sheet names after loading from local storage
       }
     });
+
 
     // Function to push the table to Supabase
     async function pushToSupabase() {
