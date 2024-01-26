@@ -34,7 +34,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.21';
+    var version = ' 0.0.22';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -100,12 +100,17 @@
     }
 
     // Function to fetch sheet names from Google Sheets API
-    function fetchSheetNames(sheetId) {
-      // Ensure sheetId is provided
-      if (!sheetId) {
-        alert("Invalid Google Sheet ID.");
+    function fetchSheetNames() {
+      var sheetUrl = document.getElementById("sheetUrl").value;
+
+      // Check if the sheet URL is empty
+      if (!sheetUrl) {
+        console.log("Sheet URL is empty. No action taken.");
         return;
       }
+
+      // Save the sheet URL to local storage
+      saveSheetUrlToLocalStorage(sheetUrl);
 
       // Fetch sheet names from Google Sheets API
       fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}?key=${gSheetAPIKey}`)
