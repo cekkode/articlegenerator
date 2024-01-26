@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.34';
+    var version = ' 0.0.35';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -191,6 +191,7 @@
           columnTitles = columnTitles.filter(title => title);
 
           // Get the column contents from the rest of the rows
+          var rows = document.querySelectorAll("#tableContainer table tr");
           var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
 
           // Convert columnContents to a string
