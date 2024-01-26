@@ -34,21 +34,9 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.23';
+    var version = ' 0.0.24';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
-
-    var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
-    var supabaseKey = localStorage.getItem('supabaseKey') || "";
-
-    // Check if supabaseUrl is present before creating the client
-    if (supabaseUrl) {
-      // Create the Supabase client
-      var supabase = supabase.createClient(supabaseUrl, supabaseKey);
-    } else {
-      console.error("Supabase URL is missing. Please save your Supabase credentials.");
-      // You might want to handle this error case appropriately, e.g., show an alert to the user.
-    }
 
     var gSheetAPIKey = "AIzaSyD1fPFIgLPU6uHuM3TLMN4UP0VHIcQLuWo";
 
@@ -156,6 +144,17 @@
 
     // Function to push the table to Supabase
     async function pushToSupabase() {
+      var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
+      var supabaseKey = localStorage.getItem('supabaseKey') || "";
+
+      if (!supabaseUrl || !supabaseKey) {
+        alert("Supabase URL or API Key is missing. Please save your Supabase credentials.");
+        return;
+      }
+
+      // Create the Supabase client
+      var supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
       var sheetNameDropdown = document.getElementById("sheetName");
       var selectedSheetName = sheetNameDropdown.value;
 
