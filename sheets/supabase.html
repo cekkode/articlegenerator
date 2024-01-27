@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.43';
+    var version = ' 0.0.44';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -264,6 +264,10 @@
       var rows = document.querySelectorAll("#tableContainer table tr");
       var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText)); 
 
+      if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
+        alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
+        return;
+      }
       // Prepare the payload as JSON
       var payload = JSON.stringify({
         table_name: selectedSheetName,
