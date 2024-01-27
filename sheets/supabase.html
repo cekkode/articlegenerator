@@ -45,7 +45,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.44';
+    var version = ' 0.0.45';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -274,6 +274,8 @@
         columns: columnTitles,
         contents: columnContents
       });
+
+      console.log("Sending payload:", payload);
 
       try {
         let { data, error } = await supabase.rpc('create_table_json', {
