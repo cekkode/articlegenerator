@@ -93,7 +93,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.48';
+    var version = ' 0.0.49';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -326,14 +326,18 @@
         console.log("Supabase Response:", { data, error });
 
         if (error) {
-          console.error(error);
+          console.error('Error:', JSON.stringify(error, null, 2));
           alert('Error pushing table to Supabase.');
         } else {
           console.log(data);
           alert('Table pushed to Supabase successfully.');
         }
       } catch (error) {
+<<<<<<< HEAD
+        console.error('Error:', JSON.stringify(error, null, 2));
+=======
         console.error('Supabase Error:', JSON.stringify(error, null, 2));
+>>>>>>> 22ccffb5d4f9ca2411accd9c2dc57d332b38e2f3
         alert('Unexpected error. Check the console for details.');
       }
     }
