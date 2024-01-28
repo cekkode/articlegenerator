@@ -444,15 +444,10 @@
     // Call the function to save Supabase credentials on input
     saveSupabaseCredentialsOnInput();
 
-    document.getElementById('sendAsArray').addEventListener('click', function(e) {
-    e.preventDefault();
-    pushToSupabaseAsArray(); // Implement this function to push data as an array
-  });
-
-  document.getElementById('sendAsJson').addEventListener('click', function(e) {
-    e.preventDefault();
-    pushToSupabaseAsJson(); // Implement this function to push data as JSON
-  });
+    document.getElementById('sendAsJson').addEventListener('click', function(e) {
+      e.preventDefault();
+      pushToSupabaseAsJson(); // Implement this function to push data as JSON
+    });
 
   </script>
 </body>
