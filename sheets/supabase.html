@@ -90,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.51';
+    var version = ' 0.0.52';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -409,6 +409,14 @@
 
       console.log("Column Titles:", columnTitles);
       console.log("Column Contents:", columnContents);
+
+      var payload = {
+        p_table_name: selectedSheetName,
+        columns: columnTitles,
+        contents: columnContents
+      };
+
+      console.log("Sending payload:", payload);
 
       try {
         let { data, error } = await supabase.rpc('create_table', {
