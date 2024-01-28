@@ -80,12 +80,9 @@
     <option selected disabled>Select the sheet name</option>
   </select>
 
-  <button onclick="pushToSupabase()">Push to Supabase</button>
-
   <div class="dropdown">
-    <button class="dropbtn">Push to Supabase</button>
+    <button onclick="pushToSupabaseAsArray()">Push to Supabase</button>
     <div class="dropdown-content">
-      <a href="#" id="sendAsArray">Send as Array</a>
       <a href="#" id="sendAsJson">Send as JSON</a>
     </div>
   </div>
@@ -93,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.49';
+    var version = ' 0.0.50';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
