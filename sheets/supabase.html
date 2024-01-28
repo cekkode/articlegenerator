@@ -90,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.53';
+    var version = ' 0.0.54';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -413,31 +413,50 @@
       var payload = {
         p_table_name: selectedSheetName,
         columns: columnTitles,
-        contents: columnContents
+        contents: [] // Initially, we're only creating the table and columns, not inserting data here
       };
 
       console.log("Sending payload:", payload);
 
       try {
-        let { data, error } = await supabase.rpc('create_table', {
-          p_table_name: selectedSheetName,
-          columns: columnTitles,
-          contents: columnContents
-        });
+        // Call the create_table function to ensure the table and columns are set up
+        let { data: createTableData, error: createTableError } = await supabase.rpc('create_table', payload);
 
-        if (error) throw error;
-        console.log("Supabase Response:", { data, error });
-        alert('Table pushed to Supabase successfully.');
+        if (createTableError) {
+          throw createTableError;
+        }
+
+        console.log("Table and columns setup successfully:", createTableData);
+
+        // After successful table and column setup, insert the data
+        await pushDataToSupabaseTable(supabase, selectedSheetName, columnTitles, columnContents);
       } catch (error) {
-        console.error("Error pushing table to Supabase:", error.message);
-        // Attempt to log more detailed information if available
-        if (error.details) {
-          console.error("Error Details:", error.details);
-        }
-        if (error.hint) {
-          console.error("Error Hint:", error.hint);
-        }
-        alert('Error pushing table to Supabase. Check the console for details.');
+        console.error("Error setting up table or pushing data to Supabase:", error);
+        alert('Error setting up table or pushing data to Supabase. Check the console for details.');
+      }
+    }
+
+    async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents) {
+      // Prepare the data for insertion
+      const dataToInsert = columnContents.map(row => {
+        const rowData = {};
+        columnTitles.forEach((title, index) => {
+          rowData[title] = row[index] || null; // Assign null for any missing values
+        });
+        return rowData;
+      });
+
+      // Use Supabase's .insert() method to insert the data
+      const { data, error } = await supabase
+        .from(tableName)
+        .insert(dataToInsert);
+
+      if (error) {
+        console.error("Error inserting data into Supabase table:", error);
+        alert('Error inserting data into Supabase table. Check the console for details.');
+      } else {
+        console.log("Data inserted successfully:", data);
+        alert('Data inserted into Supabase table successfully.');
       }
     }
 
