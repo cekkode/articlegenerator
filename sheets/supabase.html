@@ -93,7 +93,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.46';
+    var version = ' 0.0.47';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -290,35 +290,28 @@
     async function pushToSupabase() {
       var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
       var supabaseKey = localStorage.getItem('supabaseKey') || "";
-
       if (!supabaseUrl || !supabaseKey) {
         alert("Supabase URL or API Key is missing. Please save your Supabase credentials.");
         return;
       }
-
       var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
       var selectedSheetName = document.getElementById("sheetName").value;
-
       if (!selectedSheetName) {
         alert("Please select a sheet name.");
         return;
       }
-
       var headers = document.querySelectorAll("#tableContainer table th");
-      // Extract column titles and filter out empty titles
       var columnTitles = Array.from(headers).map(header => header.innerText).filter(title => title);
-
       var rows = document.querySelectorAll("#tableContainer table tr");
       var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText)); 
-
       if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
         alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
         return;
       }
       // Prepare the payload as JSON
       var payload = JSON.stringify({
-        table_name: selectedSheetName,
+        p_table_name: selectedSheetName,
         columns: columnTitles,
         contents: columnContents
       });
@@ -342,6 +335,92 @@
       } catch (error) {
         console.error("Unexpected error:", error);
         alert('Unexpected error. Check the console for details.');
+      }
+    }
+
+    async function pushToSupabaseAsJson() {
+      var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
+      var supabaseKey = localStorage.getItem('supabaseKey') || "";
+      if (!supabaseUrl || !supabaseKey) {
+        alert("Supabase URL or API Key is missing. Please save your Supabase credentials.");
+        return;
+      }
+      var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      var selectedSheetName = document.getElementById("sheetName").value;
+      if (!selectedSheetName) {
+        alert("Please select a sheet name.");
+        return;
+      }
+      var headers = document.querySelectorAll("#tableContainer table th");
+      var columnTitles = Array.from(headers).map(header => header.innerText).filter(title => title);
+      var rows = document.querySelectorAll("#tableContainer table tr");
+      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
+      if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
+        alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
+        return;
+      }
+
+      var payload = {
+        p_table_name: selectedSheetName,
+        columns: columnTitles,
+        contents: columnContents
+      };
+
+      console.log("Sending payload:", payload);
+
+      try {
+        let { data, error } = await supabase.rpc('create_table_json', {
+          json_payload: JSON.stringify(payload)
+        });
+
+        console.log("Supabase Response:", { data, error });
+
+        if (error) throw error;
+        alert('Table pushed to Supabase successfully.');
+      } catch (error) {
+        console.error("Error pushing table to Supabase:", error);
+        alert('Error pushing table to Supabase. Check the console for details.');
+      }
+    }
+
+    async function pushToSupabaseAsArray() {
+      var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
+      var supabaseKey = localStorage.getItem('supabaseKey') || "";    
+      if (!supabaseUrl || !supabaseKey) {
+        alert("Supabase URL or API Key is missing. Please save your Supabase credentials.");
+        return;
+      }
+      var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      var selectedSheetName = document.getElementById("sheetName").value;
+      if (!selectedSheetName) {
+        alert("Please select a sheet name.");
+        return;
+      }
+      var headers = document.querySelectorAll("#tableContainer table th");
+      var columnTitles = Array.from(headers).map(header => header.innerText).filter(title => title);
+      var rows = document.querySelectorAll("#tableContainer table tr");
+      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
+      if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
+        alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
+        return;
+      }
+
+      try {
+        let { data, error } = await supabase.rpc('create_table', {
+          p_table_name: selectedSheetName,
+          columns: columnTitles,
+          contents: columnContents
+        });
+
+        console.log("Supabase Response:", { data, error });
+
+        if (error) throw error;
+        alert('Table pushed to Supabase successfully.');
+      } catch (error) {
+        console.error("Error pushing table to Supabase:", error);
+        alert('Error pushing table to Supabase. Check the console for details.');
       }
     }
 
@@ -372,19 +451,6 @@
     pushToSupabaseAsJson(); // Implement this function to push data as JSON
   });
 
-  async function pushToSupabaseAsArray() {
-    // Your existing code to push data as a normal array
-    // Example:
-    // var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-    // let { data, error } = await supabase.rpc('create_table', { p_table_name: 'your_table', columns: ['col1', 'col2'], contents: [['val1', 'val2'], ['val3', 'val4']] });
-  }
-
-  async function pushToSupabaseAsJson() {
-    // Your existing code to push data as JSON
-    // Example:
-    // var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-    // let { data, error } = await supabase.rpc('create_table_json', { json_payload: yourJsonPayload });
-  }
   </script>
 </body>
 
