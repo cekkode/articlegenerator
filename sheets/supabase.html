@@ -20,6 +20,46 @@
       padding: 8px;
       text-align: left;
     }
+
+    .dropbtn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {background-color: #f1f1f1}
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown:hover .dropbtn {
+      background-color: #3e8e41;
+    }
   </style>
 </head>
 
@@ -42,10 +82,18 @@
 
   <button onclick="pushToSupabase()">Push to Supabase</button>
 
+  <div class="dropdown">
+    <button class="dropbtn">Push to Supabase</button>
+    <div class="dropdown-content">
+      <a href="#" id="sendAsArray">Send as Array</a>
+      <a href="#" id="sendAsJson">Send as JSON</a>
+    </div>
+  </div>
+
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.45';
+    var version = ' 0.0.46';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -313,6 +361,30 @@
 
     // Call the function to save Supabase credentials on input
     saveSupabaseCredentialsOnInput();
+
+    document.getElementById('sendAsArray').addEventListener('click', function(e) {
+    e.preventDefault();
+    pushToSupabaseAsArray(); // Implement this function to push data as an array
+  });
+
+  document.getElementById('sendAsJson').addEventListener('click', function(e) {
+    e.preventDefault();
+    pushToSupabaseAsJson(); // Implement this function to push data as JSON
+  });
+
+  async function pushToSupabaseAsArray() {
+    // Your existing code to push data as a normal array
+    // Example:
+    // var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    // let { data, error } = await supabase.rpc('create_table', { p_table_name: 'your_table', columns: ['col1', 'col2'], contents: [['val1', 'val2'], ['val3', 'val4']] });
+  }
+
+  async function pushToSupabaseAsJson() {
+    // Your existing code to push data as JSON
+    // Example:
+    // var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    // let { data, error } = await supabase.rpc('create_table_json', { json_payload: yourJsonPayload });
+  }
   </script>
 </body>
 
