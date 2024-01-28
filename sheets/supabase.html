@@ -90,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.50';
+    var version = ' 0.0.51';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -403,6 +403,12 @@
         alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
         return;
       }
+
+      // Ensure columnContents is a two-dimensional array
+      columnContents = columnContents.map(row => row.map(cell => cell || null)); // Convert empty strings to null
+
+      console.log("Column Titles:", columnTitles);
+      console.log("Column Contents:", columnContents);
 
       try {
         let { data, error } = await supabase.rpc('create_table', {
