@@ -90,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.54';
+    var version = ' 0.0.55';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -251,13 +251,6 @@
             }
             return row;
           });
-
-          // Log the payload being sent to Supabase for debugging
-          console.log("Payload to Supabase:", {
-            table_name: selectedSheetName,
-            columns: columnTitles,
-            contents: columnContents
-          });
         })
         .catch(error => {
           console.error("Error fetching table data:", error);
@@ -283,104 +276,6 @@
       return table;
     }
 
-    // Function to push the table to Supabase
-    async function pushToSupabase() {
-      var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
-      var supabaseKey = localStorage.getItem('supabaseKey') || "";
-      if (!supabaseUrl || !supabaseKey) {
-        alert("Supabase URL or API Key is missing. Please save your Supabase credentials.");
-        return;
-      }
-      var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-      var selectedSheetName = document.getElementById("sheetName").value;
-      if (!selectedSheetName) {
-        alert("Please select a sheet name.");
-        return;
-      }
-      var headers = document.querySelectorAll("#tableContainer table th");
-      var columnTitles = Array.from(headers).map(header => header.innerText).filter(title => title);
-      var rows = document.querySelectorAll("#tableContainer table tr");
-      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText)); 
-      if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
-        alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
-        return;
-      }
-      // Prepare the payload as JSON
-      var payload = JSON.stringify({
-        p_table_name: selectedSheetName,
-        columns: columnTitles,
-        contents: columnContents
-      });
-
-      console.log("Sending payload:", payload);
-
-      try {
-        let { data, error } = await supabase.rpc('create_table_json', {
-          json_payload: payload
-        });
-
-        console.log("Supabase Response:", { data, error });
-
-        if (error) {
-          console.error('Error:', JSON.stringify(error, null, 2));
-          alert('Error pushing table to Supabase.');
-        } else {
-          console.log(data);
-          alert('Table pushed to Supabase successfully.');
-        }
-      } catch (error) {
-        console.error('Error:', JSON.stringify(error, null, 2));
-        alert('Unexpected error. Check the console for details.');
-      }
-    }
-
-    async function pushToSupabaseAsJson() {
-      var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
-      var supabaseKey = localStorage.getItem('supabaseKey') || "";
-      if (!supabaseUrl || !supabaseKey) {
-        alert("Supabase URL or API Key is missing. Please save your Supabase credentials.");
-        return;
-      }
-      var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-      var selectedSheetName = document.getElementById("sheetName").value;
-      if (!selectedSheetName) {
-        alert("Please select a sheet name.");
-        return;
-      }
-      var headers = document.querySelectorAll("#tableContainer table th");
-      var columnTitles = Array.from(headers).map(header => header.innerText).filter(title => title);
-      var rows = document.querySelectorAll("#tableContainer table tr");
-      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
-      if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
-        alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
-        return;
-      }
-
-      var payload = {
-        p_table_name: selectedSheetName,
-        columns: columnTitles,
-        contents: columnContents
-      };
-
-      console.log("Sending payload:", payload);
-
-      try {
-        let { data, error } = await supabase.rpc('create_table_json', {
-          json_payload: JSON.stringify(payload)
-        });
-
-        console.log("Supabase Response:", { data, error });
-
-        if (error) throw error;
-        alert('Table pushed to Supabase successfully.');
-      } catch (error) {
-        console.error("Error pushing table to Supabase:", error);
-        alert('Error pushing table to Supabase. Check the console for details.');
-      }
-    }
-
     async function pushToSupabaseAsArray() {
       var supabaseUrl = localStorage.getItem('supabaseUrl') || "";
       var supabaseKey = localStorage.getItem('supabaseKey') || "";    
@@ -398,22 +293,14 @@
       var headers = document.querySelectorAll("#tableContainer table th");
       var columnTitles = Array.from(headers).map(header => header.innerText).filter(title => title);
       var rows = document.querySelectorAll("#tableContainer table tr");
-      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
       if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
         alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
         return;
       }
 
-      // Ensure columnContents is a two-dimensional array
-      columnContents = columnContents.map(row => row.map(cell => cell || null)); // Convert empty strings to null
-
-      console.log("Column Titles:", columnTitles);
-      console.log("Column Contents:", columnContents);
-
       var payload = {
         p_table_name: selectedSheetName,
         columns: columnTitles,
-        contents: [] // Initially, we're only creating the table and columns, not inserting data here
       };
 
       console.log("Sending payload:", payload);
@@ -429,15 +316,15 @@
         console.log("Table and columns setup successfully:", createTableData);
 
         // After successful table and column setup, insert the data
-        await pushDataToSupabaseTable(supabase, selectedSheetName, columnTitles, columnContents);
+        await pushDataToSupabaseTable(supabase, selectedSheetName, columnTitles);
       } catch (error) {
         console.error("Error setting up table or pushing data to Supabase:", error);
         alert('Error setting up table or pushing data to Supabase. Check the console for details.');
       }
     }
 
-    async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents) {
-      // Prepare the data for insertion
+    async function pushDataToSupabaseTable(supabase, tableName, columnTitles) {
+      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
       const dataToInsert = columnContents.map(row => {
         const rowData = {};
         columnTitles.forEach((title, index) => {
