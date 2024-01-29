@@ -90,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.55';
+    var version = ' 0.0.56';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -333,17 +333,17 @@
         return rowData;
       });
 
-      // Use Supabase's .insert() method to insert the data
+      // Use Supabase's .upsert() method to insert or update the data
       const { data, error } = await supabase
         .from(tableName)
-        .insert(dataToInsert);
+        .upsert(dataToInsert, { onConflict: 'ID' }); // Assuming 'ID' is the unique constraint
 
       if (error) {
-        console.error("Error inserting data into Supabase table:", error);
-        alert('Error inserting data into Supabase table. Check the console for details.');
+        console.error("Error upserting data into Supabase table:", error);
+        alert('Error upserting data into Supabase table. Check the console for details.');
       } else {
-        console.log("Data inserted successfully:", data);
-        alert('Data inserted into Supabase table successfully.');
+        console.log("Data upserted successfully:", data);
+        alert('Data upserted into Supabase table successfully.');
       }
     }
 
