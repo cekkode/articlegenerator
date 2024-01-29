@@ -90,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.58';
+    var version = ' 0.0.59';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -303,7 +303,7 @@
 
       // Ensure the table exists by calling the create_table function
       const creationResult = await ensureTableCreation(supabase, selectedSheetName, columnTitles);
-      if (!creationResult) {
+      if (creationResult === null) {
         console.error("Error creating table. Aborting data push.");
         return;
       }
@@ -322,15 +322,15 @@
         if (error) throw error;
 
         console.log("Table ensured/created:", data);
-        return true;
+        return data; // Return the boolean indicating if the table was newly created
       } catch (error) {
         console.error("Error ensuring/creating table:", error);
         alert('Error ensuring/creating table. Check the console for details.');
-        return false;
+        return null; // Use null to indicate an error occurred
       }
     }
 
-    async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents) {
+    async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents, tableWasCreated) {
       const dataToUpsert = columnContents.map((row, rowIndex) => {
         const rowData = {};
         columnTitles.forEach((title, index) => {
@@ -339,17 +339,23 @@
         return rowData;
       });
 
-      // Use Supabase's .upsert() method to insert or update the data
-      const { data, error } = await supabase
-        .from(tableName)
-        .upsert(dataToUpsert, { onConflict: 'ID' });
+      let result;
+      if (tableWasCreated) {
+        // Use Supabase's .insert() method to insert the data if the table was newly created
+        result = await supabase.from(tableName).insert(dataToUpsert);
+      } else {
+        // Use Supabase's .upsert() method to insert or update the data if the table already exists
+        result = await supabase.from(tableName).upsert(dataToUpsert, { onConflict: 'ID' });
+      }
+
+      const { data, error } = result;
 
       if (error) {
-        console.error("Error upserting data into Supabase table:", error);
-        alert('Error upserting data into Supabase table. Check the console for details.');
+        console.error("Error upserting/inserting data into Supabase table:", error);
+        alert('Error upserting/inserting data into Supabase table. Check the console for details.');
       } else {
-        console.log("Data upserted successfully:", data);
-        alert('Data upserted into Supabase table successfully.');
+        console.log("Data upserted/inserted successfully:", data);
+        alert('Data upserted/inserted into Supabase table successfully.');
       }
     }
 
