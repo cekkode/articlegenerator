@@ -90,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.60';
+    var version = ' 0.0.61';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -314,6 +314,12 @@
 
     async function ensureTableCreation(supabase, tableName, columnTitles) {
       try {
+        // Ensure the columnTitles is an array of strings, as expected by the function
+        if (!Array.isArray(columnTitles)) {
+          throw new Error("columnTitles must be an array");
+        }
+
+        // Call the create_table function with the correct parameter order and types
         const { data, error } = await supabase.rpc('create_table', {
           p_table_name: tableName,
           columns: columnTitles
@@ -321,15 +327,13 @@
 
         if (error) throw error;
 
-        // Log whether the table was newly created or not based on the boolean value returned by the SQL function
         console.log("Was the table newly created? ", data ? "Yes" : "No");
-
         console.log("Table ensured/created:", data);
-        return data; // Return the boolean indicating if the table was newly created
+        return data;
       } catch (error) {
         console.error("Error ensuring/creating table:", error);
         alert('Error ensuring/creating table. Check the console for details.');
-        return null; // Use null to indicate an error occurred
+        return null;
       }
     }
 
