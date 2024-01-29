@@ -90,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.57';
+    var version = ' 0.0.58';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -295,32 +295,43 @@
       const columnTitles = Array.from(headers).map(header => header.innerText).filter(title => title);
       const rows = document.querySelectorAll("#tableContainer table tr");
       const columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
+
       if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
         alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
         return;
       }
 
-      if (!columnTitles.includes('ID')) {
-        columnTitles.unshift('ID'); // Add 'ID' at the beginning if it's not already included
-        // Adjust columnContents to include a unique ID for each row
-        columnContents.forEach((row, index) => row.unshift(index + 1));
-      }
-
-      await pushDataToSupabaseTable(supabase, selectedSheetName, columnTitles, columnContents);
-    }
-
-    async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents) {
-      // Check if the table exists and has the 'ID' column
-      const { data: tableInfo, error: tableInfoError } = await supabase
-        .rpc('create_table', { p_table_name: tableName, columns: columnTitles });
-
-      if (tableInfoError) {
-        console.error("Error checking/creating table:", tableInfoError);
-        alert('Error checking/creating table. Check the console for details.');
+      // Ensure the table exists by calling the create_table function
+      const creationResult = await ensureTableCreation(supabase, selectedSheetName, columnTitles);
+      if (!creationResult) {
+        console.error("Error creating table. Aborting data push.");
         return;
       }
 
-      const dataToInsert = columnContents.map(row => {
+      // Proceed to insert or upsert data
+      await pushDataToSupabaseTable(supabase, selectedSheetName, columnTitles, columnContents);
+    }
+
+    async function ensureTableCreation(supabase, tableName, columnTitles) {
+      try {
+        const { data, error } = await supabase.rpc('create_table', {
+          p_table_name: tableName,
+          columns: columnTitles
+        });
+
+        if (error) throw error;
+
+        console.log("Table ensured/created:", data);
+        return true;
+      } catch (error) {
+        console.error("Error ensuring/creating table:", error);
+        alert('Error ensuring/creating table. Check the console for details.');
+        return false;
+      }
+    }
+
+    async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents) {
+      const dataToUpsert = columnContents.map((row, rowIndex) => {
         const rowData = {};
         columnTitles.forEach((title, index) => {
           rowData[title] = row[index] || null; // Assign null for any missing values
@@ -331,7 +342,7 @@
       // Use Supabase's .upsert() method to insert or update the data
       const { data, error } = await supabase
         .from(tableName)
-        .upsert(dataToInsert, { onConflict: 'ID' });
+        .upsert(dataToUpsert, { onConflict: 'ID' });
 
       if (error) {
         console.error("Error upserting data into Supabase table:", error);
