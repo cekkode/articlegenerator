@@ -293,6 +293,7 @@
       var headers = document.querySelectorAll("#tableContainer table th");
       var columnTitles = Array.from(headers).map(header => header.innerText).filter(title => title);
       var rows = document.querySelectorAll("#tableContainer table tr");
+      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
       if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
         alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
         return;
@@ -324,7 +325,6 @@
     }
 
     async function pushDataToSupabaseTable(supabase, tableName, columnTitles) {
-      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
       const dataToInsert = columnContents.map(row => {
         const rowData = {};
         columnTitles.forEach((title, index) => {
