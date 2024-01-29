@@ -317,15 +317,14 @@
         console.log("Table and columns setup successfully:", createTableData);
 
         // After successful table and column setup, insert the data
-        await pushDataToSupabaseTable(supabase, selectedSheetName, columnTitles);
+        await pushDataToSupabaseTable(supabase, selectedSheetName, columnTitles, columnContents);
       } catch (error) {
         console.error("Error setting up table or pushing data to Supabase:", error);
         alert('Error setting up table or pushing data to Supabase. Check the console for details.');
       }
     }
 
-    async function pushDataToSupabaseTable(supabase, tableName, columnTitles) {
-      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
+    async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents) {
       const dataToInsert = columnContents.map(row => {
         const rowData = {};
         columnTitles.forEach((title, index) => {
