@@ -90,7 +90,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.59';
+    var version = ' 0.0.60';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -320,6 +320,9 @@
         });
 
         if (error) throw error;
+
+        // Log whether the table was newly created or not based on the boolean value returned by the SQL function
+        console.log("Was the table newly created? ", data ? "Yes" : "No");
 
         console.log("Table ensured/created:", data);
         return data; // Return the boolean indicating if the table was newly created
