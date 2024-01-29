@@ -325,6 +325,7 @@
     }
 
     async function pushDataToSupabaseTable(supabase, tableName, columnTitles) {
+      var columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
       const dataToInsert = columnContents.map(row => {
         const rowData = {};
         columnTitles.forEach((title, index) => {
