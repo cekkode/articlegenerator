@@ -414,7 +414,7 @@
 
       if (error) {
         console.error("Error upserting/inserting data into Supabase table:", error);
-        alert('Error upserting/inserting data into Supabase table. Check the console for details.');
+        alert('Error upserting/inserting data into Supabase table: ' + error.message);
       } else {
         if (tableWasCreated) {
           console.log("Data inserted successfully:", data);
