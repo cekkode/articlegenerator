@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.67';
+    var version = ' 0.0.68';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -272,46 +272,49 @@
     }
 
     async function pushToSupabaseAsArray() {
-      const supabaseUrl = localStorage.getItem('supabaseUrl') || "";
-      const supabaseKey = localStorage.getItem('supabaseKey') || "";    
-      if (!supabaseUrl || !supabaseKey) {
-        alert("Supabase URL or API Key is missing. Please save your Supabase credentials.");
-        return;
+      try {
+        const supabaseUrl = localStorage.getItem('supabaseUrl') || "";
+        const supabaseKey = localStorage.getItem('supabaseKey') || "";    
+        if (!supabaseUrl || !supabaseKey) {
+          throw new Error("Supabase URL or API Key is missing. Please save your Supabase credentials.");
+        }
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        const selectedSheetName = document.getElementById("sheetName").value;
+        if (!selectedSheetName) {
+          throw new Error("Please select a sheet name.");
+        }
+
+        const headers = document.querySelectorAll("#tableContainer table th");
+        const columnTitles = Array.from(headers).map(header => header.innerText.trim()).filter(title => title);
+        const rows = document.querySelectorAll("#tableContainer table tr");
+        const columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText.trim()));
+
+        if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
+          alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
+          return;
+        }
+
+        // Ensure the table exists by calling the create_table function
+        const creationResult = await ensureTableCreation(supabase, selectedSheetName, columnTitles);
+        if (creationResult === null) {
+          console.error("Error creating table. Aborting data push.");
+          return;
+        }
+
+        // Proceed to insert or upsert data
+        await pushDataToSupabaseTable(supabase, selectedSheetName, columnTitles, columnContents);
+      } catch (error) {
+        console.error("Error:", error.message || error);
+        alert('An error occurred. Please check the console for details.');
       }
-      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-      const selectedSheetName = document.getElementById("sheetName").value;
-      if (!selectedSheetName) {
-        alert("Please select a sheet name.");
-        return;
-      }
-
-      const headers = document.querySelectorAll("#tableContainer table th");
-      const columnTitles = Array.from(headers).map(header => header.innerText).filter(title => title);
-      const rows = document.querySelectorAll("#tableContainer table tr");
-      const columnContents = Array.from(rows).slice(1).map(row => Array.from(row.querySelectorAll("td")).map(cell => cell.innerText));
-
-      if (!selectedSheetName || columnTitles.length === 0 || columnContents.length === 0) {
-        alert("Missing data: Ensure that the sheet name, column titles, and contents are not empty.");
-        return;
-      }
-
-      // Ensure the table exists by calling the create_table function
-      const creationResult = await ensureTableCreation(supabase, selectedSheetName, columnTitles);
-      if (creationResult === null) {
-        console.error("Error creating table. Aborting data push.");
-        return;
-      }
-
-      // Proceed to insert or upsert data
-      await pushDataToSupabaseTable(supabase, selectedSheetName, columnTitles, columnContents);
     }
 
     async function ensureTableCreation(supabase, tableName, columnTitles) {
       try {
         // Ensure the columnTitles is an array of strings, as expected by the function
         if (!Array.isArray(columnTitles)) {
-          throw new Error("columnTitles must be an array");
+          throw new Error("Column titles must be an array");
         }
 
         // Call the create_table function to check if the table exists and create it if necessary
@@ -332,11 +335,12 @@
           return tableWasCreated; // Indicate that the table was created
         } else {
           console.log("Table already exists:", tableName);
-          // Extract existing column names from the fetched data
-          const { data: existingColumns, error: columnError } = await supabase.from('information_schema.columns')
-            .select('column_name')
-            .eq('table_name', tableName)
-            .eq('table_schema', 'public');
+
+          // Check for column mismatches and handle new columns
+          const { data: existingColumns, error: columnError } = await supabase.rpc('alter_table_add_column', {
+            p_table_name: tableName,
+            columns: columnTitles
+          });
 
           if (columnError) {
             console.error("Error retrieving column information:", columnError);
