@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.69';
+    var version = ' 0.0.70';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -328,26 +328,26 @@
           throw creationError;
         }
 
-        if (tableWasCreated) {
+        if (tableWasCreated === true) {
           console.log("Table created:", tableName);
           // Proceed with data insertion/upsertion
           await pushDataToSupabaseTable(supabase, tableName, columnTitles, []);
-          return tableWasCreated; // Indicate that the table was created
-        } else {
+          return true; // Indicate that the table was created
+        } else if (tableWasCreated === false) {
           console.log("Table already exists:", tableName);
-
-          // Check for column mismatches and handle new columns
-          const { data: existingColumns, error: columnError } = await supabase.rpc('alter_table_add_column', {
+          // Extract existing column names from the fetched data
+          const { data: existingColumnsData, error: existingColumnsError } = await supabase.rpc('alter_table_add_column', {
             p_table_name: tableName,
-            columns: columnTitles
+            p_column_name: '', // Pass an empty string for the column name
+            p_data_type: '' // Pass an empty string for the data type
           });
 
-          if (columnError) {
-            console.error("Error retrieving column information:", columnError);
-            throw columnError;
+          if (existingColumnsError) {
+            console.error("Error retrieving existing column names:", existingColumnsError);
+            throw existingColumnsError;
           }
 
-          const existingColumnNames = existingColumns.map(column => column.column_name);
+          const existingColumns = existingColumnsData[0] || []; // Extract existing column names from the data
           // Check for column mismatches
           const newColumns = columnTitles.filter(column => !existingColumnNames.includes(column));
 
@@ -372,8 +372,11 @@
           }
 
           // Proceed with data insertion/upsertion
-          await pushDataToSupabaseTable(supabase, tableName, columnTitles, [], newColumns);
-          return !tableWasCreated; // Indicate that the table already exists
+          await pushDataToSupabaseTable(supabase, tableName, columnTitles, [], false, newColumns);
+          return false; // Indicate that the table already exists
+        } else {
+          console.log("Table creation status unknown:", tableName);
+          return null; // Unable to determine table creation status
         }
       } catch (error) {
         console.error("Error ensuring/creating table:", error);
