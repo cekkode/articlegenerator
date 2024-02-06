@@ -315,7 +315,7 @@
         }
 
         // Call the create_table function with the correct parameter order and types
-        const { data, error } = await supabase.rpc('public.create_table', {
+        const { data, error } = await supabase.rpc('create_table', {
           p_table_name: tableName,
           columns: columnTitles
         });
