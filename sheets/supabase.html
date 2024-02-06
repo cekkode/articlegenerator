@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.65';
+    var version = ' 0.0.66';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -314,9 +314,10 @@
           throw new Error("columnTitles must be an array");
         }
 
-        // Retrieve existing table columns only if the table exists
-        const { data: existingColumns, error: tableError } = await supabase.from('information_schema.columns')
-          .select('column_name')
+        // Check if the table already exists
+        const { data: existingTable, error: tableError } = await supabase
+          .from('information_schema.tables')
+          .select()
           .eq('table_name', tableName)
           .eq('table_schema', 'public');
 
@@ -325,8 +326,8 @@
           throw tableError;
         }
 
-        // Handle new table creation if the table doesn't exist
-        if (existingColumns.length === 0) {
+        // If the table doesn't exist, create it and insert data
+        if (!existingTable || existingTable.length === 0) {
           // Call the create_table function
           const { data: creationResult, error: creationError } = await supabase.rpc('create_table', {
             p_table_name: tableName,
@@ -340,15 +341,25 @@
 
           console.log("Table created:", tableName);
           // Proceed with data insertion/upsertion
-          await pushDataToSupabaseTable(supabase, tableName, columnTitles, [], []);
+          await pushDataToSupabaseTable(supabase, tableName, columnTitles, []);
           return creationResult;
         } else {
           console.log("Table already exists:", tableName);
           // Extract existing column names from the fetched data
+          const { data: existingColumns, error: columnError } = await supabase.from('information_schema.columns')
+            .select('column_name')
+            .eq('table_name', tableName)
+            .eq('table_schema', 'public');
+
+          if (columnError) {
+            console.error("Error retrieving column information:", columnError);
+            throw columnError;
+          }
+
           const existingColumnNames = existingColumns.map(column => column.column_name);
           // Check for column mismatches
           const newColumns = columnTitles.filter(column => !existingColumnNames.includes(column));
-          
+
           // Handle new columns (add to existing table)
           if (newColumns.length > 0) {
             // Alter the existing table to add new columns
