@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.63';
+    var version = ' 0.0.64';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -314,17 +314,54 @@
           throw new Error("columnTitles must be an array");
         }
 
-        // Call the create_table function with the correct parameter order and types
-        const { data, error } = await supabase.rpc('create_table', {
-          p_table_name: tableName,
-          columns: columnTitles
-        });
+        // Retrieve existing table columns
+        const { data: tableInfo, error: tableError } = await supabase.from('information_schema.columns')
+          .select('column_name')
+          .eq('table_name', tableName)
+          .eq('table_schema', 'public');
 
-        if (error) throw error;
+        if (tableError) throw tableError;
 
-        console.log("Was the table newly created? ", data ? "Yes" : "No");
-        console.log("Table ensured/created:", data);
-        return data;
+        // Extract existing column names from tableInfo
+        const existingColumns = tableInfo.map(column => column.column_name);
+
+        // Check for column mismatches
+        const newColumns = columnTitles.filter(column => !existingColumns.includes(column));
+
+        // Handle new columns (add to existing table)
+        if (newColumns.length > 0) {
+          // Alter the existing table to add new columns
+          await Promise.all(newColumns.map(async newColumn => {
+            // Implement logic to alter table and add newColumn
+            // For simplicity, let's assume the new column type is 'text'
+            const { data: alterResult, error: alterError } = await supabase.rpc('alter_table_add_column', {
+              p_table_name: tableName,
+              p_column_name: newColumn,
+              p_data_type: 'text'
+            });
+
+            if (alterError) throw alterError;
+            console.log(`Added column '${newColumn}' to table '${tableName}'`);
+          }));
+        }
+
+        // Call the create_table function if table doesn't exist
+        if (existingColumns.length === 0) {
+          const { data, error } = await supabase.rpc('create_table', {
+            p_table_name: tableName,
+            columns: columnTitles
+          });
+
+          if (error) throw error;
+
+          console.log("Table created:", tableName);
+          return data;
+        } else {
+          console.log("Table already exists:", tableName);
+          // Call pushDataToSupabaseTable to handle data insertion/upsertion
+          await pushDataToSupabaseTable(supabase, tableName, columnTitles, [], newColumns);
+          return true; // Indicate that the table already exists
+        }
       } catch (error) {
         console.error("Error ensuring/creating table:", error);
         alert('Error ensuring/creating table. Check the console for details.');
@@ -332,7 +369,7 @@
       }
     }
 
-    async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents, tableWasCreated) {
+    async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents, tableWasCreated, newColumns) {
       const dataToUpsert = columnContents.map((row, rowIndex) => {
         const rowData = {};
         columnTitles.forEach((title, index) => {
@@ -342,9 +379,16 @@
       });
 
       let result;
-      if (tableWasCreated) {
-        // Use Supabase's .insert() method to insert the data if the table was newly created
-        result = await supabase.from(tableName).insert(dataToUpsert);
+      if (tableWasCreated || (newColumns && newColumns.length > 0)) {
+        // Insert data for new columns if the table was newly created or new columns were added
+        const newDataForNewColumns = columnContents.map(row => {
+          const newRow = {};
+          newColumns.forEach(newColumn => {
+            newRow[newColumn] = row[newColumn] || null;
+          });
+          return newRow;
+        });
+        result = await supabase.from(tableName).insert(newDataForNewColumns);
       } else {
         // Use Supabase's .upsert() method to insert or update the data if the table already exists
         result = await supabase.from(tableName).upsert(dataToUpsert, { onConflict: 'ID' });
