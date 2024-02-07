@@ -347,8 +347,8 @@
                   throw existingColumnsError;
               }
 
-              // Extract the column names from the fetched data
-              const existingColumns = existingColumnsData[0] || [];
+              // Check if the data returned is an array, if not, handle it accordingly
+              const existingColumns = Array.isArray(existingColumnsData) ? existingColumnsData[0] : [];
               const existingColumnNames = existingColumns.map(column => column.column_name);
 
               // Check for column mismatches
