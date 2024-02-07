@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.78';
+    var version = ' 0.0.79';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -296,7 +296,7 @@
         }
 
         // Ensure the table exists by calling the create_table function
-        const creationResult = await ensureTableCreation(supabase, selectedSheetName, columnTitles);
+        const creationResult = await ensureTableCreation(supabase, selectedSheetName, columnTitles, columnContents);
         if (creationResult === null) {
           console.error("Error creating table. Aborting data push.");
           return;
@@ -317,7 +317,8 @@
               throw new Error("Column titles must be an array");
           }
 
-          let existingColumnNames = []; // Initialize existingColumnNames outside the try block
+          // Initialize existingColumnNames outside the try block
+          let existingColumnNames = [];
 
           // Call the create_table function to check if the table exists and create it if necessary
           const { data: tableWasCreated, error: creationError } = await supabase.rpc('create_table', {
@@ -325,18 +326,22 @@
               columns: columnTitles
           });
 
+          // Handle creation error
           if (creationError) {
               console.error("Error creating table:", creationError);
               throw creationError;
           }
 
+          // If the table was created
           if (tableWasCreated === true) {
               console.log("Table created:", tableName);
               // Proceed with data insertion/upsertion
               await pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents);
               return true; // Indicate that the table was created
           } else if (tableWasCreated === false) {
+              // If the table already exists
               console.log("Table already exists:", tableName);
+
               // Extract existing column names from the fetched data
               try {
                   const { data: existingColumnsData, error: existingColumnsError } = await supabase.rpc('alter_table_add_column', {
@@ -345,20 +350,19 @@
                       p_data_type: '' // Pass an empty string for the data type
                   });
 
+                  // Handle existing column error
                   if (existingColumnsError) {
                       console.error("Error retrieving existing column names:", existingColumnsError);
                       throw existingColumnsError;
                   }
 
-                  // Check if the data returned is an array, if not, handle it accordingly
-                  const existingColumns = Array.isArray(existingColumnsData) ? existingColumnsData[0] : [];
+                  // Check if the data returned is an array
                   if (Array.isArray(existingColumnsData) && existingColumnsData.length > 0 && existingColumnsData[0].column_name) {
                       existingColumnNames = existingColumnsData.map(column => column.column_name);
                   }
               } catch (existingColumnsError) {
                   console.error("Error retrieving existing column names:", existingColumnsError);
                   // Handle the error gracefully
-                  // You might want to implement specific error handling logic here
                   throw existingColumnsError;
               }
 
@@ -389,6 +393,7 @@
               await pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents, false, newColumns);
               return false; // Indicate that the table already exists
           } else {
+              // If the table creation status is unknown
               console.log("Table creation status unknown:", tableName);
               return null; // Unable to determine table creation status
           }
