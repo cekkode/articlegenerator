@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.75';
+    var version = ' 0.0.76';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -380,7 +380,7 @@
                           console.error(`Error adding column '${newColumn}' to table '${tableName}':`, alterError);
                           throw alterError;
                       }
-                      console.log(`Added column '${newColumn}' to table '${tableName}'`);
+                      console.log(`Added row '${columnContents.join(', ')}' on column '${newColumn}' to table '${tableName}'`);
                   }));
               }
 
