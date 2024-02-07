@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.74';
+    var version = ' 0.0.75';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -338,25 +338,22 @@
               // Extract existing column names from the fetched data
               let existingColumnNames = [];
               try {
-                const { data: existingColumnsData, error: existingColumnsError } = await supabase.rpc('alter_table_add_column', {
-                  p_table_name: tableName,
-                  p_column_name: '', // Pass an empty string for the column name
-                  p_data_type: '' // Pass an empty string for the data type
-              });
+                  const { data: existingColumnsData, error: existingColumnsError } = await supabase.rpc('alter_table_add_column', {
+                      p_table_name: tableName,
+                      p_column_name: '', // Pass an empty string for the column name
+                      p_data_type: '' // Pass an empty string for the data type
+                  });
 
-              if (existingColumnsError) {
-                  console.error("Error retrieving existing column names:", existingColumnsError);
-                  throw existingColumnsError;
-              }
+                  if (existingColumnsError) {
+                      console.error("Error retrieving existing column names:", existingColumnsError);
+                      throw existingColumnsError;
+                  }
 
-              // Check if the data returned is an array, if not, handle it accordingly
-              const existingColumns = Array.isArray(existingColumnsData) ? existingColumnsData[0] : [];
-              const existingColumnNames = existingColumns.map(column => column.column_name);
-
-                // Check if the data returned is an array, if not, handle it accordingly
-                if (Array.isArray(existingColumnsData) && existingColumnsData.length > 0 && existingColumnsData[0].column_name) {
-                    existingColumnNames = existingColumnsData.map(column => column.column_name);
-                }
+                  // Check if the data returned is an array, if not, handle it accordingly
+                  const existingColumns = Array.isArray(existingColumnsData) ? existingColumnsData[0] : [];
+                  if (Array.isArray(existingColumnsData) && existingColumnsData.length > 0 && existingColumnsData[0].column_name) {
+                      existingColumnNames = existingColumnsData.map(column => column.column_name);
+                  }
               } catch (existingColumnsError) {
                   console.error("Error retrieving existing column names:", existingColumnsError);
                   // Handle the error gracefully
