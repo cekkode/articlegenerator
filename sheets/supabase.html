@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.76';
+    var version = ' 0.0.77';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -310,7 +310,7 @@
       }
     }
 
-    async function ensureTableCreation(supabase, tableName, columnTitles) {
+    async function ensureTableCreation(supabase, tableName, columnTitles, columnContents) {
       try {
           // Ensure the columnTitles is an array of strings, as expected by the function
           if (!Array.isArray(columnTitles)) {
@@ -331,7 +331,7 @@
           if (tableWasCreated === true) {
               console.log("Table created:", tableName);
               // Proceed with data insertion/upsertion
-              await pushDataToSupabaseTable(supabase, tableName, columnTitles, []);
+              await pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents);
               return true; // Indicate that the table was created
           } else if (tableWasCreated === false) {
               console.log("Table already exists:", tableName);
@@ -351,6 +351,7 @@
 
                   // Check if the data returned is an array, if not, handle it accordingly
                   const existingColumns = Array.isArray(existingColumnsData) ? existingColumnsData[0] : [];
+                  let existingColumnNames = [];
                   if (Array.isArray(existingColumnsData) && existingColumnsData.length > 0 && existingColumnsData[0].column_name) {
                       existingColumnNames = existingColumnsData.map(column => column.column_name);
                   }
@@ -385,7 +386,7 @@
               }
 
               // Proceed with data insertion/upsertion
-              await pushDataToSupabaseTable(supabase, tableName, columnTitles, [], false, newColumns);
+              await pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents, false, newColumns);
               return false; // Indicate that the table already exists
           } else {
               console.log("Table creation status unknown:", tableName);
