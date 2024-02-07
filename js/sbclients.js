@@ -1,4 +1,4 @@
-var version = "0.0.76";
+var version = "0.0.77";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -6,7 +6,7 @@ script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supaba
 document.head.appendChild(script);
 
 // Fetch data from Supabase
-const fetchData = async (supabase, mainDomain, columnPrefix) => {
+const fetchData = async (supabase, mainDomain, columnPrefix, firstRowDate) => {
     console.log('Fetching new data...');
     const { data, error } = await supabase
         .from(mainDomain)
@@ -57,9 +57,9 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
 
     const firstRowDate = firstRowData ? firstRowData["📅"] : null;
 
-    // If data is not in cache or data is older than one day or version has changed, or 📅 column value has changed, fetch new data
-    if (!cachedData || !timestamp || Date.now() - timestamp > 24 * 60 * 60 * 1000 || version !== cachedVersion || (cachedFirstRowDate && firstRowDate !== cachedFirstRowDate)) {
-        return await fetchData(supabase, mainDomain, columnPrefix);
+    // If data is not in cache or data is older than one year or version has changed, or 📅 column value has changed, fetch new data
+    if (!cachedData || !timestamp || Date.now() - timestamp > 365 * 24 * 60 * 60 * 1000 || version !== cachedVersion || (cachedFirstRowDate && firstRowDate !== cachedFirstRowDate)) {
+        return await fetchData(supabase, mainDomain, columnPrefix, firstRowDate);
     }
 
     console.log('Using cached data...');
