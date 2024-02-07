@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.70';
+    var version = ' 0.0.71';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -416,7 +416,7 @@
         console.error("Error upserting/inserting data into Supabase table:", error);
         alert('Error upserting/inserting data into Supabase table: ' + error.message);
       } else {
-        if (tableWasCreated) {
+        if (tableWasCreated === true) {
           console.log("Data inserted successfully:", data);
           alert('Data inserted into Supabase table successfully.');
         } else {
