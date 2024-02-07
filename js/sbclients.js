@@ -10,8 +10,8 @@ const fetchData = async (supabase, mainDomain, columnPrefix) => {
     console.log('Fetching new data...');
     const { data, error } = await supabase
         .from(mainDomain)
-        .select(`"📍", "${columnPrefix}🧑🏻", "${columnPrefix}#️⃣", "${columnPrefix}📊", "${columnPrefix}📞", "${columnPrefix}💬", "${columnPrefix}🏷️"`);
-
+        .select(`"📍", "${columnPrefix}🧑🏻", "${columnPrefix}#️⃣", "${columnPrefix}📊", "${columnPrefix}📞", "${columnPrefix}💬", "${columnPrefix}🏷️", "📅"`);
+        
     if (error) {
         console.error('Error fetching data:', error);
         return null;
@@ -21,7 +21,7 @@ const fetchData = async (supabase, mainDomain, columnPrefix) => {
     if (!data || data.length === 0 || !data[0].hasOwnProperty(`${columnPrefix}🧑🏻`)) {
         const { data, error } = await supabase
             .from(mainDomain)
-            .select('"📍", "🧑🏻", "#️⃣", "📊", "📞", "💬", "🏷️"');
+            .select('"📍", "🧑🏻", "#️⃣", "📊", "📞", "💬", "🏷️", "📅"');
 
         if (error) {
             console.error('Error fetching data:', error);
@@ -33,6 +33,7 @@ const fetchData = async (supabase, mainDomain, columnPrefix) => {
     localStorage.setItem('data', JSON.stringify(data));
     localStorage.setItem('timestamp', Date.now());
     localStorage.setItem('version', version);
+    localStorage.setItem('firstRowDate', firstRowDate);
 
     return data;
 };
@@ -42,11 +43,25 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
     const cachedData = localStorage.getItem('data');
     const timestamp = localStorage.getItem('timestamp');
     const cachedVersion = localStorage.getItem('version');
+    const cachedFirstRowDate = localStorage.getItem('firstRowDate');
+    const { data: firstRowData, error: firstRowError } = await supabase
+        .from(mainDomain)
+        .select(`"📅"`)
+        .limit(1)
+        .single();
 
-    // If data is not in cache or data is older than one day or version has changed, fetch new data
-    if (!cachedData || !timestamp || Date.now() - timestamp > 24 * 60 * 60 * 1000 || version !== cachedVersion) {
+    if (firstRowError) {
+        console.error('Error fetching first row data:', firstRowError);
+        return JSON.parse(cachedData); // Return cached data if error occurs while fetching first row data
+    }
+
+    const firstRowDate = firstRowData ? firstRowData["📅"] : null;
+
+    // If data is not in cache or data is older than one day or version has changed, or 📅 column value has changed, fetch new data
+    if (!cachedData || !timestamp || Date.now() - timestamp > 24 * 60 * 60 * 1000 || version !== cachedVersion || (cachedFirstRowDate && firstRowDate !== cachedFirstRowDate)) {
         return await fetchData(supabase, mainDomain, columnPrefix);
     }
+
     console.log('Using cached data...');
     // Otherwise, return cached data
     return JSON.parse(cachedData);
