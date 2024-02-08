@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.80';
+    var version = ' 0.0.81';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -436,12 +436,18 @@
         console.error("Error upserting/inserting data into Supabase table:", error);
         alert('Error upserting/inserting data into Supabase table: ' + error.message);
       } else {
-        // Log successful insertions or updates
-        if (data && data.length > 0) {
-          data.forEach(row => {
-            console.log(`Successfully added/updated row in table '${tableName}':`, row);
+        let dataLogged = false;
+        // Log the data being upserted with column names
+        dataToUpsert.forEach(row => {
+          columnTitles.forEach(title => {
+            if (row[title] !== null) {
+              console.log(`Added data '${row[title]}' in column '${title}' in table '${tableName}'.`);
+              dataLogged = true;
+            }
           });
-        } else {
+        });
+
+        if (!dataLogged) {
           console.log("No new data was added or updated.");
         }
 
