@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.79';
+    var version = ' 0.0.80';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -335,8 +335,6 @@
           // If the table was created
           if (tableWasCreated === true) {
               console.log("Table created:", tableName);
-              // Proceed with data insertion/upsertion
-              await pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents);
               return true; // Indicate that the table was created
           } else if (tableWasCreated === false) {
               // If the table already exists
@@ -385,12 +383,9 @@
                           console.error(`Error adding column '${newColumn}' to table '${tableName}':`, alterError);
                           throw alterError;
                       }
-                      console.log(`Added row '${columnContents.join(', ')}' on column '${newColumn}' to table '${tableName}'`);
                   }));
               }
 
-              // Proceed with data insertion/upsertion
-              await pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents, false, newColumns);
               return false; // Indicate that the table already exists
           } else {
               // If the table creation status is unknown
@@ -405,7 +400,13 @@
     }
 
     async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents, tableWasCreated, newColumns) {
-      const dataToUpsert = columnContents.map((row, rowIndex) => {
+      // Filter out rows where the ID is null or undefined
+      const filteredColumnContents = columnContents.filter(row => {
+        const idIndex = columnTitles.indexOf('ID');
+        return idIndex !== -1 && row[idIndex] != null; // Check for both null and undefined
+      });
+
+      const dataToUpsert = filteredColumnContents.map((row, rowIndex) => {
         const rowData = {};
         columnTitles.forEach((title, index) => {
           rowData[title] = row[index] || null; // Assign null for any missing values
@@ -416,7 +417,7 @@
       let result;
       if (tableWasCreated || (newColumns && newColumns.length > 0)) {
         // Insert data for new columns if the table was newly created or new columns were added
-        const newDataForNewColumns = columnContents.map(row => {
+        const newDataForNewColumns = dataToUpsert.map(row => {
           const newRow = {};
           newColumns.forEach(newColumn => {
             newRow[newColumn] = row[newColumn] || null;
@@ -435,6 +436,15 @@
         console.error("Error upserting/inserting data into Supabase table:", error);
         alert('Error upserting/inserting data into Supabase table: ' + error.message);
       } else {
+        // Log successful insertions or updates
+        if (data && data.length > 0) {
+          data.forEach(row => {
+            console.log(`Successfully added/updated row in table '${tableName}':`, row);
+          });
+        } else {
+          console.log("No new data was added or updated.");
+        }
+
         if (tableWasCreated === true) {
           console.log("Data inserted successfully:", data);
           alert('Data inserted into Supabase table successfully.');
