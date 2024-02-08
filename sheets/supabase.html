@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.85';
+    var version = ' 0.0.86';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -348,7 +348,6 @@
                       p_table_name: tableName
                   });
 
-                  // Handle existing column error
                   if (existingColumnsError) {
                       console.error("Error retrieving existing column names:", existingColumnsError);
                       throw existingColumnsError;
@@ -356,12 +355,13 @@
 
                   // Check if the data returned is an array
                   if (Array.isArray(existingColumnsData) && existingColumnsData.length > 0) {
-                      existingColumnNames = existingColumnsData.map(column => column.column_name);
+                      // Access the first item's existing_column_names property to get the array of column names
+                      existingColumnNames = existingColumnsData[0].existing_column_names;
                   }
-              } catch (existingColumnsError) {
-                  console.error("Error retrieving existing column names:", existingColumnsError);
+              } catch (error) {
+                  console.error("Error retrieving existing column names:", error);
                   // Handle the error gracefully
-                  throw existingColumnsError;
+                  throw error;
               }
 
               // Check for column mismatches
