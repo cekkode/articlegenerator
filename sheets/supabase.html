@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.81';
+    var version = ' 0.0.82';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -400,9 +400,17 @@
     }
 
     async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents, tableWasCreated, newColumns) {
+      // Determine if 'ID' or 'id' is used in the columnTitles
+      const idColumn = columnTitles.includes('ID') ? 'ID' : columnTitles.includes('id') ? 'id' : null;
+
+      if (!idColumn) {
+        console.error("No 'ID' or 'id' column found. Upsert operation requires a primary key.");
+        return;
+      }
+
       // Filter out rows where the ID is null or undefined
       const filteredColumnContents = columnContents.filter(row => {
-        const idIndex = columnTitles.indexOf('ID');
+        const idIndex = columnTitles.indexOf(idColumn); // Use dynamic idColumn
         return idIndex !== -1 && row[idIndex] != null; // Check for both null and undefined
       });
 
@@ -427,7 +435,8 @@
         result = await supabase.from(tableName).insert(newDataForNewColumns);
       } else {
         // Use Supabase's .upsert() method to insert or update the data if the table already exists
-        result = await supabase.from(tableName).upsert(dataToUpsert, { onConflict: 'ID' });
+        // Dynamically set the onConflict parameter based on the presence of 'ID' or 'id'
+        result = await supabase.from(tableName).upsert(dataToUpsert, { onConflict: idColumn });
       }
 
       const { data, error } = result;
