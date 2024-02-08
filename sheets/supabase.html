@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.84';
+    var version = ' 0.0.85';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -344,10 +344,8 @@
 
               // Extract existing column names from the fetched data
               try {
-                  const { data: existingColumnsData, error: existingColumnsError } = await supabase.rpc('alter_table_add_column', {
-                      p_table_name: tableName,
-                      p_column_name: '', // Pass an empty string for the column name
-                      p_data_type: '' // Pass an empty string for the data type
+                  const { data: existingColumnsData, error: existingColumnsError } = await supabase.rpc('get_existing_columns', {
+                      p_table_name: tableName
                   });
 
                   // Handle existing column error
@@ -357,7 +355,7 @@
                   }
 
                   // Check if the data returned is an array
-                  if (Array.isArray(existingColumnsData) && existingColumnsData.length > 0 && existingColumnsData[0].column_name) {
+                  if (Array.isArray(existingColumnsData) && existingColumnsData.length > 0) {
                       existingColumnNames = existingColumnsData.map(column => column.column_name);
                   }
               } catch (existingColumnsError) {
