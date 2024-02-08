@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.82';
+    var version = ' 0.0.83';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -421,12 +421,15 @@
       });
 
       let result;
-      if (tableWasCreated || (newColumns && newColumns.length > 0)) {
-        // Insert data for new columns if the table was newly created or new columns were added
+      if (tableWasCreated) {
+        // If the table was newly created, insert all data
+        result = await supabase.from(tableName).insert(dataToUpsert);
+      } else if (newColumns && newColumns.length > 0) {
+        // If new columns were added, insert data considering new columns
+        // This assumes newColumns contains the names of the new columns
         const newDataForNewColumns = dataToUpsert.map(row => {
           const newRow = {};
           newColumns.forEach(newColumn => {
-            // Ensure new columns are also normalized to 'ID' if applicable
             const columnName = newColumn.toLowerCase() === 'id' ? 'ID' : newColumn;
             newRow[columnName] = row[columnName] || null;
           });
