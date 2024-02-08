@@ -400,17 +400,15 @@
     }
 
     async function pushDataToSupabaseTable(supabase, tableName, columnTitles, columnContents, tableWasCreated, newColumns) {
-      // Determine if 'ID' or 'id' is used in the columnTitles
-      const idColumn = columnTitles.includes('ID') ? 'ID' : columnTitles.includes('id') ? 'id' : null;
+      // Normalize 'id' or 'ID' to 'ID' in columnTitles
+      columnTitles = columnTitles.map(title => title.toLowerCase() === 'id' ? 'ID' : title);
 
-      if (!idColumn) {
-        console.error("No 'ID' or 'id' column found. Upsert operation requires a primary key.");
-        return;
-      }
+      // Since we've normalized, we can directly use 'ID'
+      const idColumn = 'ID';
 
       // Filter out rows where the ID is null or undefined
       const filteredColumnContents = columnContents.filter(row => {
-        const idIndex = columnTitles.indexOf(idColumn); // Use dynamic idColumn
+        const idIndex = columnTitles.indexOf(idColumn); // Use 'ID' directly
         return idIndex !== -1 && row[idIndex] != null; // Check for both null and undefined
       });
 
@@ -428,14 +426,15 @@
         const newDataForNewColumns = dataToUpsert.map(row => {
           const newRow = {};
           newColumns.forEach(newColumn => {
-            newRow[newColumn] = row[newColumn] || null;
+            // Ensure new columns are also normalized to 'ID' if applicable
+            const columnName = newColumn.toLowerCase() === 'id' ? 'ID' : newColumn;
+            newRow[columnName] = row[columnName] || null;
           });
           return newRow;
         });
         result = await supabase.from(tableName).insert(newDataForNewColumns);
       } else {
         // Use Supabase's .upsert() method to insert or update the data if the table already exists
-        // Dynamically set the onConflict parameter based on the presence of 'ID' or 'id'
         result = await supabase.from(tableName).upsert(dataToUpsert, { onConflict: idColumn });
       }
 
