@@ -55,7 +55,6 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
     }
 
     const firstRowDate = firstRowData ? firstRowData["📅"] : null;
-    console.log(`📅: ${firstRowDate}`);
 
     if (cachedFirstRowDate) {
         console.log(`Cached 📅: ${cachedFirstRowDate} = 📅: ${firstRowDate}? ${firstRowDate === cachedFirstRowDate}`);
