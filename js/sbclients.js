@@ -1,4 +1,4 @@
-var version = "0.0.80";
+var version = "0.0.81";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -177,8 +177,8 @@ script.onload = async function() {
             textNodes.push(node);
         }
 
-        // Define the regex pattern to match the phone number and name format
-        var regex = /\d{4} \d{4} \d{4} \((.*?)\)/g;
+        // Define the regexPhone pattern to match the phone number and name format
+        var regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
 
         // Flag to check if data should be hidden
         var shouldHide = row[columnPrefix + '🧑🏻'] === 'HIDE' || row[columnPrefix + '#️⃣'] === 'HIDE' || row[columnPrefix + '📊'] === 'HIDE' || row[columnPrefix + '📞'] === 'HIDE' || row[columnPrefix + '💬'] === 'HIDE' || row[columnPrefix + '🏷️'] === 'HIDE';
@@ -226,8 +226,12 @@ script.onload = async function() {
 
         // Iterate over each text node
         textNodes.forEach(function(node) {
-            // If the node's text matches the regex pattern
-            if (regex.test(node.nodeValue)) {
+            // If the node's text matches the regexPhone pattern
+            if (regexPhone.test(node.nodeValue)) {
+
+                // Check if the parent node contains a font awesome phone icon
+                var hasFontAwesomePhoneIcon = node.parentNode && node.parentNode.querySelector && node.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
+
                 // If the node has a parent and the parent is not an anchor tag
                 if (node.parentNode && node.parentNode.nodeName !== 'A') {
                     // Create a new anchor tag
@@ -237,7 +241,7 @@ script.onload = async function() {
                     // Replace the text node with the new anchor tag
                     node.parentNode.replaceChild(anchor, node);
                     // Set the text content of the anchor tag
-                    anchor.textContent = shouldHide ? node.nodeValue.replace(regex, '') : '📞 ' + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    anchor.textContent = shouldHide ? node.nodeValue.replace(regexPhone, '') : (hasFontAwesomePhoneIcon ? '' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
 
                     // Get the computed style of the anchor tag
                     var style = window.getComputedStyle(anchor);
@@ -256,7 +260,7 @@ script.onload = async function() {
                     }
                 } else if (node.parentNode) {
                     // Replace the matched text based on the shouldHide flag
-                    node.nodeValue = shouldHide ? node.nodeValue.replace(regex, '') : '📞 ' + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    node.nodeValue = shouldHide ? node.nodeValue.replace(regexPhone, '') : (hasFontAwesomePhoneIcon ? '' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                 }
             }
         });
