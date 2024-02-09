@@ -1,4 +1,4 @@
-var version = "0.0.81";
+var version = "0.0.82";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -241,7 +241,7 @@ script.onload = async function() {
                     // Replace the text node with the new anchor tag
                     node.parentNode.replaceChild(anchor, node);
                     // Set the text content of the anchor tag
-                    anchor.textContent = shouldHide ? node.nodeValue.replace(regexPhone, '') : (hasFontAwesomePhoneIcon ? '' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    anchor.textContent = shouldHide ? node.nodeValue.replace(regexPhone, '') : (hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
 
                     // Get the computed style of the anchor tag
                     var style = window.getComputedStyle(anchor);
@@ -260,7 +260,7 @@ script.onload = async function() {
                     }
                 } else if (node.parentNode) {
                     // Replace the matched text based on the shouldHide flag
-                    node.nodeValue = shouldHide ? node.nodeValue.replace(regexPhone, '') : (hasFontAwesomePhoneIcon ? '' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    node.nodeValue = shouldHide ? node.nodeValue.replace(regexPhone, '') : (hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                 }
             }
         });
