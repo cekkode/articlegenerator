@@ -1,4 +1,4 @@
-var version = "0.0.79";
+var version = "0.0.80";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -73,6 +73,15 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
     return JSON.parse(cachedData);
 };
 
+const replaceFooterAddressWithFetchedData = (addressData) => {
+    const footer = document.querySelector('footer');
+    const addressRegex = /(?:Jl\.|Jalan|No\.|Komp\.|Komplek|Ruko)[^<,]+[0-9]{5}/gi;
+  
+    if (footer && footer.innerHTML.match(addressRegex)) {
+      footer.innerHTML = footer.innerHTML.replace(addressRegex, addressData);
+    }
+};
+
 script.onload = async function() {
     const supabaseUrl = 'https://mwikqvfpuxttqjucmhoj.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13aWtxdmZwdXh0dHFqdWNtaG9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDU1MjU1NjUsImV4cCI6MjAyMTEwMTU2NX0.GXfqYXnP7owuTb24UpYDDRB0ZAXyHLVuuBbzubwsrWM';
@@ -112,6 +121,14 @@ script.onload = async function() {
     // Then pass supabase, mainDomain, and columnPrefix to getData
     const data = await getData(supabase, mainDomain, columnPrefix);
     console.log('Fetched data:', data); // Log the fetched data
+
+    // Check if there's a row with address data and replace the footer address
+    if (data && data.length > 0) {
+        const addressRow = data.find(row => row.hasOwnProperty(columnPrefix + '🏢'));
+        if (addressRow) {
+            replaceFooterAddressWithFetchedData(addressRow[columnPrefix + '🏢']);
+        }
+    }
 
     // Find the row that matches the pageName
     const row = data.find(item => {
