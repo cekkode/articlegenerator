@@ -1,4 +1,4 @@
-var version = "0.0.78";
+var version = "0.0.79";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -9,7 +9,7 @@ document.head.appendChild(script);
 const fetchData = async (supabase, mainDomain, columnPrefix, firstRowDate) => {
     const { data, error } = await supabase
         .from(mainDomain)
-        .select(`"📍", "${columnPrefix}🧑🏻", "${columnPrefix}#️⃣", "${columnPrefix}📊", "${columnPrefix}📞", "${columnPrefix}💬", "${columnPrefix}🏷️", "📅"`);
+        .select(`"📍", "${columnPrefix}🧑🏻", "${columnPrefix}#️⃣", "${columnPrefix}📊", "${columnPrefix}📞", "${columnPrefix}💬", "${columnPrefix}🏷️", "${columnPrefix}🏢"`);
         
     if (error) {
         console.error('Error fetching data:', error);
@@ -20,7 +20,7 @@ const fetchData = async (supabase, mainDomain, columnPrefix, firstRowDate) => {
     if (!data || data.length === 0 || !data[0].hasOwnProperty(`${columnPrefix}🧑🏻`)) {
         const { data, error } = await supabase
             .from(mainDomain)
-            .select('"📍", "🧑🏻", "#️⃣", "📊", "📞", "💬", "🏷️", "📅"');
+            .select('"📍", "🧑🏻", "#️⃣", "📊", "📞", "💬", "🏷️", "🏢"');
 
         if (error) {
             console.error('Error fetching data:', error);
@@ -140,6 +140,7 @@ script.onload = async function() {
         console.log(columnPrefix + '📞: ' + row[columnPrefix + '📞']);
         console.log(columnPrefix + '💬: ' + row[columnPrefix + '💬']);
         console.log(columnPrefix + '🏷️: ' + row[columnPrefix + '🏷️']);
+        console.log(columnPrefix + '🏢: ' + row[columnPrefix + '🏢']);
 
         // Format the phone number
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
