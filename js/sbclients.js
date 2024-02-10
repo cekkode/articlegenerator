@@ -1,4 +1,4 @@
-var version = "0.0.95";
+var version = "0.0.97";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -71,6 +71,10 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         }
     };
 
+    const currentHour = new Date().getHours();
+    const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
+    const textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, admin ${domain}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
+
     const updateContactInfo = (row) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
         const whatsappFloat = document.querySelector('.whatsapp-floating');
@@ -84,9 +88,11 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
             whatsappFloat.style.display = 'none';
             tlpFloat.style.display = 'none';
         } else {
-            whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+            whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam;
+            Object.assign(whatsappElement, { target: "_blank", rel: "noopener noreferrer" });
             whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
             tlpElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
+            Object.assign(tlpElement, { target: "_blank", rel: "noopener noreferrer" });
             tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
         }
     };
@@ -105,7 +111,8 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
             } else {
                 const updateHref = anchor.href.includes('what.sapp.my.id') || anchor.href.includes('con.tact.my.id');
                 if (updateHref) {
-                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + (anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] : row[columnPrefix + '📞']);
+                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + (anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] + '/?text=' + textParam : row[columnPrefix + '📞']);
+                    Object.assign(newAnchor, { target: "_blank", rel: "noopener noreferrer" });
                 }
                 updateTextNodeWithinAnchor(anchor, regexPhone, formattedNumber, row[columnPrefix + '🧑🏻']);
             }
@@ -135,8 +142,8 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
                 const newAnchor = document.createElement('a');
                 const newNode = document.createTextNode(' ' + formattedNumber + ' (' + contactName + ')');
                 newAnchor.appendChild(newNode);
-                // Set href - example, modify as needed
-                newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+                newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam;
+                Object.assign(newAnchor, { target: "_blank", rel: "noopener noreferrer" });
                 node.parentNode.replaceChild(newAnchor, node);
             }
         }
