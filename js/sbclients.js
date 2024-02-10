@@ -1,4 +1,4 @@
-var version = "0.0.123";
+var version = "0.0.124";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -112,18 +112,21 @@ const updateUI = (data, columnPrefix) => {
     updateFloatContact(row, textParam);
 
     const adjustTextColorBasedOnBackground = (element) => {
-        const style = window.getComputedStyle(element);
-        const rgb = style.backgroundColor.replace(/[^\d,]/g, '').split(',');
-        const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
-        element.style.color = brightness < 200 ? 'white' : 'black';
-    };
-
-    const adjustTextColorToMatchParent = (element) => {
-        const parentElement = element.closest('p'); // Adjust the selector as needed.
-        if (parentElement) {
-            const parentStyle = window.getComputedStyle(parentElement);
-            const textColor = parentStyle.color;
-            element.style.color = textColor;
+        if (document.body.contains(element)) {
+            let targetElement = element;
+            let backgroundColor = 'rgba(0, 0, 0, 0)'; // Default to fully transparent
+            while (targetElement && backgroundColor === 'rgba(0, 0, 0, 0)' && targetElement !== document.body) {
+                const style = window.getComputedStyle(targetElement);
+                if (style.backgroundColor !== 'rgba(0, 0, 0, 0)') {
+                    backgroundColor = style.backgroundColor;
+                }
+                targetElement = targetElement.parentElement;
+            }
+            const rgb = backgroundColor.replace(/[^\d,]/g, '').split(',');
+            const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+            element.style.color = brightness < 125 ? 'white' : 'black';
+        } else {
+            console.warn('Element is not in the DOM.');
         }
     };
 
