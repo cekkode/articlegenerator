@@ -1,4 +1,4 @@
-var version = "0.0.132";
+var version = "0.0.133";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -167,20 +167,18 @@ const updateUI = (data, columnPrefix) => {
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
         const textNodes = [...anchor.childNodes].filter(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
     
-        textNodes.forEach(textNode => {
-            let prevElement = textNode.previousElementSibling;
-            const hasFaIconBeforeText = prevElement && prevElement.tagName === 'I' && prevElement.classList.contains('fas');
+        textNodes.forEach(node => {
+            const hasFontAwesomePhoneIcon = node.parentNode && node.parentNode.querySelector && node.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
     
-            if (!hasFaIconBeforeText) {
-                textNode.nodeValue = `📞 ${formattedNumber} (${contactName})`;
-            } else {
-                textNode.nodeValue = `${formattedNumber} (${contactName})`;
+            if (node.parentNode && node.parentNode.nodeName !== 'A') {
+                const newAnchor = document.createElement('a');
+                newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam ;
+                node.parentNode.replaceChild(newAnchor, node);
+                newAnchor.textContent = hasFontAwesomePhoneIcon ? `${formattedNumber} (${contactName})` : `📞 ${formattedNumber} (${contactName})`;
+            } else if (!hasFontAwesomePhoneIcon) {
+                node.nodeValue = `📞 ${formattedNumber} (${contactName})`;
             }
         });
-    
-        if (textNodes.length === 0) {
-            addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName);
-        }
     };
 
     const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide) => {
