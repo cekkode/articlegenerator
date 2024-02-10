@@ -1,4 +1,4 @@
-var version = "0.0.97";
+var version = "0.0.98";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
