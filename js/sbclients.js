@@ -1,4 +1,4 @@
-var version = "0.0.90";
+var version = "0.0.91";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -96,58 +96,55 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         const regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
     
+        // Handle anchor tags, including mailto: links and specific URLs
         document.querySelectorAll('a').forEach(anchor => {
-            // Clean up mailto: links
             if (anchor.href.includes('mailto:')) {
                 anchor.href = anchor.href.replace(/\s/g, '').replace(/%20/g, '');
-            }
-    
-            // Update the href attribute for specific links, if not being removed
-            if (!shouldHide && (anchor.href.includes('what.sapp.my.id') || anchor.href.includes('con.tact.my.id'))) {
-                anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
-            }
-    
-            // Check if the anchor contains a phone number and FontAwesome icon
-            const hasFontAwesomePhoneIcon = anchor.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
-            if (regexPhone.test(anchor.textContent) && !shouldHide) {
-                // Preserve existing HTML, only replace the text node
-                const iconHtml = hasFontAwesomePhoneIcon ? anchor.innerHTML.match(/<i[\s\S]*?<\/i>/gi).join('') : '';
-                anchor.innerHTML = iconHtml + (hasFontAwesomePhoneIcon ? ' ' : '') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-                adjustAnchorTextColorBasedOnBackground(anchor);
             } else if (shouldHide) {
                 anchor.remove();
+            } else {
+                const updateHref = anchor.href.includes('what.sapp.my.id') || anchor.href.includes('con.tact.my.id');
+                if (updateHref) {
+                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + (anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] : row[columnPrefix + '📞']);
+                }
+                updateTextNodeWithinAnchor(anchor, regexPhone, formattedNumber, row[columnPrefix + '🧑🏻']);
             }
         });
     
-        // Correctly iterate over text nodes using TreeWalker to process other text nodes
+        // Process other text nodes in the document
+        processTextNodes(regexPhone, formattedNumber, row[columnPrefix + '🧑🏻'], shouldHide);
+    };
+    
+    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
+        const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
+        if (textNode) {
+            textNode.nodeValue = formattedNumber + ' (' + contactName + ')';
+            adjustTextColorBasedOnBackground(anchor);
+        }
+    };
+    
+    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide) => {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
             if (regexPhone.test(node.nodeValue)) {
-                const parentNode = node.parentNode;
-                // Skip if the parent node is an anchor tag already processed
-                if (parentNode && parentNode.nodeName !== 'A') {
-                    if (shouldHide) {
-                        // Remove or hide the parent node or text node as needed
-                        parentNode.style.display = 'none';
-                    } else {
-                        // Create a new text node with the updated phone number and replace the old one
-                        const newText = document.createTextNode(formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
-                        parentNode.replaceChild(newText, node);
-                    }
+                if (shouldHide) {
+                    node.parentNode.remove();
+                } else {
+                    const newNode = document.createTextNode(formattedNumber + ' (' + contactName + ')');
+                    node.parentNode.replaceChild(newNode, node);
                 }
             }
         }
     };
     
-    // Function to adjust anchor text color based on background brightness
-    function adjustAnchorTextColorBasedOnBackground(anchor) {
-        const style = window.getComputedStyle(anchor);
+    const adjustTextColorBasedOnBackground = (element) => {
+        const style = window.getComputedStyle(element);
         const backgroundColor = style.backgroundColor;
         const rgb = backgroundColor.replace(/[^\d,]/g, '').split(',');
         const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
-        anchor.style.color = brightness < 125 ? 'white' : 'black';
-    }
+        element.style.color = brightness < 125 ? 'white' : 'black';
+    };
 
     // Find the row that matches the pageName and update the UI accordingly
     const pageName = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || '(DEFAULT)';
