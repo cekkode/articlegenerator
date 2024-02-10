@@ -1,4 +1,4 @@
-var version = "0.0.101";
+var version = "0.0.102";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -71,15 +71,6 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         console.log('No matching data found for the page.');
         return;
     }
-
-    // Log the required data
-    console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
-    console.log(columnPrefix + '#️⃣: ' + row[columnPrefix + '#️⃣']);
-    console.log(columnPrefix + '📊: ' + row[columnPrefix + '📊']);
-    console.log(columnPrefix + '📞: ' + row[columnPrefix + '📞']);
-    console.log(columnPrefix + '💬: ' + row[columnPrefix + '💬']);
-    console.log(columnPrefix + '🏷️: ' + row[columnPrefix + '🏷️']);
-    console.log(columnPrefix + '🏢: ' + row[columnPrefix + '🏢']);
 
     const replaceFooterAddressWithFetchedData = (addressData) => {
         const footer = document.querySelector('footer');
@@ -189,6 +180,15 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
         element.style.color = brightness < 125 ? 'white' : 'black';
     };
+
+    // Log the required data
+    console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
+    console.log(columnPrefix + '#️⃣: ' + row[columnPrefix + '#️⃣']);
+    console.log(columnPrefix + '📊: ' + row[columnPrefix + '📊']);
+    console.log(columnPrefix + '📞: ' + row[columnPrefix + '📞']);
+    console.log(columnPrefix + '💬: ' + row[columnPrefix + '💬']);
+    console.log(columnPrefix + '🏷️: ' + row[columnPrefix + '🏷️']);
+    console.log(columnPrefix + '🏢: ' + row[columnPrefix + '🏢']);
 };
 
 script.onload = async function() {
