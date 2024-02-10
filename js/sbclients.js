@@ -1,4 +1,4 @@
-var version = "0.0.127";
+var version = "0.0.128";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -81,9 +81,9 @@ const updateUI = (data, columnPrefix) => {
         const elements = [
             document.querySelector('footer'),
             document.querySelector('header'),
-            ...document.querySelectorAll('.widget-area')
+            ...document.querySelectorAll('.bannersewa')
         ];
-        const addressRegex = /(?:Jl\.|Jalan|No\.|Komp\.|Komplek|Ruko)[^<,]+(?:[0-9]{5})?/gi;
+        const addressRegex = /(?:Jl\.|No\.|Komp\.|Komplek|Ruko)[^<,]+(?:[0-9]{5})?/gi;
         elements.forEach(element => {
             if (element && element.innerHTML.match(addressRegex)) {
                 element.innerHTML = element.innerHTML.replace(addressRegex, addressData);
