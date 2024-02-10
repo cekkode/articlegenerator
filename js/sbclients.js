@@ -1,4 +1,4 @@
-var version = "0.0.128";
+var version = "0.0.129";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -167,7 +167,7 @@ const updateUI = (data, columnPrefix) => {
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
         const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
         if (textNode) {
-            textNode.nodeValue = ' ' + formattedNumber + ' (' + contactName + ')';
+            textNode.nodeValue = '📞 ' + formattedNumber + ' (' + contactName + ')';
         } else {
             addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName, textParam);
         }
