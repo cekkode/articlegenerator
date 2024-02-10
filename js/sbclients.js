@@ -1,4 +1,4 @@
-var version = "0.0.104";
+var version = "0.0.105";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -62,6 +62,21 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
 };
 
 const updateUI = (data, columnPrefix) => {
+    // Define textParam at the beginning of updateUI so it's accessible throughout
+    const currentHour = new Date().getHours();
+    const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
+    const textParam = encodeURIComponent(`Selamat ${greeting} pak ${data[0][columnPrefix + '🧑🏻']}, admin ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
+
+    // Find the row that matches the pageName and update the UI accordingly
+    const pageName = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || '(DEFAULT)';
+    const pageNameParts = pageName.split('-');
+    const row = data.find(item => pageName === '(DEFAULT)' ? item['📍'] === pageName : pageNameParts.some(part => item['📍'] && item['📍'].toLowerCase() === part));
+
+    if (!row) {
+        console.log('No matching data found for the page.');
+        return;
+    }
+
     const replaceAddress = (addressData) => {
         const footer = document.querySelector('footer');
         const addressRegex = /(?:Jl\.|Jalan|No\.|Komp\.|Komplek|Ruko)[^<,]+[0-9]{5}/gi;
@@ -71,7 +86,9 @@ const updateUI = (data, columnPrefix) => {
         }
     };
 
-    const updateFloatContact = (row) => {
+    replaceAddress(row[columnPrefix + '🏢']);
+
+    const updateFloatContact = (row, textParam) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
         const whatsappFloat = document.querySelector('.whatsapp-floating');
         const whatsappElement = document.querySelector('.whatsapp-floating a');
@@ -93,7 +110,7 @@ const updateUI = (data, columnPrefix) => {
         }
     };
 
-    const updatePageContact = (row) => {
+    const updatePageContact = (row, textParam) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
         const regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
@@ -127,7 +144,7 @@ const updateUI = (data, columnPrefix) => {
         }
     };
     
-    const addHrefToTextNodeIfMissing = (anchor, regexPhone, formattedNumber, contactName) => {
+    const addHrefToTextNodeIfMissing = (anchor, regexPhone, formattedNumber, contactName, textParam) => {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
@@ -166,16 +183,6 @@ const updateUI = (data, columnPrefix) => {
         element.style.color = brightness < 125 ? 'white' : 'black';
     };
 
-    // Find the row that matches the pageName and update the UI accordingly
-    const pageName = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || '(DEFAULT)';
-    const pageNameParts = pageName.split('-');
-    const row = data.find(item => pageName === '(DEFAULT)' ? item['📍'] === pageName : pageNameParts.some(part => item['📍'] && item['📍'].toLowerCase() === part));
-
-    if (!row) {
-        console.log('No matching data found for the page.');
-        return;
-    }
-
     // Log the required data
     console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
     console.log(columnPrefix + '#️⃣: ' + row[columnPrefix + '#️⃣']);
@@ -184,10 +191,6 @@ const updateUI = (data, columnPrefix) => {
     console.log(columnPrefix + '💬: ' + row[columnPrefix + '💬']);
     console.log(columnPrefix + '🏷️: ' + row[columnPrefix + '🏷️']);
     console.log(columnPrefix + '🏢: ' + row[columnPrefix + '🏢']);
-
-    const currentHour = new Date().getHours();
-    const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
-    const textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, admin ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
 };
 
 script.onload = async function() {
