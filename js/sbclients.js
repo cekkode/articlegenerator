@@ -1,4 +1,4 @@
-var version = "0.0.108";
+var version = "0.0.109";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -64,7 +64,6 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
 const updateUI = (data, columnPrefix) => {
     const currentHour = new Date().getHours();
     const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
-    const textParam = encodeURIComponent(`Selamat ${greeting} pak ${data[0][columnPrefix + '🧑🏻']}, admin ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
 
     // Find the row that matches the pageName and update the UI accordingly
     const pageName = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || '(DEFAULT)';
@@ -75,6 +74,8 @@ const updateUI = (data, columnPrefix) => {
         console.log('No matching data found for the page.');
         return;
     }
+
+    const textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, admin ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
 
     const replaceAddress = (addressData) => {
         const footer = document.querySelector('footer');
@@ -107,6 +108,7 @@ const updateUI = (data, columnPrefix) => {
             tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
         }
     };
+    console.log('textParam:', textParam);
     updateFloatContact(row, textParam);
 
     const adjustTextColorBasedOnBackground = (element) => {
