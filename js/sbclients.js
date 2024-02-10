@@ -1,4 +1,4 @@
-var version = "0.0.120";
+var version = "0.0.121";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -115,7 +115,16 @@ const updateUI = (data, columnPrefix) => {
         const style = window.getComputedStyle(element);
         const rgb = style.backgroundColor.replace(/[^\d,]/g, '').split(',');
         const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
-        element.style.color = brightness < 125 ? 'white' : 'black';
+        element.style.color = brightness < 100 ? 'white' : 'black';
+    };
+
+    const adjustTextColorToMatchParent = (element) => {
+        const parentElement = element.closest('p'); // Adjust the selector as needed.
+        if (parentElement) {
+            const parentStyle = window.getComputedStyle(parentElement);
+            const textColor = parentStyle.color;
+            element.style.color = textColor;
+        }
     };
 
     const addHrefToTextNodeIfMissing = (anchor, regexPhone, formattedNumber, contactName, textParam) => {
@@ -167,7 +176,7 @@ const updateUI = (data, columnPrefix) => {
                     const newNode = document.createTextNode('📞 ' + formattedNumber + ' (' + contactName + ')');
                     const span = document.createElement('span');
                     span.appendChild(newNode);
-                    adjustTextColorBasedOnBackground(span);
+                    adjustTextColorToMatchParent(span);
                     node.parentNode.replaceChild(span, node);
                 }
             }
