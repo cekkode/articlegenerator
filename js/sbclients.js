@@ -1,4 +1,4 @@
-var version = "0.0.119";
+var version = "0.0.120";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -165,8 +165,10 @@ const updateUI = (data, columnPrefix) => {
                     node.parentNode.remove();
                 } else {
                     const newNode = document.createTextNode('📞 ' + formattedNumber + ' (' + contactName + ')');
-                    adjustTextColorBasedOnBackground(newNode);
-                    node.parentNode.replaceChild(newNode, node);
+                    const span = document.createElement('span');
+                    span.appendChild(newNode);
+                    adjustTextColorBasedOnBackground(span);
+                    node.parentNode.replaceChild(span, node);
                 }
             }
         }
