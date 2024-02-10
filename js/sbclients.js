@@ -1,4 +1,4 @@
-var version = "0.0.103";
+var version = "0.0.104";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -61,8 +61,8 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
     return JSON.parse(cache.data);
 };
 
-const updateUIWithFetchedData = (data, columnPrefix) => {
-    const replaceFooterAddressWithFetchedData = (addressData) => {
+const updateUI = (data, columnPrefix) => {
+    const replaceAddress = (addressData) => {
         const footer = document.querySelector('footer');
         const addressRegex = /(?:Jl\.|Jalan|No\.|Komp\.|Komplek|Ruko)[^<,]+[0-9]{5}/gi;
       
@@ -71,7 +71,7 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         }
     };
 
-    const updateContactInfo = (row) => {
+    const updateFloatContact = (row) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
         const whatsappFloat = document.querySelector('.whatsapp-floating');
         const whatsappElement = document.querySelector('.whatsapp-floating a');
@@ -93,7 +93,7 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         }
     };
 
-    const updateAnchorsAndTextNodes = (row) => {
+    const updatePageContact = (row) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
         const regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
@@ -128,7 +128,6 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
     };
     
     const addHrefToTextNodeIfMissing = (anchor, regexPhone, formattedNumber, contactName) => {
-        // Assuming we want to add an href to a text node that matches our phone regex but isn't wrapped in an <a> tag
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
@@ -232,6 +231,6 @@ script.onload = async function() {
     console.log('Fetched data:', data);
 
     if (data && data.length > 0) {
-        updateUIWithFetchedData(data, columnPrefix);
+        updateUI(data, columnPrefix);
     }
 };
