@@ -1,4 +1,4 @@
-var version = "0.0.93";
+var version = "0.0.92";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -115,17 +115,15 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         processTextNodes(regexPhone, formattedNumber, row[columnPrefix + '🧑🏻'], shouldHide);
     };
     
-    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName, row, columnPrefix) => {
-        // Check if the anchor contains a FA phone icon
-        const hasFontAwesomePhoneIcon = anchor.querySelector('i[class*="fa-phone"]');
-        // Determine the appropriate content, including the phone emoji if there's no FA icon
-        const content = (hasFontAwesomePhoneIcon ? '' : '📞 ') + formattedNumber + ' (' + contactName + ')';
-        // Update the anchor's HTML, preserving existing HTML (e.g., icons) and adding the new content
-        anchor.innerHTML = anchor.innerHTML.replace(regexPhone, content);
-        adjustTextColorBasedOnBackground(anchor);
+    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
+        const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
+        if (textNode) {
+            textNode.nodeValue = formattedNumber + ' (' + contactName + ')';
+            adjustTextColorBasedOnBackground(anchor);
+        }
     };
     
-    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, row, columnPrefix) => {
+    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide) => {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
@@ -133,13 +131,8 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
                 if (shouldHide) {
                     node.parentNode.remove();
                 } else {
-                    // Create a new anchor tag for the phone number
-                    const anchor = document.createElement('a');
-                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
-                    anchor.textContent = '📞 ' + formattedNumber + ' (' + contactName + ')';
-                    adjustTextColorBasedOnBackground(anchor);
-                    // Replace the text node with the new anchor
-                    node.parentNode.replaceChild(anchor, node);
+                    const newNode = document.createTextNode(formattedNumber + ' (' + contactName + ')');
+                    node.parentNode.replaceChild(newNode, node);
                 }
             }
         }
