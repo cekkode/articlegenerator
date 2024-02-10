@@ -1,4 +1,4 @@
-var version = "0.0.125";
+var version = "0.0.126";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -78,12 +78,13 @@ const updateUI = (data, columnPrefix) => {
     var textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
 
     const replaceAddress = (addressData) => {
-        const footer = document.querySelector('footer');
-        const addressRegex = /(?:Jl\.|Jalan|No\.|Komp\.|Komplek|Ruko)[^<,]+[0-9]{5}/gi;
-      
-        if (footer && footer.innerHTML.match(addressRegex)) {
-          footer.innerHTML = footer.innerHTML.replace(addressRegex, addressData);
-        }
+        const elements = [document.querySelector('footer'), document.querySelector('header')];
+        const addressRegex = /(?:Jl\.|Jalan|No\.|Komp\.|Komplek|Ruko)[^<,]+(?:[0-9]{5})?/gi;
+        elements.forEach(element => {
+            if (element && element.innerHTML.match(addressRegex)) {
+                element.innerHTML = element.innerHTML.replace(addressRegex, addressData);
+            }
+        });
     };
     replaceAddress(row[columnPrefix + '🏢']);
 
