@@ -1,4 +1,4 @@
-var version = "0.0.92";
+var version = "0.0.94";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -116,23 +116,36 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
     };
     
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
-        const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
-        if (textNode) {
-            textNode.nodeValue = formattedNumber + ' (' + contactName + ')';
+        // Check if the anchor contains a FA phone icon
+        const hasFontAwesomePhoneIcon = anchor.querySelector('i[class*="fa-phone"]');
+        if (!hasFontAwesomePhoneIcon) {
+            // If no FA icon, prepend the phone emoji to the formatted number
+            formattedNumber = '📞 ' + formattedNumber;
+        }
+        // Update the anchor's text content if it matches the phone pattern
+        if (regexPhone.test(anchor.textContent)) {
+            anchor.textContent = formattedNumber + ' (' + contactName + ')';
             adjustTextColorBasedOnBackground(anchor);
         }
     };
     
-    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide) => {
+    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, row, columnPrefix) => {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
+            // Skip nodes within whatsapp-btn and tlp-btn elements
+            if (node.parentNode.closest('.whatsapp-btn, .tlp-btn')) continue;
+    
             if (regexPhone.test(node.nodeValue)) {
                 if (shouldHide) {
                     node.parentNode.remove();
                 } else {
-                    const newNode = document.createTextNode(formattedNumber + ' (' + contactName + ')');
-                    node.parentNode.replaceChild(newNode, node);
+                    // Wrap the text node in a new anchor tag
+                    const anchor = document.createElement('a');
+                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+                    anchor.textContent = '📞 ' + formattedNumber + ' (' + contactName + ')';
+                    node.parentNode.replaceChild(anchor, node);
+                    adjustTextColorBasedOnBackground(anchor);
                 }
             }
         }
