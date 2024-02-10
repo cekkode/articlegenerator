@@ -1,4 +1,4 @@
-var version = "0.0.117";
+var version = "0.0.118";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -150,8 +150,7 @@ const updateUI = (data, columnPrefix) => {
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
         const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
         if (textNode) {
-            textNode.nodeValue = '📞 ' + formattedNumber + ' (' + contactName + ')';
-            adjustTextColorBasedOnBackground(anchor);
+            textNode.nodeValue = ' ' + formattedNumber + ' (' + contactName + ')';
         } else {
             addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName, textParam);
         }
@@ -165,7 +164,8 @@ const updateUI = (data, columnPrefix) => {
                 if (shouldHide) {
                     node.parentNode.remove();
                 } else {
-                    const newNode = document.createTextNode(' ' + formattedNumber + ' (' + contactName + ')');
+                    const newNode = document.createTextNode('📞 ' + formattedNumber + ' (' + contactName + ')');
+                    adjustTextColorBasedOnBackground(anchor);
                     node.parentNode.replaceChild(newNode, node);
                 }
             }
