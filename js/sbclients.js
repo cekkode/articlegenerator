@@ -93,55 +93,61 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
 
     const updateAnchorsAndTextNodes = (row) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
-        const regexPhone = /\d{4}\s?\d{4}\s?\d{4}\s?\((.*?)\)/g;
+        const regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
-
-        // Process all anchor tags
+    
         document.querySelectorAll('a').forEach(anchor => {
-            // Check if the anchor's text matches the phone number pattern
-            if (regexPhone.test(anchor.textContent)) {
-                if (shouldHide) {
-                    anchor.remove();
-                } else {
-                    // Update the anchor's text content with the formatted number
-                    anchor.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-                    // Update the href attribute if necessary
-                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
-                }
-            } else if (anchor.href.includes('mailto:')) {
+            // Clean up mailto: links
+            if (anchor.href.includes('mailto:')) {
                 anchor.href = anchor.href.replace(/\s/g, '').replace(/%20/g, '');
             }
+    
+            // Update the href attribute for specific links, if not being removed
+            if (!shouldHide && (anchor.href.includes('what.sapp.my.id') || anchor.href.includes('con.tact.my.id'))) {
+                anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+            }
+    
+            // Check if the anchor contains a phone number and FontAwesome icon
+            const hasFontAwesomePhoneIcon = anchor.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
+            if (regexPhone.test(anchor.textContent) && !shouldHide) {
+                // Preserve existing HTML, only replace the text node
+                const iconHtml = hasFontAwesomePhoneIcon ? anchor.innerHTML.match(/<i[\s\S]*?<\/i>/gi).join('') : '';
+                anchor.innerHTML = iconHtml + (hasFontAwesomePhoneIcon ? ' ' : '') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                adjustAnchorTextColorBasedOnBackground(anchor);
+            } else if (shouldHide) {
+                anchor.remove();
+            }
         });
-
-        // Correctly iterate over text nodes using TreeWalker
+    
+        // Correctly iterate over text nodes using TreeWalker to process other text nodes
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
             if (regexPhone.test(node.nodeValue)) {
                 const parentNode = node.parentNode;
-                const hasFontAwesomePhoneIcon = parentNode && parentNode.querySelector && parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
-                
+                // Skip if the parent node is an anchor tag already processed
                 if (parentNode && parentNode.nodeName !== 'A') {
-                    // This condition is met, so the original logic for replacing or modifying the node should be correctly applied here.
-                    // However, since the issue persists, let's ensure the logic for creating or modifying nodes is correctly implemented.
-                    const anchor = document.createElement('a');
-                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
-                    anchor.textContent = shouldHide ? '' : (hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-                    parentNode.replaceChild(anchor, node);
-
-                    // Adjust text color based on background brightness
-                    const style = window.getComputedStyle(anchor);
-                    const backgroundColor = style.backgroundColor;
-                    const rgb = backgroundColor.replace(/[^\d,]/g, '').split(',');
-                    const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
-                    anchor.style.color = brightness < 125 ? 'white' : 'black';
-                } else if (parentNode && parentNode.nodeName === 'A' && !parentNode.href.includes('what.sapp.my.id') && !parentNode.href.includes('con.tact.my.id')) {
-                    // If the parent is an anchor tag but not one with the specific URLs we're looking for, we might need to update its text content directly.
-                    parentNode.textContent = shouldHide ? '' : (hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    if (shouldHide) {
+                        // Remove or hide the parent node or text node as needed
+                        parentNode.style.display = 'none';
+                    } else {
+                        // Create a new text node with the updated phone number and replace the old one
+                        const newText = document.createTextNode(formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
+                        parentNode.replaceChild(newText, node);
+                    }
                 }
             }
         }
     };
+    
+    // Function to adjust anchor text color based on background brightness
+    function adjustAnchorTextColorBasedOnBackground(anchor) {
+        const style = window.getComputedStyle(anchor);
+        const backgroundColor = style.backgroundColor;
+        const rgb = backgroundColor.replace(/[^\d,]/g, '').split(',');
+        const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+        anchor.style.color = brightness < 125 ? 'white' : 'black';
+    }
 
     // Find the row that matches the pageName and update the UI accordingly
     const pageName = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || '(DEFAULT)';
