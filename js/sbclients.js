@@ -1,4 +1,4 @@
-var version = "0.0.129";
+var version = "0.0.130";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -165,9 +165,13 @@ const updateUI = (data, columnPrefix) => {
     };
 
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
-        const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
+        const hasFaIconBeforeText = [...anchor.childNodes].some((node, i) => 
+            node.classList?.contains('fa') && [...anchor.childNodes].slice(i + 1).some(n => n.nodeType === Node.TEXT_NODE && regexPhone.test(n.nodeValue))
+        );
+    
+        const textNode = [...anchor.childNodes].find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
         if (textNode) {
-            textNode.nodeValue = '📞 ' + formattedNumber + ' (' + contactName + ')';
+            textNode.nodeValue = `${hasFaIconBeforeText ? '' : '📞 '}${formattedNumber} (${contactName})`;
         } else {
             addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName, textParam);
         }
