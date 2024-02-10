@@ -1,4 +1,4 @@
-var version = "0.0.86";
+var version = "0.0.87";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -93,7 +93,7 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
 
     const updateAnchorsAndTextNodes = (row) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
-        const regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
+        const regexPhone = /\d{4}\s?\d{4}\s?\d{4}\s?\((.*?)\)/g;
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
 
         document.querySelectorAll('a').forEach(anchor => {
