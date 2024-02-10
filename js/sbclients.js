@@ -62,6 +62,25 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
 };
 
 const updateUIWithFetchedData = (data, columnPrefix) => {
+    // Find the row that matches the pageName and update the UI accordingly
+    const pageName = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || '(DEFAULT)';
+    const pageNameParts = pageName.split('-');
+    const row = data.find(item => pageName === '(DEFAULT)' ? item['📍'] === pageName : pageNameParts.some(part => item['📍'] && item['📍'].toLowerCase() === part));
+
+    if (!row) {
+        console.log('No matching data found for the page.');
+        return;
+    }
+
+    // Log the required data
+    console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
+    console.log(columnPrefix + '#️⃣: ' + row[columnPrefix + '#️⃣']);
+    console.log(columnPrefix + '📊: ' + row[columnPrefix + '📊']);
+    console.log(columnPrefix + '📞: ' + row[columnPrefix + '📞']);
+    console.log(columnPrefix + '💬: ' + row[columnPrefix + '💬']);
+    console.log(columnPrefix + '🏷️: ' + row[columnPrefix + '🏷️']);
+    console.log(columnPrefix + '🏢: ' + row[columnPrefix + '🏢']);
+
     const replaceFooterAddressWithFetchedData = (addressData) => {
         const footer = document.querySelector('footer');
         const addressRegex = /(?:Jl\.|Jalan|No\.|Komp\.|Komplek|Ruko)[^<,]+[0-9]{5}/gi;
@@ -171,26 +190,6 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
         element.style.color = brightness < 125 ? 'white' : 'black';
     };
-
-    // Find the row that matches the pageName and update the UI accordingly
-    const pageName = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || '(DEFAULT)';
-    const pageNameParts = pageName.split('-');
-    const row = data.find(item => pageName === '(DEFAULT)' ? item['📍'] === pageName : pageNameParts.some(part => item['📍'] && item['📍'].toLowerCase() === part));
-
-    if (row) {
-        // Log the required data
-        console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
-        console.log(columnPrefix + '#️⃣: ' + row[columnPrefix + '#️⃣']);
-        console.log(columnPrefix + '📊: ' + row[columnPrefix + '📊']);
-        console.log(columnPrefix + '📞: ' + row[columnPrefix + '📞']);
-        console.log(columnPrefix + '💬: ' + row[columnPrefix + '💬']);
-        console.log(columnPrefix + '🏷️: ' + row[columnPrefix + '🏷️']);
-        console.log(columnPrefix + '🏢: ' + row[columnPrefix + '🏢']);
-
-        replaceFooterAddressWithFetchedData(row[columnPrefix + '🏢']);
-        updateContactInfo(row);
-        updateAnchorsAndTextNodes(row);
-    }
 };
 
 script.onload = async function() {
