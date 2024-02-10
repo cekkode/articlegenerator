@@ -1,4 +1,4 @@
-var version = "0.0.85";
+var version = "0.0.86";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -114,13 +114,22 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         while ((node = walker.nextNode())) {
             if (regexPhone.test(node.nodeValue)) {
                 const parentNode = node.parentNode;
+                const hasFontAwesomePhoneIcon = parentNode && parentNode.querySelector && parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
+                
                 if (parentNode && parentNode.nodeName !== 'A') {
                     const anchor = document.createElement('a');
                     anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
-                    anchor.textContent = shouldHide ? '' : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    anchor.textContent = shouldHide ? '' : (hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                     parentNode.replaceChild(anchor, node);
+    
+                    // Adjust text color based on background brightness
+                    const style = window.getComputedStyle(anchor);
+                    const backgroundColor = style.backgroundColor;
+                    const rgb = backgroundColor.replace(/[^\d,]/g, '').split(',');
+                    const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+                    anchor.style.color = brightness < 125 ? 'white' : 'black';
                 } else if (parentNode) {
-                    node.nodeValue = shouldHide ? '' : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    node.nodeValue = shouldHide ? '' : (hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                 }
             }
         }
