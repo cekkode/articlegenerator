@@ -1,4 +1,4 @@
-var version = "0.0.112";
+var version = "0.0.113";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -75,7 +75,7 @@ const updateUI = (data, columnPrefix) => {
         return;
     }
 
-    const textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
+    var textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
 
     const replaceAddress = (addressData) => {
         const footer = document.querySelector('footer');
