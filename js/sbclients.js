@@ -1,4 +1,4 @@
-var version = "0.0.121";
+var version = "0.0.122";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -35,7 +35,7 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
         firstRowDate: localStorage.getItem('firstRowDate')
     };
 
-    const { data: firstRowData, error: firstRowError } = await supabase.from(mainDomain).select(`"📅"`).limit(1).single();
+    const { data: firstRowData, error: firstRowError } = await supabase.from(mainDomain).select(`"📅"`).eq('ID', '0').single();
 
     if (firstRowError) {
         console.error('Error fetching first row data:', firstRowError);
@@ -176,7 +176,7 @@ const updateUI = (data, columnPrefix) => {
                     const newNode = document.createTextNode('📞 ' + formattedNumber + ' (' + contactName + ')');
                     const span = document.createElement('span');
                     span.appendChild(newNode);
-                    adjustTextColorToMatchParent(span);
+                    adjustTextColorBasedOnBackground(span);
                     node.parentNode.replaceChild(span, node);
                 }
             }
