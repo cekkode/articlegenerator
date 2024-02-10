@@ -1,4 +1,4 @@
-var version = "0.0.99";
+var version = "0.0.100";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -121,7 +121,6 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         const regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
     
-        // Handle anchor tags, including mailto: links and specific URLs
         document.querySelectorAll('a').forEach(anchor => {
             if (anchor.href.includes('mailto:')) {
                 anchor.href = anchor.href.replace(/\s/g, '').replace(/%20/g, '');
@@ -131,12 +130,12 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
                 const updateHref = anchor.href.includes('what.sapp.my.id') || anchor.href.includes('con.tact.my.id');
                 if (updateHref) {
                     anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + (anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] + '/?text=' + textParam : row[columnPrefix + '📞']);
-                    Object.assign(newAnchor, { target: "_blank", rel: "noopener noreferrer" });
+                    Object.assign(anchor, { target: "_blank", rel: "noopener noreferrer" });
                 }
                 updateTextNodeWithinAnchor(anchor, regexPhone, formattedNumber, row[columnPrefix + '🧑🏻']);
             }
         });
-    
+
         // Process other text nodes in the document
         processTextNodes(regexPhone, formattedNumber, row[columnPrefix + '🧑🏻'], shouldHide);
     };
