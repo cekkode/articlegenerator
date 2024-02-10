@@ -1,4 +1,4 @@
-var version = "0.0.107";
+var version = "0.0.108";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -143,6 +143,21 @@ const updateUI = (data, columnPrefix) => {
         }
     };
 
+    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide) => {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        let node;
+        while ((node = walker.nextNode())) {
+            if (regexPhone.test(node.nodeValue)) {
+                if (shouldHide) {
+                    node.parentNode.remove();
+                } else {
+                    const newNode = document.createTextNode(' ' + formattedNumber + ' (' + contactName + ')');
+                    node.parentNode.replaceChild(newNode, node);
+                }
+            }
+        }
+    };
+
     const updatePageContact = (row, textParam) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
         const regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
@@ -167,21 +182,6 @@ const updateUI = (data, columnPrefix) => {
         processTextNodes(regexPhone, formattedNumber, row[columnPrefix + '🧑🏻'], shouldHide);
     };
     updatePageContact(row, textParam);
-    
-    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide) => {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-        let node;
-        while ((node = walker.nextNode())) {
-            if (regexPhone.test(node.nodeValue)) {
-                if (shouldHide) {
-                    node.parentNode.remove();
-                } else {
-                    const newNode = document.createTextNode(' ' + formattedNumber + ' (' + contactName + ')');
-                    node.parentNode.replaceChild(newNode, node);
-                }
-            }
-        }
-    };
 
     // Log the required data
     console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
