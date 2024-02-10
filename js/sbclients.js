@@ -1,4 +1,4 @@
-var version = "0.0.84";
+var version = "0.0.85";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -108,7 +108,10 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
             }
         });
 
-        document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false).forEach(node => {
+        // Correctly iterate over text nodes using TreeWalker
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        let node;
+        while ((node = walker.nextNode())) {
             if (regexPhone.test(node.nodeValue)) {
                 const parentNode = node.parentNode;
                 if (parentNode && parentNode.nodeName !== 'A') {
@@ -120,7 +123,7 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
                     node.nodeValue = shouldHide ? '' : formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                 }
             }
-        });
+        }
     };
 
     // Find the row that matches the pageName and update the UI accordingly
