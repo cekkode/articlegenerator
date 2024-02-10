@@ -1,4 +1,4 @@
-var version = "0.0.106";
+var version = "0.0.107";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -109,6 +109,40 @@ const updateUI = (data, columnPrefix) => {
     };
     updateFloatContact(row, textParam);
 
+    const adjustTextColorBasedOnBackground = (element) => {
+        const style = window.getComputedStyle(element);
+        const backgroundColor = style.backgroundColor;
+        const rgb = backgroundColor.replace(/[^\d,]/g, '').split(',');
+        const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
+        element.style.color = brightness < 125 ? 'white' : 'black';
+    };
+
+    const addHrefToTextNodeIfMissing = (anchor, regexPhone, formattedNumber, contactName, textParam) => {
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        let node;
+        while ((node = walker.nextNode())) {
+            if (regexPhone.test(node.nodeValue) && !node.parentNode.href) {
+                // Wrap this text node in an anchor element
+                const newAnchor = document.createElement('a');
+                const newNode = document.createTextNode(' ' + formattedNumber + ' (' + contactName + ')');
+                newAnchor.appendChild(newNode);
+                newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam;
+                Object.assign(newAnchor, { target: "_blank", rel: "noopener noreferrer" });
+                node.parentNode.replaceChild(newAnchor, node);
+            }
+        }
+    };
+
+    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
+        const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
+        if (textNode) {
+            textNode.nodeValue = ' ' + formattedNumber + ' (' + contactName + ')';
+            adjustTextColorBasedOnBackground(anchor);
+        } else {
+            addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName);
+        }
+    };
+
     const updatePageContact = (row, textParam) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
         const regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
@@ -134,32 +168,6 @@ const updateUI = (data, columnPrefix) => {
     };
     updatePageContact(row, textParam);
     
-    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
-        const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
-        if (textNode) {
-            textNode.nodeValue = ' ' + formattedNumber + ' (' + contactName + ')';
-            adjustTextColorBasedOnBackground(anchor);
-        } else {
-            addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName);
-        }
-    };
-    
-    const addHrefToTextNodeIfMissing = (anchor, regexPhone, formattedNumber, contactName, textParam) => {
-        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-        let node;
-        while ((node = walker.nextNode())) {
-            if (regexPhone.test(node.nodeValue) && !node.parentNode.href) {
-                // Wrap this text node in an anchor element
-                const newAnchor = document.createElement('a');
-                const newNode = document.createTextNode(' ' + formattedNumber + ' (' + contactName + ')');
-                newAnchor.appendChild(newNode);
-                newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam;
-                Object.assign(newAnchor, { target: "_blank", rel: "noopener noreferrer" });
-                node.parentNode.replaceChild(newAnchor, node);
-            }
-        }
-    };
-    
     const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide) => {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
@@ -173,14 +181,6 @@ const updateUI = (data, columnPrefix) => {
                 }
             }
         }
-    };
-    
-    const adjustTextColorBasedOnBackground = (element) => {
-        const style = window.getComputedStyle(element);
-        const backgroundColor = style.backgroundColor;
-        const rgb = backgroundColor.replace(/[^\d,]/g, '').split(',');
-        const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
-        element.style.color = brightness < 125 ? 'white' : 'black';
     };
 
     // Log the required data
