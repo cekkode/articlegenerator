@@ -1,4 +1,4 @@
-var version = "0.0.88";
+var version = "0.0.89";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -96,14 +96,17 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         const regexPhone = /\d{4}\s?\d{4}\s?\d{4}\s?\((.*?)\)/g;
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
 
-        // Update anchor tags based on specific conditions
+        // Process all anchor tags
         document.querySelectorAll('a').forEach(anchor => {
-            if (anchor.href.includes('what.sapp.my.id') || anchor.href.includes('con.tact.my.id')) {
+            // Check if the anchor's text matches the phone number pattern
+            if (regexPhone.test(anchor.textContent)) {
                 if (shouldHide) {
                     anchor.remove();
                 } else {
-                    // Update the href attribute based on the data
-                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + (anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] : row[columnPrefix + '📞']);
+                    // Update the anchor's text content with the formatted number
+                    anchor.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                    // Update the href attribute if necessary
+                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
                 }
             } else if (anchor.href.includes('mailto:')) {
                 anchor.href = anchor.href.replace(/\s/g, '').replace(/%20/g, '');
