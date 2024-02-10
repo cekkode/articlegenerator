@@ -1,4 +1,4 @@
-var version = "0.0.100";
+var version = "0.0.101";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -45,8 +45,8 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
     const firstRowDate = firstRowData ? firstRowData["📅"] : null;
     console.log(`Cached 📅: ${cache.firstRowDate} = 📅: ${firstRowDate}? ${firstRowDate === cache.firstRowDate}`);
 
-    if (!cache.data || !cache.timestamp || Date.now() - cache.timestamp > 365 * 24 * 60 * 60 * 1000 || version !== cache.version || (cache.firstRowDate && firstRowDate !== cache.firstRowDate)) {
-        console.log('Fetching new data...');
+    if (!cache.data || !cache.timestamp || Date.now() - cache.timestamp > 365 * 24 * 60 * 60 * 1000 || (cache.firstRowDate && firstRowDate !== cache.firstRowDate)) {
+        console.log('Fetching new data from Supabase...');
         const newData = await fetchData(supabase, mainDomain, columnPrefix);
         if (newData) {
             localStorage.setItem('data', JSON.stringify(newData));
