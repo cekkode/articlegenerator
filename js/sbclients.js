@@ -1,4 +1,4 @@
-var version = "0.0.122";
+var version = "0.0.123";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -115,7 +115,7 @@ const updateUI = (data, columnPrefix) => {
         const style = window.getComputedStyle(element);
         const rgb = style.backgroundColor.replace(/[^\d,]/g, '').split(',');
         const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
-        element.style.color = brightness < 100 ? 'white' : 'black';
+        element.style.color = brightness < 200 ? 'white' : 'black';
     };
 
     const adjustTextColorToMatchParent = (element) => {
