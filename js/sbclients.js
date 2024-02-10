@@ -1,4 +1,4 @@
-var version = "0.0.109";
+var version = "0.0.110";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -100,10 +100,10 @@ const updateUI = (data, columnPrefix) => {
             whatsappFloat.style.display = 'none';
             tlpFloat.style.display = 'none';
         } else {
-            whatsappElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam;
+            whatsappElement.href = 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '💬'] + '/?text=' + textParam;
             Object.assign(whatsappElement, { target: "_blank", rel: "noopener noreferrer" });
             whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-            tlpElement.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '📞'];
+            tlpElement.href = 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '📞'];
             Object.assign(tlpElement, { target: "_blank", rel: "noopener noreferrer" });
             tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
         }
