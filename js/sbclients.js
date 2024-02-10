@@ -1,4 +1,4 @@
-var version = "0.0.105";
+var version = "0.0.106";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -85,7 +85,6 @@ const updateUI = (data, columnPrefix) => {
           footer.innerHTML = footer.innerHTML.replace(addressRegex, addressData);
         }
     };
-
     replaceAddress(row[columnPrefix + '🏢']);
 
     const updateFloatContact = (row, textParam) => {
@@ -109,6 +108,7 @@ const updateUI = (data, columnPrefix) => {
             tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
         }
     };
+    updateFloatContact(row, textParam);
 
     const updatePageContact = (row, textParam) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
@@ -133,6 +133,7 @@ const updateUI = (data, columnPrefix) => {
         // Process other text nodes in the document
         processTextNodes(regexPhone, formattedNumber, row[columnPrefix + '🧑🏻'], shouldHide);
     };
+    updatePageContact(row, textParam);
     
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
         const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
