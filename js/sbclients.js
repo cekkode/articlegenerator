@@ -1,4 +1,4 @@
-var version = "0.0.130";
+var version = "0.0.131";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -165,14 +165,20 @@ const updateUI = (data, columnPrefix) => {
     };
 
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
-        const hasFaIconBeforeText = [...anchor.childNodes].some((node, i) => 
-            node.classList?.contains('fa') && [...anchor.childNodes].slice(i + 1).some(n => n.nodeType === Node.TEXT_NODE && regexPhone.test(n.nodeValue))
-        );
+        // Find all text nodes that match the phone regex
+        const textNodes = [...anchor.childNodes].filter(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
     
-        const textNode = [...anchor.childNodes].find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
-        if (textNode) {
+        textNodes.forEach(textNode => {
+            // Check if the previous sibling is a FontAwesome icon
+            const prevSibling = textNode.previousSibling;
+            const hasFaIconBeforeText = prevSibling && prevSibling.nodeType === Node.ELEMENT_NODE && prevSibling.classList.contains('fa');
+    
+            // Update the text node accordingly
             textNode.nodeValue = `${hasFaIconBeforeText ? '' : '📞 '}${formattedNumber} (${contactName})`;
-        } else {
+        });
+    
+        // Assuming addHrefToTextNodeIfMissing is defined elsewhere and should be called when no matching text node is found
+        if (textNodes.length === 0) {
             addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName, textParam);
         }
     };
