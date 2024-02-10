@@ -1,4 +1,4 @@
-var version = "0.0.87";
+var version = "0.0.88";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -96,11 +96,13 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         const regexPhone = /\d{4}\s?\d{4}\s?\d{4}\s?\((.*?)\)/g;
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
 
+        // Update anchor tags based on specific conditions
         document.querySelectorAll('a').forEach(anchor => {
             if (anchor.href.includes('what.sapp.my.id') || anchor.href.includes('con.tact.my.id')) {
                 if (shouldHide) {
                     anchor.remove();
                 } else {
+                    // Update the href attribute based on the data
                     anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + (anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] : row[columnPrefix + '📞']);
                 }
             } else if (anchor.href.includes('mailto:')) {
@@ -117,19 +119,22 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
                 const hasFontAwesomePhoneIcon = parentNode && parentNode.querySelector && parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
                 
                 if (parentNode && parentNode.nodeName !== 'A') {
+                    // This condition is met, so the original logic for replacing or modifying the node should be correctly applied here.
+                    // However, since the issue persists, let's ensure the logic for creating or modifying nodes is correctly implemented.
                     const anchor = document.createElement('a');
                     anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
                     anchor.textContent = shouldHide ? '' : (hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                     parentNode.replaceChild(anchor, node);
-    
+
                     // Adjust text color based on background brightness
                     const style = window.getComputedStyle(anchor);
                     const backgroundColor = style.backgroundColor;
                     const rgb = backgroundColor.replace(/[^\d,]/g, '').split(',');
                     const brightness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) / 1000);
                     anchor.style.color = brightness < 125 ? 'white' : 'black';
-                } else if (parentNode) {
-                    node.nodeValue = shouldHide ? '' : (hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+                } else if (parentNode && parentNode.nodeName === 'A' && !parentNode.href.includes('what.sapp.my.id') && !parentNode.href.includes('con.tact.my.id')) {
+                    // If the parent is an anchor tag but not one with the specific URLs we're looking for, we might need to update its text content directly.
+                    parentNode.textContent = shouldHide ? '' : (hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
                 }
             }
         }
