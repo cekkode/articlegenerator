@@ -1,4 +1,4 @@
-var version = "0.0.93";
+var version = "0.0.95";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -120,6 +120,25 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         if (textNode) {
             textNode.nodeValue = ' ' + formattedNumber + ' (' + contactName + ')';
             adjustTextColorBasedOnBackground(anchor);
+        } else {
+            addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName);
+        }
+    };
+    
+    const addHrefToTextNodeIfMissing = (anchor, regexPhone, formattedNumber, contactName) => {
+        // Assuming we want to add an href to a text node that matches our phone regex but isn't wrapped in an <a> tag
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+        let node;
+        while ((node = walker.nextNode())) {
+            if (regexPhone.test(node.nodeValue) && !node.parentNode.href) {
+                // Wrap this text node in an anchor element
+                const newAnchor = document.createElement('a');
+                const newNode = document.createTextNode(' ' + formattedNumber + ' (' + contactName + ')');
+                newAnchor.appendChild(newNode);
+                // Set href - example, modify as needed
+                newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'];
+                node.parentNode.replaceChild(newAnchor, node);
+            }
         }
     };
     
