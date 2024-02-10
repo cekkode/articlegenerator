@@ -1,4 +1,4 @@
-var version = "0.0.92";
+var version = "0.0.93";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -118,7 +118,7 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
         const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
         if (textNode) {
-            textNode.nodeValue = formattedNumber + ' (' + contactName + ')';
+            textNode.nodeValue = ' ' + formattedNumber + ' (' + contactName + ')';
             adjustTextColorBasedOnBackground(anchor);
         }
     };
@@ -131,7 +131,7 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
                 if (shouldHide) {
                     node.parentNode.remove();
                 } else {
-                    const newNode = document.createTextNode(formattedNumber + ' (' + contactName + ')');
+                    const newNode = document.createTextNode(' ' + formattedNumber + ' (' + contactName + ')');
                     node.parentNode.replaceChild(newNode, node);
                 }
             }
