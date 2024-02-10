@@ -1,4 +1,4 @@
-var version = "0.0.111";
+var version = "0.0.112";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -95,13 +95,12 @@ const updateUI = (data, columnPrefix) => {
         const tlpFloat = document.querySelector('.tlp-floating');
         const tlpElement = document.querySelector('.tlp-floating a');
         const tlpSpan = tlpElement.querySelector('span');
-        const textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
 
         if (row[columnPrefix + '🧑🏻'] === 'HIDE' || row[columnPrefix + '#️⃣'] === 'HIDE') {
             whatsappFloat.style.display = 'none';
             tlpFloat.style.display = 'none';
         } else {
-            whatsappElement.href = 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '💬'] + '/?text=' + textParam;
+            whatsappElement.href = 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '💬'] + '/?text=' + textParam ;
             Object.assign(whatsappElement, { target: "_blank", rel: "noopener noreferrer" });
             whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
             tlpElement.href = 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '📞'];
@@ -109,7 +108,7 @@ const updateUI = (data, columnPrefix) => {
             tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
         }
     };
-    console.log('textParam:', textParam);
+    console.log('updateFloatContact:', textParam);
     updateFloatContact(row, textParam);
 
     const adjustTextColorBasedOnBackground = (element) => {
@@ -135,6 +134,7 @@ const updateUI = (data, columnPrefix) => {
             }
         }
     };
+    console.log(`addHrefToTextNodeIfMissing = ${textParam}`);
 
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
         const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
@@ -184,6 +184,7 @@ const updateUI = (data, columnPrefix) => {
         // Process other text nodes in the document
         processTextNodes(regexPhone, formattedNumber, row[columnPrefix + '🧑🏻'], shouldHide);
     };
+    console.log(`updatePageContact = ${textParam}`);
     updatePageContact(row, textParam);
 
     // Log the required data
