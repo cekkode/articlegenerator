@@ -134,7 +134,7 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
         let node;
         while ((node = walker.nextNode())) {
             // Skip nodes within whatsapp-btn and tlp-btn elements
-            if (node.parentNode.closest('.whatsapp-btn, .tlp-btn')) continue;
+            if (node.parentNode.closest('.whatsapp-floating, .tlp-floating')) continue;
     
             if (regexPhone.test(node.nodeValue)) {
                 if (shouldHide) {
