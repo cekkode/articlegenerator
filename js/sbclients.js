@@ -1,4 +1,4 @@
-var version = "0.0.83";
+var version = "0.0.84";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -150,11 +150,36 @@ script.onload = async function() {
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
     var domain = window.location.hostname;
-    var mainDomain = domain.split('.').slice(-2).join('.');
-    var subdomain = domain.split('.')[0].toUpperCase();
+    var domainParts = domain.split('.');
+    var subdomain = null;
+    var mainDomain = null;
 
-    var pageName = window.location.pathname.split('/').pop().replace('.html', '').toLowerCase() || '(DEFAULT)';
+    // Original logic for determining mainDomain and subdomain
+    if (domainParts.length === 3 && domainParts[1].length === 2) {
+        mainDomain = domainParts.join('.');
+    } else if (domainParts.length > 2) {
+        subdomain = domainParts[0].toUpperCase();
+        mainDomain = domainParts.slice(1).join('.');
+    } else {
+        mainDomain = domain;
+    }
+
+    var page = window.location.pathname;
+    var pageParts = page.split('/');
+    var pageName = pageParts[pageParts.length - 1].replace('.html', '').toLowerCase();
+
+    if (pageName === '') {
+        pageName = '(DEFAULT)';
+    }
+
+    const pageNameParts = pageName.split('-');
+    console.log('pageName:', pageName);
+    console.log('pageNameParts:', pageNameParts);
+    console.log('Accessing table:', mainDomain);
+
+    // Determine the column prefix based on whether the script is executed from a subdomain
     let columnPrefix = subdomain ? subdomain.toUpperCase() : '';
+    console.log('columnPrefix:', columnPrefix);
 
     const data = await getData(supabase, mainDomain, columnPrefix);
     console.log('Fetched data:', data);
