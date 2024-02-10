@@ -1,4 +1,4 @@
-var version = "0.0.98";
+var version = "0.0.99";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -92,7 +92,7 @@ const updateUIWithFetchedData = (data, columnPrefix) => {
 
     const currentHour = new Date().getHours();
     const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
-    const textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, admin ${domain}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
+    const textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, admin ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
 
     const updateContactInfo = (row) => {
         const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
