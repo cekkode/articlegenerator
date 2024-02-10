@@ -62,7 +62,6 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
 };
 
 const updateUI = (data, columnPrefix) => {
-    // Define textParam at the beginning of updateUI so it's accessible throughout
     const currentHour = new Date().getHours();
     const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
     const textParam = encodeURIComponent(`Selamat ${greeting} pak ${data[0][columnPrefix + '🧑🏻']}, admin ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
