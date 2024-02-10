@@ -1,4 +1,4 @@
-var version = "0.0.113";
+var version = "0.0.114";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -103,12 +103,12 @@ const updateUI = (data, columnPrefix) => {
             whatsappElement.href = 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '💬'] + '/?text=' + textParam ;
             Object.assign(whatsappElement, { target: "_blank", rel: "noopener noreferrer" });
             whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
+
             tlpElement.href = 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '📞'];
             Object.assign(tlpElement, { target: "_blank", rel: "noopener noreferrer" });
             tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
         }
     };
-    console.log('updateFloatContact:', textParam);
     updateFloatContact(row, textParam);
 
     const adjustTextColorBasedOnBackground = (element) => {
@@ -123,18 +123,18 @@ const updateUI = (data, columnPrefix) => {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
-            if (regexPhone.test(node.nodeValue) && !node.parentNode.href) {
+            if (regexPhone.test(node.nodeValue) && node.parentNode.nodeName !== 'A') {
                 // Wrap this text node in an anchor element
                 const newAnchor = document.createElement('a');
                 const newNode = document.createTextNode(' ' + formattedNumber + ' (' + contactName + ')');
                 newAnchor.appendChild(newNode);
+                // Ensure the correct link is used
                 newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam;
                 Object.assign(newAnchor, { target: "_blank", rel: "noopener noreferrer" });
                 node.parentNode.replaceChild(newAnchor, node);
             }
         }
     };
-    console.log(`addHrefToTextNodeIfMissing = ${textParam}`);
 
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
         const textNode = Array.from(anchor.childNodes).find(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
@@ -142,7 +142,7 @@ const updateUI = (data, columnPrefix) => {
             textNode.nodeValue = ' ' + formattedNumber + ' (' + contactName + ')';
             adjustTextColorBasedOnBackground(anchor);
         } else {
-            addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName);
+            addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName, textParam);
         }
     };
 
