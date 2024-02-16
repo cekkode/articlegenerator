@@ -34,16 +34,17 @@
   </form>
 
   <script>
-    var version = " 0.0.9";
+    var version = " 0.1.0";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
     // Function to generate response
     function generateResponse(prompt, model) {
       // Show "waiting response" message
-      var responseTextarea = document.getElementById('response');
+      var responseContainer = document.getElementById('chatContainer');
+      var responseTextarea = createResponseTextarea();
       responseTextarea.value = 'Waiting for response from Gemini AI...';
-      adjustTextareaHeight('response');
+      adjustTextareaHeight(responseTextarea);
       
       if (model === "GEMINI") {
         GEMINI(prompt, responseTextarea);
@@ -111,7 +112,7 @@
             if (content && content.parts && content.parts.length > 0) {
               var output = content.parts[0].text;
               responseTextarea.value = output; // Update the correct response textarea
-              adjustTextareaHeight(responseTextarea.id); // Adjust the height of the updated response textarea
+              adjustTextareaHeight(responseTextarea); // Adjust the height of the updated response textarea
               addNewPromptAndResponseTextarea(); // Add new prompt and response textareas
             } else {
               throw new Error('No content found in API response');
@@ -123,15 +124,14 @@
         .catch(error => {
           console.error('Error:', error);
           responseTextarea.value = 'Error: ' + error.message;
-          adjustTextareaHeight(responseTextarea.id);
+          adjustTextareaHeight(responseTextarea);
           addNewPromptAndResponseTextarea();
         });
     }
     
 
     // Function to adjust textarea height based on content
-    function adjustTextareaHeight(textareaId) {
-      var textarea = document.getElementById(textareaId);
+    function adjustTextareaHeight(textarea) {
       textarea.style.height = 'auto';
       textarea.style.height = (textarea.scrollHeight) + 'px';
     }
@@ -148,14 +148,21 @@
       chatContainer.appendChild(newPromptTextarea);
 
       // Create new response textarea
-      var newResponseTextarea = document.createElement('textarea');
-      newResponseTextarea.setAttribute('id', 'response');
-      newResponseTextarea.setAttribute('name', 'response');
-      newResponseTextarea.setAttribute('placeholder', 'Response');
+      var newResponseTextarea = createResponseTextarea();
       chatContainer.appendChild(newResponseTextarea);
       
       // Focus on the new prompt textarea
       newPromptTextarea.focus();
+    }
+
+    // Function to create a new response textarea with a unique ID
+    function createResponseTextarea() {
+      var responseTextarea = document.createElement('textarea');
+      var id = 'response' + Date.now(); // Unique ID based on current timestamp
+      responseTextarea.setAttribute('id', id);
+      responseTextarea.setAttribute('name', 'response');
+      responseTextarea.setAttribute('placeholder', 'Response');
+      return responseTextarea;
     }
   </script>
 </body>
