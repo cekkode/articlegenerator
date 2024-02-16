@@ -34,7 +34,7 @@
   </form>
 
   <script>
-    var version = " 0.1.5";
+    var version = " 0.1.6";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -115,6 +115,7 @@
               console.log('Response Textarea:', responseTextarea);
               if (!responseTextarea) {
                 responseTextarea = createResponseTextarea(responseTextareaId);
+                document.getElementById('chatContainer').appendChild(responseTextarea); // Add the new response textarea to the chat container
               }
               if (responseTextarea) {
                 responseTextarea.value = output; // Update the correct response textarea
@@ -134,6 +135,7 @@
           var responseTextarea = document.getElementById(responseTextareaId);
           if (!responseTextarea) {
             responseTextarea = createResponseTextarea(responseTextareaId);
+            document.getElementById('chatContainer').appendChild(responseTextarea); // Add the new response textarea to the chat container
           }
           if (responseTextarea) {
             responseTextarea.value = 'Error: ' + error.message;
@@ -141,6 +143,9 @@
           } else {
             console.error('Response textarea not found for error message:', error);
           }
+        })
+        .finally(() => {
+          addNewPromptAndResponseTextarea(); // Add new prompt and response textareas
         });
     }
     
