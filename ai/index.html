@@ -11,6 +11,7 @@
     #chatContainer textarea {
       width: 100%;
       margin-bottom: 10px;
+      resize: none; /* Prevent resizing */
     }
   </style>
 </head>
@@ -26,16 +27,17 @@
 
     <div id="chatContainer">
       <textarea id="prompt" name="prompt" rows="5" placeholder="Enter your prompt here"></textarea>
-      <textarea id="response" name="response" rows="5" placeholder="Response"></textarea>
+      <textarea id="response" name="response" placeholder="Response"></textarea>
     </div>
   
     <input type="submit" value="Submit">
   </form>
 
   <script>
-    var version = " 0.0.4";
+    var version = " 0.0.5";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
+
     // Function to generate response
     function generateResponse(prompt, model) {
       if (model === "GEMINI") {
@@ -101,6 +103,8 @@
             if (content && content.parts && content.parts.length > 0) {
               var output = content.parts[0].text;
               document.getElementById('response').value = output;
+              adjustTextareaHeight('response');
+              addNewPromptAndResponseTextarea();
             } else {
               throw new Error('No content found in API response');
             }
@@ -111,7 +115,39 @@
         .catch(error => {
           console.error('Error:', error);
           document.getElementById('response').value = 'Error: ' + error.message;
+          adjustTextareaHeight('response');
+          addNewPromptAndResponseTextarea();
         });
+    }
+
+    // Function to adjust textarea height based on content
+    function adjustTextareaHeight(textareaId) {
+      var textarea = document.getElementById(textareaId);
+      textarea.style.height = 'auto';
+      textarea.style.height = (textarea.scrollHeight) + 'px';
+    }
+
+    // Function to add new prompt and response textarea below the response
+    function addNewPromptAndResponseTextarea() {
+      var chatContainer = document.getElementById('chatContainer');
+      
+      // Create new prompt textarea
+      var newPromptTextarea = document.createElement('textarea');
+      newPromptTextarea.setAttribute('id', 'prompt');
+      newPromptTextarea.setAttribute('name', 'prompt');
+      newPromptTextarea.setAttribute('rows', '5');
+      newPromptTextarea.setAttribute('placeholder', 'Enter your prompt here');
+      chatContainer.appendChild(newPromptTextarea);
+      
+      // Create new response textarea
+      var newResponseTextarea = document.createElement('textarea');
+      newResponseTextarea.setAttribute('id', 'response');
+      newResponseTextarea.setAttribute('name', 'response');
+      newResponseTextarea.setAttribute('placeholder', 'Response');
+      chatContainer.appendChild(newResponseTextarea);
+      
+      // Focus on the new prompt textarea
+      document.getElementById('prompt').focus();
     }
   </script>
 </body>
