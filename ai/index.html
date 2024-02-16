@@ -34,20 +34,19 @@
   </form>
 
   <script>
-    var version = " 0.1.1";
+    var version = " 0.1.2";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
     // Function to generate response
     function generateResponse(prompt, model) {
       // Show "waiting response" message
-      var responseContainer = document.getElementById('chatContainer');
       var responseTextarea = createResponseTextarea();
       responseTextarea.value = 'Waiting for response from Gemini AI...';
       adjustTextareaHeight(responseTextarea);
       
       if (model === "GEMINI") {
-        GEMINI(prompt, responseTextarea);
+        GEMINI(prompt, responseTextarea.id);
       } else if (model === "CHATGPT") {
         document.getElementById('modelTitle').innerText = "OpenAI ChatGPT Model";
         // Add code to use OpenAI ChatGPT model
@@ -75,7 +74,7 @@
       generateResponse(prompt, model);
     });
 
-    function GEMINI(prompt, responseTextarea) {
+    function GEMINI(prompt, responseTextareaId) {
       var apiKey = "AIzaSyCf4gfFzHbnFqivbgZTNpK7pmnRIgjSxjk";
       var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
     
@@ -111,6 +110,7 @@
             var content = data.candidates[0].content;
             if (content && content.parts && content.parts.length > 0) {
               var output = content.parts[0].text;
+              var responseTextarea = document.getElementById(responseTextareaId);
               responseTextarea.value = output; // Update the correct response textarea
               adjustTextareaHeight(responseTextarea); // Adjust the height of the updated response textarea
             } else {
@@ -122,11 +122,9 @@
         })
         .catch(error => {
           console.error('Error:', error);
+          var responseTextarea = document.getElementById(responseTextareaId);
           responseTextarea.value = 'Error: ' + error.message;
           adjustTextareaHeight(responseTextarea);
-        })
-        .finally(() => {
-          addNewPromptAndResponseTextarea(); // Add new prompt and response textareas
         });
     }
     
