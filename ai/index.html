@@ -34,19 +34,20 @@
   </form>
 
   <script>
-    var version = " 0.1.7";
+    var version = " 0.1.8";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
     // Function to generate response
     function generateResponse(prompt, model) {
       // Show "waiting response" message
-      var responseTextarea = createResponseTextarea();
+      var responseTextareaId = 'response' + Date.now();
+      var responseTextarea = createResponseTextarea(responseTextareaId);
       responseTextarea.value = 'Waiting for response from Gemini AI...';
       adjustTextareaHeight(responseTextarea);
       
       if (model === "GEMINI") {
-        GEMINI(prompt, responseTextarea.id);
+        GEMINI(prompt, responseTextareaId);
       } else if (model === "CHATGPT") {
         document.getElementById('modelTitle').innerText = "OpenAI ChatGPT Model";
         // Add code to use OpenAI ChatGPT model
@@ -77,11 +78,11 @@
     function GEMINI(prompt, responseTextareaId) {
       var apiKey = "AIzaSyCf4gfFzHbnFqivbgZTNpK7pmnRIgjSxjk";
       var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
-    
+      
       var headers = {
         "Content-Type": "application/json"
       };
-    
+      
       var requestBody = {
         "contents": [{
           "parts": [{
@@ -89,13 +90,13 @@
           }]}
         ]
       };
-    
+      
       var options = {
         "method": "POST",
         "headers": headers,
         "body": JSON.stringify(requestBody)
       };
-    
+
       fetch(apiUrl + "?key=" + apiKey, options)
         .then(response => {
           if (!response.ok) {
@@ -106,49 +107,41 @@
         .then(data => {
           console.log('API Response:', data);
           if (data && data.candidates && data.candidates.length > 0) {
-            // Assuming the first candidate contains the desired content
-            var content = data.candidates[0].content;
-            if (content && content.parts && content.parts.length > 0) {
-              var output = content.parts[0].text;
-              console.log('Response Textarea ID:', responseTextareaId);
-              var responseTextarea = document.getElementById(responseTextareaId);
-              console.log('Response Textarea:', responseTextarea);
-              if (!responseTextarea) {
-                responseTextarea = createResponseTextarea(responseTextareaId);
-                document.getElementById('chatContainer').appendChild(responseTextarea); // Add the new response textarea to the chat container
-              }
-              if (responseTextarea) {
-                responseTextarea.value = output; // Update the correct response textarea
-                adjustTextareaHeight(responseTextarea); // Adjust the height of the updated response textarea
-              } else {
-                throw new Error('Response textarea not found');
-              }
-            } else {
-              throw new Error('No content found in API response');
-            }
+            var output = data.candidates[0].content.parts[0].text;
+            updateResponseTextarea(responseTextareaId, output);
           } else {
             throw new Error('No candidates found in API response');
           }
         })
         .catch(error => {
-          console.error('Error:', error);
-          var responseTextarea = document.getElementById(responseTextareaId);
-          if (!responseTextarea) {
-            responseTextarea = createResponseTextarea(responseTextareaId);
-            document.getElementById('chatContainer').appendChild(responseTextarea); // Add the new response textarea to the chat container
-          }
-          if (responseTextarea) {
-            responseTextarea.value = 'Error: ' + error.message;
-            adjustTextareaHeight(responseTextarea);
-          } else {
-            console.error('Response textarea not found for error message:', error);
-          }
+          handleResponseError(responseTextareaId, error);
         })
         .finally(() => {
-          addNewPromptAndResponseTextarea(); // Add new prompt and response textareas
+          addNewPromptAndResponseTextarea();
         });
     }
-    
+
+    // Function to update response textarea
+    function updateResponseTextarea(responseTextareaId, content) {
+      var responseTextarea = document.getElementById(responseTextareaId);
+      if (!responseTextarea) {
+        throw new Error('Response textarea not found');
+      }
+      responseTextarea.value = content;
+      adjustTextareaHeight(responseTextarea);
+    }
+
+    // Function to handle response errors
+    function handleResponseError(responseTextareaId, error) {
+      var responseTextarea = document.getElementById(responseTextareaId);
+      if (!responseTextarea) {
+        responseTextarea = createResponseTextarea(responseTextareaId);
+        document.getElementById('chatContainer').appendChild(responseTextarea);
+      }
+      responseTextarea.value = 'Error: ' + error.message;
+      adjustTextareaHeight(responseTextarea);
+    }
+
     // Function to create a new response textarea with a unique ID
     function createResponseTextarea(responseTextareaId) {
       var responseTextarea = document.createElement('textarea');
@@ -156,7 +149,7 @@
       responseTextarea.setAttribute('name', 'response');
       responseTextarea.setAttribute('placeholder', 'Response');
       return responseTextarea;
-    }    
+    }
 
     // Function to adjust textarea height based on content
     function adjustTextareaHeight(textarea) {
@@ -176,11 +169,7 @@
       chatContainer.appendChild(newPromptTextarea);
 
       // Create new response textarea
-      var newResponseTextarea = document.createElement('textarea');
-      var id = 'response' + Date.now(); // Unique ID based on current timestamp
-      newResponseTextarea.setAttribute('id', id);
-      newResponseTextarea.setAttribute('name', 'response');
-      newResponseTextarea.setAttribute('placeholder', 'Response');
+      var newResponseTextarea = createResponseTextarea('response' + Date.now());
       chatContainer.appendChild(newResponseTextarea);
       
       // Focus on the new prompt textarea
