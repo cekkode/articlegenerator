@@ -18,7 +18,7 @@
 <body>
   <h1 id="modelTitle">Google Gemini Model</h1>
   <form id="form">
-    <input type="text" id="system" name="system" placeholder="You're helpful AI coder which specialize in JavaScript">
+    <input type="text" id="system" name="system" placeholder="You're a helpful AI coder which specializes in JavaScript">
 
     <select id="model" name="model">
       <option value="GEMINI" selected>GEMINI</option>
@@ -26,7 +26,7 @@
     </select>
 
     <div id="chatContainer">
-      <textarea id="prompt" name="prompt" rows="5" placeholder="Enter your prompt here"></textarea>
+      <textarea id="prompt" name="prompt" rows="1" placeholder="Enter your prompt here"></textarea>
       <textarea id="response" name="response" placeholder="Response"></textarea>
     </div>
   
@@ -34,7 +34,7 @@
   </form>
 
   <script>
-    var version = " 0.0.5";
+    var version = " 0.0.6";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -49,12 +49,15 @@
     }
 
     // Submit form when Ctrl+Enter is pressed in prompt textarea
-    document.getElementById("prompt").addEventListener("keydown", function(event) {
+    document.getElementById("chatContainer").addEventListener("keydown", function(event) {
       if (event.ctrlKey && event.key === "Enter") {
         event.preventDefault();
-        var prompt = document.getElementById('prompt').value;
-        var model = document.getElementById('model').value;
-        generateResponse(prompt, model);
+        if (event.target.id === "prompt") {
+          // Only submit the form when Ctrl + Enter is pressed in the prompt textarea
+          var prompt = document.getElementById('prompt').value;
+          var model = document.getElementById('model').value;
+          generateResponse(prompt, model);
+        }
       }
     });
 
@@ -135,7 +138,7 @@
       var newPromptTextarea = document.createElement('textarea');
       newPromptTextarea.setAttribute('id', 'prompt');
       newPromptTextarea.setAttribute('name', 'prompt');
-      newPromptTextarea.setAttribute('rows', '5');
+      newPromptTextarea.setAttribute('rows', '1');
       newPromptTextarea.setAttribute('placeholder', 'Enter your prompt here');
       chatContainer.appendChild(newPromptTextarea);
       
@@ -147,7 +150,7 @@
       chatContainer.appendChild(newResponseTextarea);
       
       // Focus on the new prompt textarea
-      document.getElementById('prompt').focus();
+      newPromptTextarea.focus();
     }
   </script>
 </body>
