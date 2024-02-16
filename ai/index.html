@@ -34,7 +34,7 @@
   </form>
 
   <script>
-    var version = " 0.1.8";
+    var version = " 0.1.9";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -108,7 +108,7 @@
           console.log('API Response:', data);
           if (data && data.candidates && data.candidates.length > 0) {
             var output = data.candidates[0].content.parts[0].text;
-            updateResponseTextarea(responseTextareaId, output);
+            updateOrCreateResponseTextarea(responseTextareaId, output);
           } else {
             throw new Error('No candidates found in API response');
           }
@@ -120,16 +120,17 @@
           addNewPromptAndResponseTextarea();
         });
     }
-
-    // Function to update response textarea
-    function updateResponseTextarea(responseTextareaId, content) {
+    
+    // Function to update or create response textarea
+    function updateOrCreateResponseTextarea(responseTextareaId, content) {
       var responseTextarea = document.getElementById(responseTextareaId);
       if (!responseTextarea) {
-        throw new Error('Response textarea not found');
+        responseTextarea = createResponseTextarea(responseTextareaId);
+        document.getElementById('chatContainer').appendChild(responseTextarea);
       }
       responseTextarea.value = content;
       adjustTextareaHeight(responseTextarea);
-    }
+    }    
 
     // Function to handle response errors
     function handleResponseError(responseTextareaId, error) {
