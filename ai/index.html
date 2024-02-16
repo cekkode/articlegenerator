@@ -34,7 +34,7 @@
   </form>
 
   <script>
-    var version = " 0.0.8";
+    var version = " 0.0.9";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -77,7 +77,7 @@
     function GEMINI(prompt, responseTextarea) {
       var apiKey = "AIzaSyCf4gfFzHbnFqivbgZTNpK7pmnRIgjSxjk";
       var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
-
+    
       var headers = {
         "Content-Type": "application/json"
       };
@@ -110,9 +110,9 @@
             var content = data.candidates[0].content;
             if (content && content.parts && content.parts.length > 0) {
               var output = content.parts[0].text;
-              responseTextarea.value = output;
-              adjustTextareaHeight('response');
-              addNewPromptAndResponseTextarea();
+              responseTextarea.value = output; // Update the correct response textarea
+              adjustTextareaHeight(responseTextarea.id); // Adjust the height of the updated response textarea
+              addNewPromptAndResponseTextarea(); // Add new prompt and response textareas
             } else {
               throw new Error('No content found in API response');
             }
@@ -123,10 +123,11 @@
         .catch(error => {
           console.error('Error:', error);
           responseTextarea.value = 'Error: ' + error.message;
-          adjustTextareaHeight('response');
+          adjustTextareaHeight(responseTextarea.id);
           addNewPromptAndResponseTextarea();
         });
     }
+    
 
     // Function to adjust textarea height based on content
     function adjustTextareaHeight(textareaId) {
