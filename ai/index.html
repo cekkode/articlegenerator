@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AI Coder Gemini Model</title>
+  <title>AI Model</title>
 </head>
 <body>
-  <h1>Google Gemini Model Coder</h1>
+  <h1 id="modelTitle">Google Gemini Model</h1>
   <form id="form">
     <label for="system">System:</label>
-    <input type="text" id="system" name="system">
+    <input type="text" id="system" name="system" placeholder="You're helpful AI coder which specialize in JavaScript">
+
+    <label for="model">Select Model:</label>
+    <select id="model" name="model">
+      <option value="GEMINI" selected>GEMINI</option>
+      <option value="CHATGPT">CHATGPT</option>
+    </select>
 
     <label for="prompt">Prompt:</label>
     <textarea id="prompt" name="prompt"></textarea>
@@ -20,22 +26,31 @@
 
   <script>
     // Function to generate response
-    function generateResponse(prompt) {
-      GEMINI(prompt);
+    function generateResponse(prompt, model) {
+      if (model === "GEMINI") {
+        GEMINI(prompt);
+      } else if (model === "CHATGPT") {
+        document.getElementById('modelTitle').innerText = "OpenAI ChatGPT Model";
+        // Add code to use OpenAI ChatGPT model
+      }
     }
 
     // Submit form when Ctrl+Enter is pressed in prompt textarea
     document.getElementById("prompt").addEventListener("keydown", function(event) {
       if (event.ctrlKey && event.key === "Enter") {
         event.preventDefault();
-        generateResponse(document.getElementById('prompt').value);
+        var prompt = document.getElementById('prompt').value;
+        var model = document.getElementById('model').value;
+        generateResponse(prompt, model);
       }
     });
 
     // Submit form on submit button click
     document.getElementById("form").addEventListener("submit", function(event) {
       event.preventDefault();
-      generateResponse(document.getElementById('prompt').value);
+      var prompt = document.getElementById('prompt').value;
+      var model = document.getElementById('model').value;
+      generateResponse(prompt, model);
     });
 
     function GEMINI(prompt) {
