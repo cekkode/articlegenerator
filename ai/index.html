@@ -34,7 +34,7 @@
   </form>
 
   <script>
-    var version = " 0.1.0";
+    var version = " 0.1.1";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -113,7 +113,6 @@
               var output = content.parts[0].text;
               responseTextarea.value = output; // Update the correct response textarea
               adjustTextareaHeight(responseTextarea); // Adjust the height of the updated response textarea
-              addNewPromptAndResponseTextarea(); // Add new prompt and response textareas
             } else {
               throw new Error('No content found in API response');
             }
@@ -125,7 +124,9 @@
           console.error('Error:', error);
           responseTextarea.value = 'Error: ' + error.message;
           adjustTextareaHeight(responseTextarea);
-          addNewPromptAndResponseTextarea();
+        })
+        .finally(() => {
+          addNewPromptAndResponseTextarea(); // Add new prompt and response textareas
         });
     }
     
