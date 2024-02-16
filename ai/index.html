@@ -34,7 +34,7 @@
   </form>
 
   <script>
-    var version = " 0.1.4";
+    var version = " 0.1.5";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -113,6 +113,9 @@
               console.log('Response Textarea ID:', responseTextareaId);
               var responseTextarea = document.getElementById(responseTextareaId);
               console.log('Response Textarea:', responseTextarea);
+              if (!responseTextarea) {
+                responseTextarea = createResponseTextarea(responseTextareaId);
+              }
               if (responseTextarea) {
                 responseTextarea.value = output; // Update the correct response textarea
                 adjustTextareaHeight(responseTextarea); // Adjust the height of the updated response textarea
@@ -129,6 +132,9 @@
         .catch(error => {
           console.error('Error:', error);
           var responseTextarea = document.getElementById(responseTextareaId);
+          if (!responseTextarea) {
+            responseTextarea = createResponseTextarea(responseTextareaId);
+          }
           if (responseTextarea) {
             responseTextarea.value = 'Error: ' + error.message;
             adjustTextareaHeight(responseTextarea);
@@ -136,6 +142,15 @@
             console.error('Response textarea not found for error message:', error);
           }
         });
+    }
+    
+    // Function to create a new response textarea with a unique ID
+    function createResponseTextarea(responseTextareaId) {
+      var responseTextarea = document.createElement('textarea');
+      responseTextarea.setAttribute('id', responseTextareaId);
+      responseTextarea.setAttribute('name', 'response');
+      responseTextarea.setAttribute('placeholder', 'Response');
+      return responseTextarea;
     }    
 
     // Function to adjust textarea height based on content
