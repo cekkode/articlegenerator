@@ -34,7 +34,7 @@
   </form>
 
   <script>
-    var version = " 0.1.6";
+    var version = " 0.1.7";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -176,21 +176,15 @@
       chatContainer.appendChild(newPromptTextarea);
 
       // Create new response textarea
-      var newResponseTextarea = createResponseTextarea();
+      var newResponseTextarea = document.createElement('textarea');
+      var id = 'response' + Date.now(); // Unique ID based on current timestamp
+      newResponseTextarea.setAttribute('id', id);
+      newResponseTextarea.setAttribute('name', 'response');
+      newResponseTextarea.setAttribute('placeholder', 'Response');
       chatContainer.appendChild(newResponseTextarea);
       
       // Focus on the new prompt textarea
       newPromptTextarea.focus();
-    }
-
-    // Function to create a new response textarea with a unique ID
-    function createResponseTextarea() {
-      var responseTextarea = document.createElement('textarea');
-      var id = 'response' + Date.now(); // Unique ID based on current timestamp
-      responseTextarea.setAttribute('id', id);
-      responseTextarea.setAttribute('name', 'response');
-      responseTextarea.setAttribute('placeholder', 'Response');
-      return responseTextarea;
     }
   </script>
 </body>
