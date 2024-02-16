@@ -34,7 +34,7 @@
   </form>
 
   <script>
-    var version = " 0.1.3";
+    var version = " 0.1.4";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -113,8 +113,12 @@
               console.log('Response Textarea ID:', responseTextareaId);
               var responseTextarea = document.getElementById(responseTextareaId);
               console.log('Response Textarea:', responseTextarea);
-              responseTextarea.value = output; // Update the correct response textarea
-              adjustTextareaHeight(responseTextarea); // Adjust the height of the updated response textarea
+              if (responseTextarea) {
+                responseTextarea.value = output; // Update the correct response textarea
+                adjustTextareaHeight(responseTextarea); // Adjust the height of the updated response textarea
+              } else {
+                throw new Error('Response textarea not found');
+              }
             } else {
               throw new Error('No content found in API response');
             }
@@ -125,11 +129,14 @@
         .catch(error => {
           console.error('Error:', error);
           var responseTextarea = document.getElementById(responseTextareaId);
-          responseTextarea.value = 'Error: ' + error.message;
-          adjustTextareaHeight(responseTextarea);
+          if (responseTextarea) {
+            responseTextarea.value = 'Error: ' + error.message;
+            adjustTextareaHeight(responseTextarea);
+          } else {
+            console.error('Response textarea not found for error message:', error);
+          }
         });
-    }
-    
+    }    
 
     // Function to adjust textarea height based on content
     function adjustTextareaHeight(textarea) {
