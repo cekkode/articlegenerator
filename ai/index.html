@@ -34,12 +34,16 @@
   </form>
 
   <script>
-    var version = " 0.0.6";
+    var version = " 0.0.7";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
     // Function to generate response
     function generateResponse(prompt, model) {
+      // Show "waiting response" message
+      document.getElementById('response').value = 'Waiting for response from Gemini AI...';
+      adjustTextareaHeight('response');
+      
       if (model === "GEMINI") {
         GEMINI(prompt);
       } else if (model === "CHATGPT") {
@@ -54,7 +58,7 @@
         event.preventDefault();
         if (event.target.id === "prompt") {
           // Only submit the form when Ctrl + Enter is pressed in the prompt textarea
-          var prompt = document.getElementById('prompt').value;
+          var prompt = event.target.value;
           var model = document.getElementById('model').value;
           generateResponse(prompt, model);
         }
@@ -141,7 +145,7 @@
       newPromptTextarea.setAttribute('rows', '1');
       newPromptTextarea.setAttribute('placeholder', 'Enter your prompt here');
       chatContainer.appendChild(newPromptTextarea);
-      
+
       // Create new response textarea
       var newResponseTextarea = document.createElement('textarea');
       newResponseTextarea.setAttribute('id', 'response');
