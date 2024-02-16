@@ -33,7 +33,7 @@
   </form>
 
   <script>
-    var version = " 0.0.2";
+    var version = " 0.0.3";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
     // Function to generate response
@@ -87,10 +87,20 @@
       };
 
       fetch(apiUrl + "?key=" + apiKey, options)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
         .then(data => {
-          var output = data.candidates[0].content.parts[0].text;
-          document.getElementById('response').value = output;
+          console.log('API Response:', data);
+          if (data && data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
+            var output = data.candidates[0].content.parts[0].text;
+            document.getElementById('response').value = output;
+          } else {
+            throw new Error('Invalid API response');
+          }
         })
         .catch(error => {
           console.error('Error:', error);
