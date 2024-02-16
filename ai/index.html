@@ -33,6 +33,7 @@
   </form>
 
   <script>
+    var version = " 0.0.1";
     // Function to generate response
     function generateResponse(prompt, model) {
       if (model === "GEMINI") {
@@ -62,8 +63,8 @@
     });
 
     function GEMINI(prompt) {
-      var apiKey = "YOUR_API_KEY";
-      var apiUrl = "YOUR_API_URL";
+      var apiKey = "AIzaSyCf4gfFzHbnFqivbgZTNpK7pmnRIgjSxjk";
+      var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
 
       var headers = {
         "Content-Type": "application/json"
@@ -94,6 +95,9 @@
           document.getElementById('response').value = 'Error: ' + error.message;
         });
     }
+
+    // Adding version to the end of h1
+    document.getElementById("modelTitle").innerText += version;
   </script>
 </body>
 </html>
