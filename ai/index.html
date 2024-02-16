@@ -33,7 +33,7 @@
   </form>
 
   <script>
-    var version = " 0.0.3";
+    var version = " 0.0.4";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
     // Function to generate response
@@ -71,7 +71,7 @@
       var headers = {
         "Content-Type": "application/json"
       };
-
+    
       var requestBody = {
         "contents": [{
           "parts": [{
@@ -79,13 +79,13 @@
           }]}
         ]
       };
-
+    
       var options = {
         "method": "POST",
         "headers": headers,
         "body": JSON.stringify(requestBody)
       };
-
+    
       fetch(apiUrl + "?key=" + apiKey, options)
         .then(response => {
           if (!response.ok) {
@@ -95,11 +95,17 @@
         })
         .then(data => {
           console.log('API Response:', data);
-          if (data && data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
-            var output = data.candidates[0].content.parts[0].text;
-            document.getElementById('response').value = output;
+          if (data && data.candidates && data.candidates.length > 0) {
+            // Assuming the first candidate contains the desired content
+            var content = data.candidates[0].content;
+            if (content && content.parts && content.parts.length > 0) {
+              var output = content.parts[0].text;
+              document.getElementById('response').value = output;
+            } else {
+              throw new Error('No content found in API response');
+            }
           } else {
-            throw new Error('Invalid API response');
+            throw new Error('No candidates found in API response');
           }
         })
         .catch(error => {
