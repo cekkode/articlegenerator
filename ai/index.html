@@ -28,22 +28,23 @@
     <div id="chatContainer">
       <textarea id="prompt" name="prompt" placeholder="Enter your prompt here"></textarea>
       <textarea id="response" name="response" placeholder="Response"></textarea>
+      <span id="aiStatus">Ready to receive prompt</span>
     </div>
   
     <input type="submit" value="Submit">
   </form>
 
   <script>
-    var version = " 0.1.10";
+    var version = " 0.1.11";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
     // Function to generate response
     function generateResponse(prompt, model) {
       // Show "waiting response" message
+      document.getElementById('aiStatus').innerText = 'Waiting for response from Gemini AI...';
       var responseTextareaId = 'response' + Date.now();
       var responseTextarea = createResponseTextarea(responseTextareaId);
-      responseTextarea.value = 'Waiting for response from Gemini AI...';
       adjustTextareaHeight(responseTextarea);
       
       if (model === "GEMINI") {
@@ -117,6 +118,7 @@
           handleResponseError(responseTextareaId, error);
         })
         .finally(() => {
+          document.getElementById('aiStatus').innerText = 'Ready to receive prompt';
           addNewPromptAndResponseTextarea();
         });
     }
@@ -175,10 +177,6 @@
       newPromptTextarea.setAttribute('placeholder', 'Enter your prompt here');
       chatContainer.appendChild(newPromptTextarea);
 
-      // Create new response textarea
-      var newResponseTextarea = createResponseTextarea('response' + Date.now());
-      chatContainer.appendChild(newResponseTextarea);
-      
       // Focus on the new prompt textarea
       newPromptTextarea.focus();
     }
