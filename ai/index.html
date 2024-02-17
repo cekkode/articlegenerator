@@ -13,6 +13,9 @@
       margin-bottom: 10px;
       resize: none; /* Prevent resizing */
     }
+    #chatContainer .contextCheckbox {
+      margin-bottom: 5px;
+    }
   </style>
 </head>
 <body>
@@ -28,13 +31,14 @@
     <div id="chatContainer">
       <textarea id="prompt" name="prompt" placeholder="Enter your prompt here"></textarea>
       <textarea id="response" name="response" placeholder="Response"></textarea>
+      <input type="checkbox" class="contextCheckbox" checked> Include as context
     </div>
   
     <input type="submit" value="Submit">
   </form>
 
   <script>
-    var version = " 0.1.11";
+    var version = " 0.1.12";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -44,6 +48,7 @@
       document.getElementById('aiStatus').innerText = 'Waiting for response from Gemini AI...';
       var responseTextareaId = 'response' + Date.now();
       var responseTextarea = createResponseTextarea(responseTextareaId);
+      var contextCheckbox = createCheckbox(responseTextareaId);
       adjustTextareaHeight(responseTextarea);
       
       if (model === "GEMINI") {
@@ -90,6 +95,24 @@
           }]}
         ]
       };
+
+      // Collect context from checked response textareas
+      var context = [];
+      var contextCheckboxes = document.querySelectorAll('.contextCheckbox');
+      contextCheckboxes.forEach(function(checkbox) {
+        if (checkbox.checked) {
+          var textareaId = checkbox.getAttribute('data-textarea-id');
+          var textarea = document.getElementById(textareaId);
+          if (textarea) {
+            context.push(textarea.value);
+          }
+        }
+      });
+      
+      // Append context to request body
+      requestBody.contents[0].parts = requestBody.contents[0].parts.concat(context.map(function(content) {
+        return {"text": content};
+      }));
       
       var options = {
         "method": "POST",
@@ -153,6 +176,17 @@
       return responseTextarea;
     }
 
+    // Function to create a checkbox for context inclusion
+    function createCheckbox(responseTextareaId) {
+      var checkbox = document.createElement('input');
+      checkbox.setAttribute('type', 'checkbox');
+      checkbox.setAttribute('class', 'contextCheckbox');
+      checkbox.setAttribute('checked', 'true');
+      checkbox.setAttribute('data-textarea-id', responseTextareaId);
+      document.getElementById('chatContainer').appendChild(checkbox);
+      return checkbox;
+    }
+
     // Function to adjust textarea height based on content
     function adjustTextareaHeight(textarea) {
       textarea.style.height = 'auto';
@@ -167,6 +201,12 @@
       var existingResponseTextarea = document.getElementById('response');
       if (existingResponseTextarea) {
         chatContainer.removeChild(existingResponseTextarea);
+      }
+
+      // Remove existing context checkbox if any
+      var existingContextCheckbox = document.querySelector('.contextCheckbox');
+      if (existingContextCheckbox) {
+        chatContainer.removeChild(existingContextCheckbox);
       }
 
       // Create new prompt textarea
