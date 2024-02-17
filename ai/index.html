@@ -12,9 +12,12 @@
       width: 100%;
       margin-bottom: 10px;
       resize: none; /* Prevent resizing */
+      position: relative; /* Positioning for checkboxes */
     }
-    #chatContainer .contextCheckbox {
-      margin-bottom: 5px;
+    .contextCheckbox {
+      position: absolute;
+      top: 5px;
+      right: 5px;
     }
   </style>
 </head>
@@ -30,8 +33,9 @@
     <span id="aiStatus">Ready to receive prompt</span>
     <div id="chatContainer">
       <textarea id="prompt" name="prompt" placeholder="Enter your prompt here"></textarea>
+      <input type="checkbox" class="contextCheckbox" id="promptCheckbox">
       <textarea id="response" name="response" placeholder="Response"></textarea>
-      <input type="checkbox" class="contextCheckbox" checked> Include as context
+      <input type="checkbox" class="contextCheckbox" checked>
     </div>
   
     <input type="submit" value="Submit">
@@ -52,11 +56,31 @@
       adjustTextareaHeight(responseTextarea);
       
       if (model === "GEMINI") {
-        GEMINI(prompt, responseTextareaId);
+        // Log the prompt and context being sent to Gemini
+        console.log("Prompt sent to Gemini:", prompt);
+        var context = collectContext();
+        console.log("Context sent to Gemini:", context);
+        GEMINI(prompt, context, responseTextareaId);
       } else if (model === "CHATGPT") {
         document.getElementById('modelTitle').innerText = "OpenAI ChatGPT Model";
         // Add code to use OpenAI ChatGPT model
       }
+    }
+
+    // Collect context from checked response textareas
+    function collectContext() {
+      var context = [];
+      var contextCheckboxes = document.querySelectorAll('.contextCheckbox');
+      contextCheckboxes.forEach(function(checkbox) {
+        if (checkbox.checked) {
+          var textareaId = checkbox.getAttribute('data-textarea-id');
+          var textarea = document.getElementById(textareaId);
+          if (textarea) {
+            context.push(textarea.value);
+          }
+        }
+      });
+      return context;
     }
 
     // Submit form when Ctrl+Enter is pressed in prompt textarea
@@ -80,7 +104,7 @@
       generateResponse(prompt, model);
     });
 
-    function GEMINI(prompt, responseTextareaId) {
+    function GEMINI(prompt, context, responseTextareaId) {
       var apiKey = "AIzaSyCf4gfFzHbnFqivbgZTNpK7pmnRIgjSxjk";
       var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
       
@@ -96,19 +120,6 @@
         ]
       };
 
-      // Collect context from checked response textareas
-      var context = [];
-      var contextCheckboxes = document.querySelectorAll('.contextCheckbox');
-      contextCheckboxes.forEach(function(checkbox) {
-        if (checkbox.checked) {
-          var textareaId = checkbox.getAttribute('data-textarea-id');
-          var textarea = document.getElementById(textareaId);
-          if (textarea) {
-            context.push(textarea.value);
-          }
-        }
-      });
-      
       // Append context to request body
       requestBody.contents[0].parts = requestBody.contents[0].parts.concat(context.map(function(content) {
         return {"text": content};
@@ -181,8 +192,12 @@
       var checkbox = document.createElement('input');
       checkbox.setAttribute('type', 'checkbox');
       checkbox.setAttribute('class', 'contextCheckbox');
-      checkbox.setAttribute('checked', 'true');
       checkbox.setAttribute('data-textarea-id', responseTextareaId);
+      checkbox.checked = true; // Default to checked
+      checkbox.addEventListener('change', function() {
+        // Log when the checkbox is checked/unchecked
+        console.log("Checkbox for textarea", responseTextareaId, "changed to", this.checked ? "checked" : "unchecked");
+      });
       document.getElementById('chatContainer').appendChild(checkbox);
       return checkbox;
     }
@@ -203,11 +218,11 @@
         chatContainer.removeChild(existingResponseTextarea);
       }
 
-      // Remove existing context checkbox if any
-      var existingContextCheckbox = document.querySelector('.contextCheckbox');
-      if (existingContextCheckbox) {
-        chatContainer.removeChild(existingContextCheckbox);
-      }
+      // Remove existing context checkboxes if any
+      var existingContextCheckboxes = document.querySelectorAll('.contextCheckbox');
+      existingContextCheckboxes.forEach(function(checkbox) {
+        chatContainer.removeChild(checkbox);
+      });
 
       // Create new prompt textarea
       var newPromptTextarea = document.createElement('textarea');
@@ -215,6 +230,18 @@
       newPromptTextarea.setAttribute('name', 'prompt');
       newPromptTextarea.setAttribute('placeholder', 'Enter your prompt here');
       chatContainer.appendChild(newPromptTextarea);
+      
+      // Create checkbox for prompt textarea
+      var promptCheckbox = document.createElement('input');
+      promptCheckbox.setAttribute('type', 'checkbox');
+      promptCheckbox.setAttribute('class', 'contextCheckbox');
+      promptCheckbox.setAttribute('data-textarea-id', 'prompt');
+      promptCheckbox.checked = false; // Default to unchecked
+      promptCheckbox.addEventListener('change', function() {
+        // Log when the checkbox is checked/unchecked
+        console.log("Checkbox for prompt textarea changed to", this.checked ? "checked" : "unchecked");
+      });
+      chatContainer.insertBefore(promptCheckbox, newPromptTextarea);
 
       // Focus on the new prompt textarea
       newPromptTextarea.focus();
