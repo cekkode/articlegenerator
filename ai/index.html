@@ -34,7 +34,7 @@
   </form>
 
   <script>
-    var version = " 0.1.9";
+    var version = " 0.1.10";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -162,6 +162,12 @@
     function addNewPromptAndResponseTextarea() {
       var chatContainer = document.getElementById('chatContainer');
       
+      // Remove existing response textarea if any
+      var existingResponseTextarea = document.getElementById('response');
+      if (existingResponseTextarea) {
+        chatContainer.removeChild(existingResponseTextarea);
+      }
+
       // Create new prompt textarea
       var newPromptTextarea = document.createElement('textarea');
       newPromptTextarea.setAttribute('id', 'prompt');
