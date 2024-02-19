@@ -203,14 +203,18 @@
       checkbox.setAttribute('class', 'contextCheckbox');
       checkbox.setAttribute('data-textarea-id', textareaId);
       checkbox.checked = true; // Default to checked
-      checkbox.addEventListener('change', function() {
-        // Log when the checkbox is checked/unchecked
-        console.log("Checkbox for textarea", textareaId, "changed to", this.checked ? "checked" : "unchecked");
-      });
+
       var textarea = document.getElementById(textareaId);
-      textarea.parentElement.insertBefore(checkbox, textarea);
+      console.log("Textarea ID:", textareaId);
+      console.log("Textarea element:", textarea);
+      
+      if (textarea) {
+        textarea.parentElement.insertBefore(checkbox, textarea);
+      } else {
+        console.error("Textarea element with ID", textareaId, "not found!");
+      } 
       return checkbox;
-    }
+    }    
 
     // Function to adjust textarea height based on content
     function adjustTextareaHeight(textarea) {
