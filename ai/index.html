@@ -42,7 +42,7 @@
   </form>
 
   <script>
-    var version = " 0.1.15";
+    var version = " 0.1.16";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -245,9 +245,6 @@
       newPromptTextarea.setAttribute('name', 'prompt');
       newPromptTextarea.setAttribute('placeholder', 'Enter your prompt here');
       chatContainer.appendChild(newPromptTextarea);
-
-      // Focus on the new prompt textarea
-      newPromptTextarea.focus();
 
       // Create new response textarea
       var newResponseTextarea = createResponseTextarea('response' + Date.now());
