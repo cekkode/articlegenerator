@@ -42,30 +42,39 @@
   </form>
 
   <script>
-    var version = " 0.1.14";
+    var version = " 0.1.15";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
     // Function to generate response
     function generateResponse(prompt, model) {
       // Show "waiting response" message
-      document.getElementById('aiStatus').innerText = 'Waiting for response from Gemini AI...';
+      document.getElementById('aiStatus').innerText = 'Waiting for response...';
       var responseTextareaId = 'response' + Date.now();
       var responseTextarea = createResponseTextarea(responseTextareaId);
-      var contextCheckbox = createCheckbox(responseTextareaId);
+      var contextCheckbox = createCheckbox(responseTextareaId); // Always create a checkbox for response
       adjustTextareaHeight(responseTextarea);
       
-      if (model === "GEMINI") {
-        // Log the prompt and context being sent to Gemini
-        console.log("Prompt sent to Gemini:", prompt);
+      var promptCheckbox = document.getElementById('promptCheckbox');
+      if (!promptCheckbox.checked) {
+        // If prompt checkbox is not checked, send only the prompt without additional context
+        if (model === "GEMINI") {
+          console.log("Prompt sent to Gemini:", prompt);
+          GEMINI(prompt, [], responseTextareaId); // Pass empty context
+        }
+      } else {
+        // If prompt checkbox is checked, send prompt and response as context
         var context = collectContext();
+        console.log("Prompt sent to Gemini:", prompt);
         console.log("Context sent to Gemini:", context);
-        GEMINI(prompt, context, responseTextareaId);
-      } else if (model === "CHATGPT") {
-        document.getElementById('modelTitle').innerText = "OpenAI ChatGPT Model";
-        // Add code to use OpenAI ChatGPT model
+        if (model === "GEMINI") {
+          GEMINI(prompt, context, responseTextareaId);
+        } else if (model === "CHATGPT") {
+          document.getElementById('modelTitle').innerText = "OpenAI ChatGPT Model";
+          // Add code to use OpenAI ChatGPT model
+        }
       }
-    }
+    }    
 
     // Collect context from checked response textareas
     function collectContext() {
@@ -225,26 +234,23 @@
         chatContainer.removeChild(checkbox);
       });
 
-      // Create new prompt textarea
+      // Create new prompt textarea with a unique ID
       var newPromptTextarea = document.createElement('textarea');
-      newPromptTextarea.setAttribute('id', 'prompt');
+      var newPromptTextareaId = 'prompt' + Date.now(); // Generate unique ID
+      newPromptTextarea.setAttribute('id', newPromptTextareaId);
       newPromptTextarea.setAttribute('name', 'prompt');
       newPromptTextarea.setAttribute('placeholder', 'Enter your prompt here');
       chatContainer.appendChild(newPromptTextarea);
-      
-      // Create checkbox for prompt textarea
-      var promptCheckbox = createCheckbox('prompt');
-      promptCheckbox.checked = false; // Default to unchecked
+
+      // Focus on the new prompt textarea
+      newPromptTextarea.focus();
 
       // Create new response textarea
       var newResponseTextarea = createResponseTextarea('response' + Date.now());
       chatContainer.appendChild(newResponseTextarea);
 
-      // Create checkbox for response textarea
+      // Create checkbox for response textarea and assign it to a variable
       var responseCheckbox = createCheckbox(newResponseTextarea.id);
-
-      // Focus on the new prompt textarea
-      newPromptTextarea.focus();
     }
   </script>
 </body>
