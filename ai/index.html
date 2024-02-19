@@ -7,12 +7,12 @@
     #chatContainer {
       display: flex;
       flex-direction: column;
+      position: relative; /* Positioning for checkboxes */
     }
     #chatContainer textarea {
       width: 100%;
       margin-bottom: 10px;
       resize: none; /* Prevent resizing */
-      position: relative; /* Positioning for checkboxes */
     }
     .contextCheckbox {
       position: absolute;
@@ -35,14 +35,14 @@
       <textarea id="prompt" name="prompt" placeholder="Enter your prompt here"></textarea>
       <input type="checkbox" class="contextCheckbox" id="promptCheckbox">
       <textarea id="response" name="response" placeholder="Response"></textarea>
-      <input type="checkbox" class="contextCheckbox" checked>
+      <input type="checkbox" class="contextCheckbox" id="responseCheckbox"> 
     </div>
   
     <input type="submit" value="Submit">
   </form>
 
   <script>
-    var version = " 0.1.13";
+    var version = " 0.1.14";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -187,18 +187,19 @@
       return responseTextarea;
     }
 
-    // Function to create a checkbox for context inclusion
-    function createCheckbox(responseTextareaId) {
+    // Function to create a checkbox for including textarea as context
+    function createCheckbox(textareaId) {
       var checkbox = document.createElement('input');
       checkbox.setAttribute('type', 'checkbox');
       checkbox.setAttribute('class', 'contextCheckbox');
-      checkbox.setAttribute('data-textarea-id', responseTextareaId);
+      checkbox.setAttribute('data-textarea-id', textareaId);
       checkbox.checked = true; // Default to checked
       checkbox.addEventListener('change', function() {
         // Log when the checkbox is checked/unchecked
-        console.log("Checkbox for textarea", responseTextareaId, "changed to", this.checked ? "checked" : "unchecked");
+        console.log("Checkbox for textarea", textareaId, "changed to", this.checked ? "checked" : "unchecked");
       });
-      document.getElementById('chatContainer').appendChild(checkbox);
+      var textarea = document.getElementById(textareaId);
+      textarea.parentElement.insertBefore(checkbox, textarea);
       return checkbox;
     }
 
@@ -232,16 +233,15 @@
       chatContainer.appendChild(newPromptTextarea);
       
       // Create checkbox for prompt textarea
-      var promptCheckbox = document.createElement('input');
-      promptCheckbox.setAttribute('type', 'checkbox');
-      promptCheckbox.setAttribute('class', 'contextCheckbox');
-      promptCheckbox.setAttribute('data-textarea-id', 'prompt');
+      var promptCheckbox = createCheckbox('prompt');
       promptCheckbox.checked = false; // Default to unchecked
-      promptCheckbox.addEventListener('change', function() {
-        // Log when the checkbox is checked/unchecked
-        console.log("Checkbox for prompt textarea changed to", this.checked ? "checked" : "unchecked");
-      });
-      chatContainer.insertBefore(promptCheckbox, newPromptTextarea);
+
+      // Create new response textarea
+      var newResponseTextarea = createResponseTextarea('response' + Date.now());
+      chatContainer.appendChild(newResponseTextarea);
+
+      // Create checkbox for response textarea
+      var responseCheckbox = createCheckbox(newResponseTextarea.id);
 
       // Focus on the new prompt textarea
       newPromptTextarea.focus();
