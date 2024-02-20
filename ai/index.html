@@ -42,7 +42,7 @@
   </form>
 
   <script>
-    var version = " 0.1.18";
+    var version = " 0.1.19";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -225,6 +225,18 @@
       textarea.style.height = 'auto';
       textarea.style.height = (textarea.scrollHeight) + 'px';
     }
+
+    // Add event listeners to prompt textarea for input and paste events
+    document.getElementById('prompt').addEventListener('input', function() {
+      adjustTextareaHeight(this);
+    });
+
+    document.getElementById('prompt').addEventListener('paste', function() {
+      // Wait for a short delay before adjusting the height to allow the textarea to update its content
+      setTimeout(() => {
+        adjustTextareaHeight(this);
+      }, 50); // Adjust the delay as needed
+    });
 
     // Function to add new prompt and response textarea below the response
     function addNewPromptAndResponseTextarea() {
