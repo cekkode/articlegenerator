@@ -42,7 +42,7 @@
   </form>
 
   <script>
-    var version = " 0.1.17";
+    var version = " 0.1.18";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -51,7 +51,7 @@
       // Show "waiting response" message
       document.getElementById('aiStatus').innerText = 'Waiting for response...';
       var responseTextareaId = 'response' + Date.now();
-      var responseTextarea = createResponseTextarea(responseTextareaId);
+      var responseTextarea = document.getElementById(responseCheckbox.getAttribute('data-textarea-id'));
       var contextCheckbox = createCheckbox(responseTextareaId); // Always create a checkbox for response
       adjustTextareaHeight(responseTextarea);
       
