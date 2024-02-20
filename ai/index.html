@@ -42,7 +42,7 @@
   </form>
 
   <script>
-    var version = " 0.1.16";
+    var version = " 0.1.17";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -125,14 +125,18 @@
         "contents": [{
           "parts": [{
             "text": prompt
-          }]}
-        ]
+          }]
+        }]
       };
 
       // Append context to request body
-      requestBody.contents[0].parts = requestBody.contents[0].parts.concat(context.map(function(content) {
-        return {"text": content};
-      }));
+      if (context.length > 0) {
+        requestBody.contents.push({
+          "parts": context.map(function(content) {
+            return {"text": content};
+          })
+        });
+      }
       
       var options = {
         "method": "POST",
