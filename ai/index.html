@@ -45,7 +45,7 @@
   // Wrap the code in the DOMContentLoaded event listener
   document.addEventListener('DOMContentLoaded', function() {
     // Your code goes here
-    var version = " 0.1.22";
+    var version = " 0.1.23";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -210,24 +210,17 @@
     }
 
     // Function to create a checkbox for including textarea as context
-    function createCheckbox(textareaId) {
+    function createCheckbox(textarea) {
       var checkbox = document.createElement('input');
       checkbox.setAttribute('type', 'checkbox');
       checkbox.setAttribute('class', 'contextCheckbox');
-      checkbox.setAttribute('data-textarea-id', textareaId);
       checkbox.checked = true; // Default to checked
 
-      var textarea = document.getElementById(textareaId);
-      console.log("Textarea ID:", textareaId);
-      console.log("Textarea element:", textarea);
+      // Insert checkbox before the textarea
+      textarea.parentNode.insertBefore(checkbox, textarea);
       
-      if (textarea) {
-        textarea.parentElement.insertBefore(checkbox, textarea);
-      } else {
-        console.error("Textarea element with ID", textareaId, "not found!");
-      } 
-      return checkbox;
-    }    
+      return checkbox; // Return the created checkbox element
+    }
 
     // Function to adjust textarea height based on content
     function adjustTextareaHeight(textarea) {
@@ -276,7 +269,7 @@
       chatContainer.appendChild(newResponseTextarea);
 
       // Create checkbox for response textarea and assign it to a variable
-      var responseCheckbox = createCheckbox(newResponseTextarea.id);
+      var responseCheckbox = createCheckbox(newResponseTextarea);
     }
   });
   </script>
