@@ -42,7 +42,10 @@
   </form>
 
   <script>
-    var version = " 0.1.20";
+  // Wrap the code in the DOMContentLoaded event listener
+  document.addEventListener('DOMContentLoaded', function() {
+    // Your code goes here
+    var version = " 0.1.21";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -271,6 +274,7 @@
       // Create checkbox for response textarea and assign it to a variable
       var responseCheckbox = createCheckbox(newResponseTextarea.id);
     }
+  });
   </script>
 </body>
 </html>
