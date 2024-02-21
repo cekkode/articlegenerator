@@ -42,7 +42,7 @@
   </form>
 
   <script>
-    var version = " 0.1.19";
+    var version = " 0.1.20";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -115,7 +115,7 @@
 
     function GEMINI(prompt, context, responseTextareaId) {
       var apiKey = "AIzaSyCf4gfFzHbnFqivbgZTNpK7pmnRIgjSxjk";
-      var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+      var apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro-latest:generateContent";
       
       var headers = {
         "Content-Type": "application/json"
@@ -171,14 +171,16 @@
     
     // Function to update or create response textarea
     function updateOrCreateResponseTextarea(responseTextareaId, content) {
+      console.log('Response textarea ID:', responseTextareaId); // Log the responseTextareaId
       var responseTextarea = document.getElementById(responseTextareaId);
       if (!responseTextarea) {
+        console.error('Textarea element with ID', responseTextareaId, 'not found!');
         responseTextarea = createResponseTextarea(responseTextareaId);
         document.getElementById('chatContainer').appendChild(responseTextarea);
       }
       responseTextarea.value = content;
       adjustTextareaHeight(responseTextarea);
-    }    
+    }
 
     // Function to handle response errors
     function handleResponseError(responseTextareaId, error) {
