@@ -45,39 +45,43 @@
   // Wrap the code in the DOMContentLoaded event listener
   document.addEventListener('DOMContentLoaded', function() {
     // Your code goes here
-    var version = " 0.1.21";
+    var version = " 0.1.22";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
     // Function to generate response
-    function generateResponse(prompt, model) {
+    function generateResponse(promptTextarea, model) {
       // Show "waiting response" message
       document.getElementById('aiStatus').innerText = 'Waiting for response...';
-      var responseTextareaId = 'response' + Date.now();
-      var responseTextarea = document.getElementById(responseCheckbox.getAttribute('data-textarea-id'));
-      var contextCheckbox = createCheckbox(responseTextareaId); // Always create a checkbox for response
+
+      // Get the response textarea directly
+      var responseTextarea = promptTextarea.nextElementSibling;
+
+      // Create a checkbox for response textarea
+      createCheckbox(responseTextarea);
+
       adjustTextareaHeight(responseTextarea);
       
       var promptCheckbox = document.getElementById('promptCheckbox');
       if (!promptCheckbox.checked) {
         // If prompt checkbox is not checked, send only the prompt without additional context
         if (model === "GEMINI") {
-          console.log("Prompt sent to Gemini:", prompt);
-          GEMINI(prompt, [], responseTextareaId); // Pass empty context
+          console.log("Prompt sent to Gemini:", promptTextarea.value);
+          GEMINI(promptTextarea.value, [], responseTextarea); // Pass the response textarea directly
         }
       } else {
         // If prompt checkbox is checked, send prompt and response as context
         var context = collectContext();
-        console.log("Prompt sent to Gemini:", prompt);
+        console.log("Prompt sent to Gemini:", promptTextarea.value);
         console.log("Context sent to Gemini:", context);
         if (model === "GEMINI") {
-          GEMINI(prompt, context, responseTextareaId);
+          GEMINI(promptTextarea.value, context, responseTextarea);
         } else if (model === "CHATGPT") {
           document.getElementById('modelTitle').innerText = "OpenAI ChatGPT Model";
           // Add code to use OpenAI ChatGPT model
         }
       }
-    }    
+    }
 
     // Collect context from checked response textareas
     function collectContext() {
@@ -101,9 +105,9 @@
         event.preventDefault();
         if (event.target.id === "prompt") {
           // Only submit the form when Ctrl + Enter is pressed in the prompt textarea
-          var prompt = event.target.value;
+          var promptTextarea = event.target;
           var model = document.getElementById('model').value;
-          generateResponse(prompt, model);
+          generateResponse(promptTextarea, model);
         }
       }
     });
@@ -111,9 +115,9 @@
     // Submit form on submit button click
     document.getElementById("form").addEventListener("submit", function(event) {
       event.preventDefault();
-      var prompt = document.getElementById('prompt').value;
+      var promptTextarea = document.getElementById('prompt');
       var model = document.getElementById('model').value;
-      generateResponse(prompt, model);
+      generateResponse(promptTextarea, model);
     });
 
     function GEMINI(prompt, context, responseTextareaId) {
