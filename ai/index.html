@@ -45,7 +45,7 @@
   // Wrap the code in the DOMContentLoaded event listener
   document.addEventListener('DOMContentLoaded', function() {
     // Your code goes here
-    var version = " 0.1.23";
+    var version = " 0.1.24";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -210,15 +210,15 @@
     }
 
     // Function to create a checkbox for including textarea as context
-    function createCheckbox(textarea) {
+    function createCheckbox(textareaId) {
       var checkbox = document.createElement('input');
       checkbox.setAttribute('type', 'checkbox');
       checkbox.setAttribute('class', 'contextCheckbox');
       checkbox.setAttribute('id', textareaId + 'Checkbox'); // Set the checkbox ID based on the textarea ID
       checkbox.checked = true; // Default to checked
-    
+
       return checkbox;
-    }    
+    }  
 
     // Function to adjust textarea height based on content
     function adjustTextareaHeight(textarea) {
