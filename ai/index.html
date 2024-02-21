@@ -62,7 +62,7 @@
 
       adjustTextareaHeight(responseTextarea);
       
-      var promptCheckbox = document.getElementById('promptCheckbox');
+      var promptCheckbox = createCheckbox('prompt');
       if (!promptCheckbox.checked) {
         // If prompt checkbox is not checked, send only the prompt without additional context
         if (model === "GEMINI") {
@@ -214,13 +214,11 @@
       var checkbox = document.createElement('input');
       checkbox.setAttribute('type', 'checkbox');
       checkbox.setAttribute('class', 'contextCheckbox');
+      checkbox.setAttribute('id', textareaId + 'Checkbox'); // Set the checkbox ID based on the textarea ID
       checkbox.checked = true; // Default to checked
-
-      // Insert checkbox before the textarea
-      textarea.parentNode.insertBefore(checkbox, textarea);
-      
-      return checkbox; // Return the created checkbox element
-    }
+    
+      return checkbox;
+    }    
 
     // Function to adjust textarea height based on content
     function adjustTextareaHeight(textarea) {
