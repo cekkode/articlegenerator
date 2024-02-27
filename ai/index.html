@@ -45,7 +45,7 @@
   // Wrap the code in the DOMContentLoaded event listener
   document.addEventListener('DOMContentLoaded', function() {
     // Your code goes here
-    var version = " 0.1.24";
+    var version = " 0.1.25";
     // Adding version to the end of h1
     document.getElementById("modelTitle").innerText += version;
 
@@ -67,7 +67,7 @@
         // If prompt checkbox is not checked, send only the prompt without additional context
         if (model === "GEMINI") {
           console.log("Prompt sent to Gemini:", promptTextarea.value);
-          GEMINI(promptTextarea.value, [], responseTextarea.id); // Pass the response textarea directly
+          GEMINI(promptTextarea.value, [], responseTextarea, responseTextarea.id); // Pass the response textarea directly
         }
       } else {
         // If prompt checkbox is checked, send prompt and response as context
@@ -75,7 +75,7 @@
         console.log("Prompt sent to Gemini:", promptTextarea.value);
         console.log("Context sent to Gemini:", context);
         if (model === "GEMINI") {
-          GEMINI(promptTextarea.value, context, responseTextarea.id);
+          GEMINI(promptTextarea.value, context, responseTextarea, responseTextarea.id);
         } else if (model === "CHATGPT") {
           document.getElementById('modelTitle').innerText = "OpenAI ChatGPT Model";
           // Add code to use OpenAI ChatGPT model
@@ -263,11 +263,15 @@
       chatContainer.appendChild(newPromptTextarea);
 
       // Create new response textarea
-      var newResponseTextarea = createResponseTextarea('response' + Date.now());
+      var newResponseTextareaId = 'response' + Date.now();
+      var newResponseTextarea = createResponseTextarea(newResponseTextareaId);
       chatContainer.appendChild(newResponseTextarea);
 
+      // Create checkbox for prompt textarea and assign it to a variable
+      var promptCheckbox = createCheckbox(newPromptTextareaId);
+
       // Create checkbox for response textarea and assign it to a variable
-      var responseCheckbox = createCheckbox(newResponseTextarea);
+      var responseCheckbox = createCheckbox(newResponseTextareaId);
     }
   });
   </script>
