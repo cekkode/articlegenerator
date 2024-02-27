@@ -1,4 +1,4 @@
-var version = "0.0.136";
+var version = "0.0.137";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -61,7 +61,7 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
     return JSON.parse(cache.data);
 };
 
-const updateUI = (data, columnPrefix) => {
+const updateUI = (data, columnPrefix, anchor) => {
     const currentHour = new Date().getHours();
     const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
 
