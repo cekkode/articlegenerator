@@ -1,4 +1,4 @@
-var version = "0.0.135";
+var version = "0.0.136";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -277,6 +277,6 @@ script.onload = async function() {
     console.log('Fetched data:', data);
 
     if (data && data.length > 0) {
-        updateUI(data, columnPrefix);
+        updateUI(data, columnPrefix, anchor);
     }
 };
