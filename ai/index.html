@@ -67,7 +67,7 @@
         // If prompt checkbox is not checked, send only the prompt without additional context
         if (model === "GEMINI") {
           console.log("Prompt sent to Gemini:", promptTextarea.value);
-          GEMINI(promptTextarea.value, [], responseTextarea); // Pass the response textarea directly
+          GEMINI(promptTextarea.value, [], responseTextarea.id); // Pass the response textarea directly
         }
       } else {
         // If prompt checkbox is checked, send prompt and response as context
@@ -75,7 +75,7 @@
         console.log("Prompt sent to Gemini:", promptTextarea.value);
         console.log("Context sent to Gemini:", context);
         if (model === "GEMINI") {
-          GEMINI(promptTextarea.value, context, responseTextarea);
+          GEMINI(promptTextarea.value, context, responseTextarea.id);
         } else if (model === "CHATGPT") {
           document.getElementById('modelTitle').innerText = "OpenAI ChatGPT Model";
           // Add code to use OpenAI ChatGPT model
