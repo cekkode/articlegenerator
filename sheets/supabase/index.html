@@ -85,7 +85,7 @@
   <div id="tableContainer"></div>
 
   <script>
-    var version = ' 0.0.86';
+    var version = ' 0.0.87';
     // Display version in the header
     document.getElementById("versionHeader").innerText += version;
 
@@ -336,7 +336,7 @@
           if (tableWasCreated === true) {
               console.log("Table created:", tableName);
               // Wait a short period to allow the table to become fully available
-              await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 seconds
+              await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds
               return true; // Indicate that the table was created
           } else if (tableWasCreated === false) {
               // If the table already exists, proceed without delay
