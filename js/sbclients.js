@@ -1,4 +1,4 @@
-var version = "0.0.145";
+var version = "0.0.146";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -11,7 +11,7 @@ const fetchData = async (supabase, mainDomain, columnPrefix) => {
 
     if (error) {
         console.error('Error fetching data:', error);
-        return null;
+        throw error; // Propagate the error
     }
 
     if (!data || data.length === 0 || !data[0].hasOwnProperty(`${columnPrefix}🧑🏻`)) {
@@ -19,7 +19,7 @@ const fetchData = async (supabase, mainDomain, columnPrefix) => {
         const fallbackResult = await supabase.from(mainDomain).select(selectColumns);
         if (fallbackResult.error) {
             console.error('Error fetching fallback data:', fallbackResult.error);
-            return null;
+            throw fallbackResult.error; // Propagate the error
         }
         return fallbackResult.data;
     }
@@ -44,6 +44,12 @@ const getData = async (supabase, mainDomain, columnPrefix) => {
 
     const firstRowDate = firstRowData ? firstRowData["📅"] : null;
     console.log(`Cached 📅: ${cache.firstRowDate} = 📅: ${firstRowDate}? ${firstRowDate === cache.firstRowDate}`);
+
+    // Check if firstRowData exists and is not empty
+    if (!firstRowData || Object.keys(firstRowData).length === 0) {
+        console.error('First row data is missing or empty.');
+        return cache.data ? JSON.parse(cache.data) : null;
+    }
 
     if (!cache.data || !cache.timestamp || Date.now() - cache.timestamp > 365 * 24 * 60 * 60 * 1000 || (cache.firstRowDate && firstRowDate !== cache.firstRowDate)) {
         console.log('Fetching new data from Supabase...');
@@ -95,29 +101,6 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
     };
     replaceAddress(row[columnPrefix + '🏢']);
-
-    const updateFloatContact = (row, textParam, formattedNumber) => {
-        const whatsappFloat = document.querySelector('.whatsapp-floating');
-        const whatsappElement = document.querySelector('.whatsapp-floating a');
-        const whatsappSpan = whatsappElement.querySelector('span');
-        const tlpFloat = document.querySelector('.tlp-floating');
-        const tlpElement = document.querySelector('.tlp-floating a');
-        const tlpSpan = tlpElement.querySelector('span');
-
-        if (row[columnPrefix + '🧑🏻'] === 'HIDE' || row[columnPrefix + '#️⃣'] === 'HIDE') {
-            whatsappFloat.style.display = 'none';
-            tlpFloat.style.display = 'none';
-        } else {
-            whatsappElement.href = 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '💬'] + '/?text=' + textParam ;
-            Object.assign(whatsappElement, { target: "_blank", rel: "noopener noreferrer" });
-            whatsappSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-
-            tlpElement.href = 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '📞'];
-            Object.assign(tlpElement, { target: "_blank", rel: "noopener noreferrer" });
-            tlpSpan.textContent = formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')';
-        }
-    };
-    updateFloatContact(row, textParam, formattedNumber);
 
     const adjustTextColorBasedOnBackground = (element) => {
         if (document.body.contains(element)) {
@@ -189,6 +172,7 @@ const updateUI = (data, columnPrefix, anchor) => {
             }
         });
     };
+    updateTextNodeWithinAnchor(anchor, regexPhone, formattedNumber, contactName);
     
     const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground) => {
         const matchedNodes = [];
@@ -230,28 +214,54 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
     };
 
-    const updatePageContact = (row, textParam, formattedNumber, regexPhone) => {
-        const shouldHide = Object.values(row).some(value => value === 'HIDE');
+    const updateAnchorHref = (anchor, baseUrl, params) => {
+        anchor.href = baseUrl + params;
+        Object.assign(anchor, { target: "_blank", rel: "noopener noreferrer" });
+    };
     
+    const updateFloatContact = (row, textParam, formattedNumber) => {
+        const updateAnchor = (element, baseUrl, params, text) => {
+            updateAnchorHref(element, baseUrl, params);
+            element.querySelector('span').textContent = text;
+        };
+    
+        const whatsappFloat = document.querySelector('.whatsapp-floating');
+        const whatsappElement = document.querySelector('.whatsapp-floating a');
+        const tlpFloat = document.querySelector('.tlp-floating');
+        const tlpElement = document.querySelector('.tlp-floating a');
+    
+        if (row[columnPrefix + '🧑🏻'] === 'HIDE' || row[columnPrefix + '#️⃣'] === 'HIDE') {
+            whatsappFloat.style.display = 'none';
+            tlpFloat.style.display = 'none';
+        } else {
+            updateAnchor(whatsappElement, 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '💬'] + '/?text=', textParam, formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
+            updateAnchor(tlpElement, 'https://' + row[columnPrefix + '📊'] + '/' + row[columnPrefix + '📞'], '', formattedNumber + ' (' + row[columnPrefix + '🧑🏻'] + ')');
+        }
+    };
+    
+    const updatePageContact = (row, textParam, formattedNumber, regexPhone, adjustTextColorBasedOnBackground) => {
+        const shouldHide = Object.values(row).some(value => value === 'HIDE');
+        
         document.querySelectorAll('a').forEach(anchor => {
             if (anchor.href.includes('mailto:')) {
                 anchor.href = anchor.href.replace(/\s/g, '').replace(/%20/g, '');
-            } else if (shouldHide) {
-                anchor.remove();
-            } else {
+            } else if (!shouldHide) {
                 const updateHref = anchor.href.includes('what.sapp.my.id') || anchor.href.includes('con.tact.my.id');
                 if (updateHref) {
-                    anchor.href = `https://` + row[columnPrefix + '📊'] + `/` + (anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] + '/?text=' + textParam : row[columnPrefix + '📞']);
-                    Object.assign(anchor, { target: "_blank", rel: "noopener noreferrer" });
+                    const href = `https://${row[columnPrefix + '📊']}/${anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] + '/?text=' + textParam : row[columnPrefix + '📞']}`;
+                    updateAnchorHref(anchor, href, '');
                 }
                 updateTextNodeWithinAnchor(anchor, regexPhone, formattedNumber, row[columnPrefix + '🧑🏻']);
+            } else {
+                anchor.remove();
             }
         });
-
-        // Process other text nodes in the document
+    
         processTextNodes(regexPhone, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground);
     };
-    updatePageContact(row, textParam, formattedNumber, regexPhone);
+    
+    updateFloatContact(row, textParam, formattedNumber);
+    updatePageContact(row, textParam, formattedNumber, regexPhone, adjustTextColorBasedOnBackground);    
 
     // Log the required data
     console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
