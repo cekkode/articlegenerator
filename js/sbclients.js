@@ -1,4 +1,4 @@
-var version = "0.0.141";
+var version = "0.0.142";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -168,12 +168,15 @@ const updateUI = (data, columnPrefix, anchor) => {
     };
     addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName, textParam);
 
-    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
+    const hasFontAwesomePhoneIcon = node.parentNode && (
+        node.parentNode.querySelector && node.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]') ||
+        node.parentNode.nextElementSibling && node.parentNode.nextElementSibling.querySelector && node.parentNode.nextElementSibling.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]')
+    );
+
+    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName, hasFontAwesomePhoneIcon) => {
         const textNodes = [...anchor.childNodes].filter(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
     
         textNodes.forEach(node => {
-            const hasFontAwesomePhoneIcon = node.parentNode && node.parentNode.querySelector && node.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
-    
             if (node.parentNode && node.parentNode.nodeName !== 'A') {
                 const newAnchor = document.createElement('a');
                 newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam ;
@@ -185,7 +188,7 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
     };
 
-    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide) => {
+    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, hasFontAwesomePhoneIcon) => {
         const matchedNodes = [];
     
         // Find all text nodes that match the regex
@@ -201,9 +204,7 @@ const updateUI = (data, columnPrefix, anchor) => {
         matchedNodes.forEach(node => {
             // Log the text content and its parent element
             console.log('Text filtered by regexPhone:', node.nodeValue);
-            console.log('Parent element:', node.parentNode);
-    
-            const hasFontAwesomePhoneIcon = node.parentNode && node.parentNode.querySelector && node.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
+            console.log('Parent element:', node.parentNode);            
     
             if (shouldHide) {
                 node.parentNode.remove();
@@ -217,7 +218,7 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
     };
 
-    const updatePageContact = (row, textParam, formattedNumber, regexPhone) => {
+    const updatePageContact = (row, textParam, formattedNumber, regexPhone, hasFontAwesomePhoneIcon) => {
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
     
         document.querySelectorAll('a').forEach(anchor => {
@@ -236,9 +237,9 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
 
         // Process other text nodes in the document
-        processTextNodes(regexPhone, formattedNumber, contactName, shouldHide);
+        processTextNodes(regexPhone, formattedNumber, contactName, shouldHide, hasFontAwesomePhoneIcon);
     };
-    updatePageContact(row, textParam, formattedNumber, regexPhone);
+    updatePageContact(row, textParam, formattedNumber, regexPhone, hasFontAwesomePhoneIcon);
 
     // Log the required data
     console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
