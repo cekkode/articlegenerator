@@ -1,4 +1,4 @@
-var version = "0.0.139";
+var version = "0.0.140";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -186,26 +186,34 @@ const updateUI = (data, columnPrefix, anchor) => {
     };
 
     const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide) => {
+        const matchedNodes = [];
+    
+        // Find all text nodes that match the regex
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
             if (regexPhone.test(node.nodeValue)) {
-                // Log the text content and its parent element
-                console.log('Text filtered by regexPhone:', node.nodeValue);
-                console.log('Parent element:', node.parentNode);
-                
-                if (shouldHide) {
-                    node.parentNode.remove();
-                } else {
-                    const newNode = document.createTextNode('📞 ' + formattedNumber + ' (' + contactName + ')');
-                    const span = document.createElement('span');
-                    span.appendChild(newNode);
-                    node.parentNode.replaceChild(span, node);
-                    adjustTextColorBasedOnBackground(span);
-                }
+                matchedNodes.push(node);
             }
         }
-    };    
+    
+        // Process each matched node
+        matchedNodes.forEach(node => {
+            // Log the text content and its parent element
+            console.log('Text filtered by regexPhone:', node.nodeValue);
+            console.log('Parent element:', node.parentNode);
+    
+            if (shouldHide) {
+                node.parentNode.remove();
+            } else {
+                const newNode = document.createTextNode('📞 ' + formattedNumber + ' (' + contactName + ')');
+                const span = document.createElement('span');
+                span.appendChild(newNode);
+                node.parentNode.replaceChild(span, node);
+                adjustTextColorBasedOnBackground(span);
+            }
+        });
+    };
 
     const updatePageContact = (row, textParam, formattedNumber, regexPhone) => {
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
