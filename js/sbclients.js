@@ -1,4 +1,4 @@
-var version = "0.0.147";
+var version = "0.0.148";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -180,40 +180,28 @@ const updateUI = (data, columnPrefix, anchor) => {
     
     const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground) => {
         const matchedNodes = [];
-    
+
         // Find all text nodes that match the regex
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
-            if (regexPhone.test(node.nodeValue)) {
-                matchedNodes.push(node);
-            }
+          if (regexPhone.test(node.nodeValue)) {
+            matchedNodes.push(node);
+          }
         }
-    
+      
         // Process each matched node
         matchedNodes.forEach(node => {
-            // Log the text content and its parent element
+          // Log the text content and its parent element
             console.log('Text filtered by regexPhone:', node.nodeValue);
             console.log('Parent element:', node.parentNode);
     
             if (shouldHide) {
                 node.parentNode.remove();
             } else {
-                const anchor = node.parentNode.closest('a');
-                if (anchor) {
-                    updateTextNodeWithinAnchor(anchor, regexPhone, formattedNumber, contactName);
-                } else {
-                    const hasFontAwesomePhoneIcon = node.parentNode && (
-                        node.parentNode.querySelector && node.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]') ||
-                        node.parentNode.nextElementSibling && node.parentNode.nextElementSibling.querySelector && node.parentNode.nextElementSibling.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]')
-                    );
-    
-                    const newNode = document.createTextNode((hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + contactName + ')');
-                    const span = document.createElement('span');
-                    span.appendChild(newNode);
-                    node.parentNode.replaceChild(span, node);
-                    adjustTextColorBasedOnBackground(span);
-                }
+                // For non-anchor elements, directly replace text content
+                node.nodeValue = `${formattedNumber} (${contactName})`;
+                adjustTextColorBasedOnBackground(parentNode); // Apply text color adjustment to parent
             }
         });
     };
