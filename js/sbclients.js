@@ -1,4 +1,4 @@
-var version = "0.0.140";
+var version = "0.0.141";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -203,10 +203,12 @@ const updateUI = (data, columnPrefix, anchor) => {
             console.log('Text filtered by regexPhone:', node.nodeValue);
             console.log('Parent element:', node.parentNode);
     
+            const hasFontAwesomePhoneIcon = node.parentNode && node.parentNode.querySelector && node.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]');
+    
             if (shouldHide) {
                 node.parentNode.remove();
             } else {
-                const newNode = document.createTextNode('📞 ' + formattedNumber + ' (' + contactName + ')');
+                const newNode = document.createTextNode((hasFontAwesomePhoneIcon ? '' : '📞 ') + formattedNumber + ' (' + contactName + ')');
                 const span = document.createElement('span');
                 span.appendChild(newNode);
                 node.parentNode.replaceChild(span, node);
