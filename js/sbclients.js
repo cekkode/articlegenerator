@@ -1,4 +1,4 @@
-var version = "0.0.142";
+var version = "0.0.143";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -188,7 +188,7 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
     };
 
-    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, hasFontAwesomePhoneIcon) => {
+    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, hasFontAwesomePhoneIcon, adjustTextColorBasedOnBackground) => {
         const matchedNodes = [];
     
         // Find all text nodes that match the regex
@@ -237,7 +237,7 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
 
         // Process other text nodes in the document
-        processTextNodes(regexPhone, formattedNumber, contactName, shouldHide, hasFontAwesomePhoneIcon);
+        processTextNodes(regexPhone, formattedNumber, contactName, shouldHide, hasFontAwesomePhoneIcon, adjustTextColorBasedOnBackground);
     };
     updatePageContact(row, textParam, formattedNumber, regexPhone, hasFontAwesomePhoneIcon);
 
