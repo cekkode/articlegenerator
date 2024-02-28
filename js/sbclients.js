@@ -1,4 +1,4 @@
-var version = "0.0.143";
+var version = "0.0.144";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -168,12 +168,12 @@ const updateUI = (data, columnPrefix, anchor) => {
     };
     addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName, textParam);
 
-    const hasFontAwesomePhoneIcon = node.parentNode && (
-        node.parentNode.querySelector && node.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]') ||
-        node.parentNode.nextElementSibling && node.parentNode.nextElementSibling.querySelector && node.parentNode.nextElementSibling.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]')
-    );
-
-    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName, hasFontAwesomePhoneIcon) => {
+    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
+        const hasFontAwesomePhoneIcon = anchor.parentNode && (
+            anchor.parentNode.querySelector && anchor.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]') ||
+            anchor.parentNode.nextElementSibling && anchor.parentNode.nextElementSibling.querySelector && anchor.parentNode.nextElementSibling.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]')
+        );
+    
         const textNodes = [...anchor.childNodes].filter(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
     
         textNodes.forEach(node => {
@@ -187,8 +187,8 @@ const updateUI = (data, columnPrefix, anchor) => {
             }
         });
     };
-
-    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, hasFontAwesomePhoneIcon, adjustTextColorBasedOnBackground) => {
+    
+    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground) => {
         const matchedNodes = [];
     
         // Find all text nodes that match the regex
@@ -204,21 +204,31 @@ const updateUI = (data, columnPrefix, anchor) => {
         matchedNodes.forEach(node => {
             // Log the text content and its parent element
             console.log('Text filtered by regexPhone:', node.nodeValue);
-            console.log('Parent element:', node.parentNode);            
+            console.log('Parent element:', node.parentNode);
     
             if (shouldHide) {
                 node.parentNode.remove();
             } else {
-                const newNode = document.createTextNode((hasFontAwesomePhoneIcon ? '' : '📞 ') + formattedNumber + ' (' + contactName + ')');
-                const span = document.createElement('span');
-                span.appendChild(newNode);
-                node.parentNode.replaceChild(span, node);
-                adjustTextColorBasedOnBackground(span);
+                const anchor = node.parentNode.closest('a');
+                if (anchor) {
+                    updateTextNodeWithinAnchor(anchor, regexPhone, formattedNumber, contactName);
+                } else {
+                    const hasFontAwesomePhoneIcon = node.parentNode && (
+                        node.parentNode.querySelector && node.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]') ||
+                        node.parentNode.nextElementSibling && node.parentNode.nextElementSibling.querySelector && node.parentNode.nextElementSibling.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]')
+                    );
+    
+                    const newNode = document.createTextNode((hasFontAwesomePhoneIcon ? '' : '📞 ') + formattedNumber + ' (' + contactName + ')');
+                    const span = document.createElement('span');
+                    span.appendChild(newNode);
+                    node.parentNode.replaceChild(span, node);
+                    adjustTextColorBasedOnBackground(span);
+                }
             }
         });
     };
 
-    const updatePageContact = (row, textParam, formattedNumber, regexPhone, hasFontAwesomePhoneIcon) => {
+    const updatePageContact = (row, textParam, formattedNumber, regexPhone) => {
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
     
         document.querySelectorAll('a').forEach(anchor => {
@@ -237,9 +247,9 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
 
         // Process other text nodes in the document
-        processTextNodes(regexPhone, formattedNumber, contactName, shouldHide, hasFontAwesomePhoneIcon, adjustTextColorBasedOnBackground);
+        processTextNodes(regexPhone, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground);
     };
-    updatePageContact(row, textParam, formattedNumber, regexPhone, hasFontAwesomePhoneIcon);
+    updatePageContact(row, textParam, formattedNumber, regexPhone);
 
     // Log the required data
     console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
