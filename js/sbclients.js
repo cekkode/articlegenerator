@@ -165,9 +165,9 @@ const updateUI = (data, columnPrefix, anchor) => {
                     const newAnchor = document.createElement('a');
                     newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam;
                     node.parentNode.replaceChild(newAnchor, node);
-                    newAnchor.textContent = hasFontAwesomePhoneIcon ? `${formattedNumber} (${contactName})` : `📞 ${formattedNumber} (${contactName})`;
+                    newAnchor.textContent = hasFontAwesomePhoneIcon ? ` ${formattedNumber} (${contactName})` : `📞 ${formattedNumber} (${contactName})`;
                 } else {
-                    const newNodeValue = hasFontAwesomePhoneIcon ? `${formattedNumber} (${contactName})` : `📞 ${formattedNumber} (${contactName})`;
+                    const newNodeValue = hasFontAwesomePhoneIcon ? ` ${formattedNumber} (${contactName})` : `📞 ${formattedNumber} (${contactName})`;
                     const newNode = document.createTextNode(newNodeValue);
                     anchor.replaceChild(newNode, node);
                 }
@@ -208,7 +208,7 @@ const updateUI = (data, columnPrefix, anchor) => {
                         node.parentNode.nextElementSibling && node.parentNode.nextElementSibling.querySelector && node.parentNode.nextElementSibling.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]')
                     );
     
-                    const newNode = document.createTextNode((hasFontAwesomePhoneIcon ? '' : '📞 ') + formattedNumber + ' (' + contactName + ')');
+                    const newNode = document.createTextNode((hasFontAwesomePhoneIcon ? ' ' : '📞 ') + formattedNumber + ' (' + contactName + ')');
                     const span = document.createElement('span');
                     span.appendChild(newNode);
                     node.parentNode.replaceChild(span, node);
