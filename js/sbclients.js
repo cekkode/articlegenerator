@@ -1,4 +1,4 @@
-var version = "0.0.144";
+var version = "0.0.145";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -169,21 +169,23 @@ const updateUI = (data, columnPrefix, anchor) => {
     addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName, textParam);
 
     const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName) => {
-        const hasFontAwesomePhoneIcon = anchor.parentNode && (
-            anchor.parentNode.querySelector && anchor.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]') ||
-            anchor.parentNode.nextElementSibling && anchor.parentNode.nextElementSibling.querySelector && anchor.parentNode.nextElementSibling.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]')
-        );
-    
         const textNodes = [...anchor.childNodes].filter(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
     
         textNodes.forEach(node => {
+            const hasFontAwesomePhoneIcon = anchor.parentNode && (
+                anchor.parentNode.querySelector && anchor.parentNode.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]') ||
+                anchor.parentNode.nextElementSibling && anchor.parentNode.nextElementSibling.querySelector && anchor.parentNode.nextElementSibling.querySelector('i[class*="fa-phone"], i[class*="fas fa-phone"], i[class*="far fa-phone"], i[class*="fal fa-phone"], i[class*="fad fa-phone"]')
+            );
+    
             if (node.parentNode && node.parentNode.nodeName !== 'A') {
                 const newAnchor = document.createElement('a');
                 newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam ;
                 node.parentNode.replaceChild(newAnchor, node);
                 newAnchor.textContent = hasFontAwesomePhoneIcon ? `${formattedNumber} (${contactName})` : `📞 ${formattedNumber} (${contactName})`;
-            } else if (!hasFontAwesomePhoneIcon) {
-                node.nodeValue = `📞 ${formattedNumber} (${contactName})`;
+            } else {
+                const newNodeValue = hasFontAwesomePhoneIcon ? `${formattedNumber} (${contactName})` : `📞 ${formattedNumber} (${contactName})`;
+                const newNode = document.createTextNode(newNodeValue);
+                anchor.replaceChild(newNode, node);
             }
         });
     };
