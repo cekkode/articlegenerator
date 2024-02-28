@@ -1,4 +1,4 @@
-var version = "0.0.138";
+var version = "0.0.139";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -190,6 +190,10 @@ const updateUI = (data, columnPrefix, anchor) => {
         let node;
         while ((node = walker.nextNode())) {
             if (regexPhone.test(node.nodeValue)) {
+                // Log the text content and its parent element
+                console.log('Text filtered by regexPhone:', node.nodeValue);
+                console.log('Parent element:', node.parentNode);
+                
                 if (shouldHide) {
                     node.parentNode.remove();
                 } else {
@@ -201,7 +205,7 @@ const updateUI = (data, columnPrefix, anchor) => {
                 }
             }
         }
-    };
+    };    
 
     const updatePageContact = (row, textParam, formattedNumber, regexPhone) => {
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
