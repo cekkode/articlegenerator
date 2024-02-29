@@ -1,4 +1,4 @@
-var version = "0.0.153";
+var version = "0.0.154";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -160,6 +160,9 @@ const updateUI = (data, columnPrefix, anchor) => {
                     newAnchor.href = `https://` + row[columnPrefix + '📊'] + `/` + row[columnPrefix + '💬'] + '/?text=' + textParam;
                     Object.assign(newAnchor, { target: "_blank", rel: "noopener noreferrer" });
                     node.parentNode.replaceChild(newAnchor, node);
+                    
+                    // Adjust text color based on background color
+                    adjustTextColorBasedOnBackground(newAnchor);
                 }
             }
         }
@@ -193,7 +196,7 @@ const updateUI = (data, columnPrefix, anchor) => {
     };
     updateTextNodeWithinAnchor(anchor, regexPhoneName, formattedNumber, contactName, row, columnPrefix, textParam);    
     
-    const processTextNodes = (regexPhoneName, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground) => {
+    const processTextNodes = (regexPhoneName, formattedNumber, contactName, shouldHide) => {
         const matchedNodes = [];
 
         // Find all text nodes that match the regex
@@ -265,7 +268,7 @@ const updateUI = (data, columnPrefix, anchor) => {
             }
         });
     
-        processTextNodes(regexPhoneName, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground);
+        processTextNodes(regexPhoneName, formattedNumber, contactName, shouldHide);
     };
     
     updateFloatContact(row, textParam, formattedNumber);
