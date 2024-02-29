@@ -1,4 +1,4 @@
-var version = "0.0.149";
+var version = "0.0.150";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -203,7 +203,6 @@ const updateUI = (data, columnPrefix, anchor) => {
             } else {
                 // For non-anchor elements, directly replace text content
                 node.nodeValue = `${formattedNumber} (${contactName})`;
-                adjustTextColorBasedOnBackground(parentNode); // Apply text color adjustment to parent
             }
         });
     };
