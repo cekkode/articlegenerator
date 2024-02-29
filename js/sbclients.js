@@ -1,4 +1,4 @@
-var version = "0.0.151";
+var version = "0.0.152";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -83,7 +83,8 @@ const updateUI = (data, columnPrefix, anchor) => {
 
     const contactName = row[columnPrefix + '🧑🏻'];
     const formattedNumber = row[columnPrefix + '#️⃣'].replace(/^62/, '0').replace(/(\d{4})(?=\d)/g, '$1 ');
-    const regexPhone = /\d{4} \d{4} \d{4} \((.*?)\)/g;
+    const regexPhoneName = /\d{4} \d{4} \d{4} \((.*?)\)/g;
+    const regexOnlyPhone = /\b\d{4} \d{4} \d{4}\b(?! \([^)]*\))/g;
 
     const textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
 
@@ -102,6 +103,18 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
     };
     replaceAddress(row[columnPrefix + '🏢']);
+
+    const replaceOnlyPhone = (formattedNumber, regexOnlyPhone) => {
+        const elements = [
+            ...document.querySelectorAll('.elementor-widget-container'),
+            ...document.querySelectorAll('.elementor-container')
+        ];
+        elements.forEach(element => {
+            if (element && element.innerHTML.match(regexOnlyPhone)) {
+                element.innerHTML = element.innerHTML.replace(regexOnlyPhone, formattedNumber);
+            }
+        });
+    };
 
     const adjustTextColorBasedOnBackground = (element) => {
         if (document.body.contains(element)) {
@@ -122,12 +135,12 @@ const updateUI = (data, columnPrefix, anchor) => {
         }
     };
 
-    const addHrefToTextNodeIfMissing = (anchor, regexPhone, formattedNumber, contactName, textParam) => {
+    const addHrefToTextNodeIfMissing = (anchor, regexPhoneName, formattedNumber, contactName, textParam) => {
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
             // Check if the text node matches the regex
-            if (regexPhone.test(node.nodeValue)) {
+            if (regexPhoneName.test(node.nodeValue)) {
                 let parentNode = node.parentNode;
                 let hasHrefAncestor = false;
                 // Traverse up the DOM tree to check for an ancestor with an href
@@ -150,11 +163,11 @@ const updateUI = (data, columnPrefix, anchor) => {
             }
         }
     };
-    addHrefToTextNodeIfMissing(anchor, regexPhone, formattedNumber, contactName, textParam);
+    addHrefToTextNodeIfMissing(anchor, regexPhoneName, formattedNumber, contactName, textParam);
 
-    const updateTextNodeWithinAnchor = (anchor, regexPhone, formattedNumber, contactName, row, columnPrefix, textParam) => {
+    const updateTextNodeWithinAnchor = (anchor, regexPhoneName, formattedNumber, contactName, row, columnPrefix, textParam) => {
         if (anchor && anchor.childNodes) {
-            const textNodes = [...anchor.childNodes].filter(node => node.nodeType === Node.TEXT_NODE && regexPhone.test(node.nodeValue));
+            const textNodes = [...anchor.childNodes].filter(node => node.nodeType === Node.TEXT_NODE && regexPhoneName.test(node.nodeValue));
     
             textNodes.forEach(node => {
                 const hasFontAwesomePhoneIcon = anchor.parentNode && (
@@ -177,16 +190,16 @@ const updateUI = (data, columnPrefix, anchor) => {
             console.error('Anchor element is undefined or does not contain child nodes.');
         }
     };
-    updateTextNodeWithinAnchor(anchor, regexPhone, formattedNumber, contactName, row, columnPrefix, textParam);    
+    updateTextNodeWithinAnchor(anchor, regexPhoneName, formattedNumber, contactName, row, columnPrefix, textParam);    
     
-    const processTextNodes = (regexPhone, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground) => {
+    const processTextNodes = (regexPhoneName, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground) => {
         const matchedNodes = [];
 
         // Find all text nodes that match the regex
         const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
         let node;
         while ((node = walker.nextNode())) {
-            if (regexPhone.test(node.nodeValue)) {
+            if (regexPhoneName.test(node.nodeValue)) {
                 matchedNodes.push(node);
             }
         }
@@ -194,7 +207,7 @@ const updateUI = (data, columnPrefix, anchor) => {
         // Process each matched node
         matchedNodes.forEach(node => {
             // Log the text content and its parent element
-            console.log('Text filtered by regexPhone:', node.nodeValue);
+            console.log('Text filtered by regexPhoneName:', node.nodeValue);
             console.log('Parent element:', node.parentNode);
           
             const parentNode = node.parentNode; // Define parentNode here
@@ -233,7 +246,7 @@ const updateUI = (data, columnPrefix, anchor) => {
         }
     };
     
-    const updatePageContact = (row, textParam, formattedNumber, regexPhone, adjustTextColorBasedOnBackground) => {
+    const updatePageContact = (row, textParam, formattedNumber, regexPhoneName, adjustTextColorBasedOnBackground) => {
         const shouldHide = Object.values(row).some(value => value === 'HIDE');
         
         document.querySelectorAll('a').forEach(anchor => {
@@ -245,17 +258,17 @@ const updateUI = (data, columnPrefix, anchor) => {
                     const href = `https://${row[columnPrefix + '📊']}/${anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] + '/?text=' + textParam : row[columnPrefix + '📞']}`;
                     updateAnchorHref(anchor, href, '');
                 }
-                updateTextNodeWithinAnchor(anchor, regexPhone, formattedNumber, row[columnPrefix + '🧑🏻']);
+                updateTextNodeWithinAnchor(anchor, regexPhoneName, formattedNumber, row[columnPrefix + '🧑🏻']);
             } else {
                 anchor.remove();
             }
         });
     
-        processTextNodes(regexPhone, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground);
+        processTextNodes(regexPhoneName, formattedNumber, contactName, shouldHide, adjustTextColorBasedOnBackground);
     };
     
     updateFloatContact(row, textParam, formattedNumber);
-    updatePageContact(row, textParam, formattedNumber, regexPhone, adjustTextColorBasedOnBackground);    
+    updatePageContact(row, textParam, formattedNumber, regexPhoneName, adjustTextColorBasedOnBackground);    
 
     // Log the required data
     console.log(columnPrefix + '🧑🏻: ' + row[columnPrefix + '🧑🏻']);
