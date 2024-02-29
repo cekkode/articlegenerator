@@ -1,4 +1,4 @@
-var version = "0.0.152";
+var version = "0.0.153";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -115,6 +115,7 @@ const updateUI = (data, columnPrefix, anchor) => {
             }
         });
     };
+    replaceOnlyPhone(formattedNumber, regexOnlyPhone);
 
     const adjustTextColorBasedOnBackground = (element) => {
         if (document.body.contains(element)) {
