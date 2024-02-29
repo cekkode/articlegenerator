@@ -203,7 +203,7 @@ const updateUI = (data, columnPrefix, anchor) => {
                 parentNode.remove(); // Use parentNode instead of node.parentNode
             } else {
                 // For non-anchor elements, directly replace text content
-                node.nodeValue = `${formattedNumber} (${contactName})`;
+                node.nodeValue = ` ${formattedNumber} (${contactName})`;
             }
         });
     };
