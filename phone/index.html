@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phone Number Converter</title>
+</head>
+<body>
+  <label for="phoneNumber">Enter phone number:</label>
+  <input type="text" id="phoneNumber" placeholder="08xxxxxxxxxx" oninput="convertPhoneNumber()">
+  <p id="convertedNumbers"></p>
+
+  <script>
+    function convertPhoneNumber() {
+      var inputNumber = document.getElementById('phoneNumber').value;
+      var countryCodeFormat = '+62' + inputNumber.substring(1);
+      var whatsappShortFormat = 'https://wa.me/' + countryCodeFormat.slice(1);
+      var whatsappLongFormat = 'https://api.whatsapp.com/send?phone=' + countryCodeFormat.slice(1);
+
+      if (inputNumber.length < 9 || inputNumber.length > 13) {
+        document.getElementById('convertedNumbers').innerHTML = "Please enter a phone number between 9 and 13 characters in length.";
+      } else {
+        document.getElementById('convertedNumbers').innerHTML = "Country Code Format: " + countryCodeFormat + "<br>"
+                                                               + "WhatsApp Short Format: " + whatsappShortFormat + "<br>"
+                                                               + "WhatsApp Long Format: " + whatsappLongFormat;
+      }
+    }
+  </script>
+</body>
+</html>
