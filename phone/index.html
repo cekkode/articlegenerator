@@ -16,18 +16,36 @@
 </style>
 </head>
 <body>
-<h1>Phone Format Converter v 1.0.2</h1>
-    <label for="phoneNumber">Enter phone number:</label>
-    <input type="text" id="phoneNumber" placeholder="08xxxxxxxxxx" oninput="convertPhoneNumber()"><br>
-  
-    <label class="label">Country Code Format:</label>
-    <div class="result" id="countryCodeFormat"></div>
-    <label class="label">WhatsApp Short Format:</label>
-    <div class="result" id="whatsappShortFormat"></div>
-    <label class="label">WhatsApp Long Format:</label>
-    <div class="result" id="whatsappLongFormat"></div>
+<h1>Phone Format Converter 1.0.3</h1>
+  <label class="label">Country Code Format:</label>
+  <div class="result" id="countryCodeFormat"></div>
+  <label class="label">WhatsApp Short Format:</label>
+  <div class="result" id="whatsappShortFormat"></div>
+  <label class="label">WhatsApp Long Format:</label>
+  <div class="result" id="whatsappLongFormat"></div>
+
+  <label for="phoneNumber">Enter phone number:</label>
+  <input type="text" id="phoneNumber" placeholder="08xxxxxxxxxx" oninput="convertPhoneNumber()" onpaste="handlePaste(event)">
 
   <script>
+    function handlePaste(event) {
+      // Prevent the default paste action
+      event.preventDefault();
+      
+      // Get the pasted content
+      var clipboardData = event.clipboardData || window.clipboardData;
+      var pastedData = clipboardData.getData('text');
+      
+      // Remove spaces from the pasted content
+      var cleanedData = pastedData.replace(/\s/g, '');
+      
+      // Insert the cleaned content into the input field
+      document.getElementById('phoneNumber').value = cleanedData;
+      
+      // Call the conversion function
+      convertPhoneNumber();
+    }
+
     function convertPhoneNumber() {
       var inputNumber = document.getElementById('phoneNumber').value;
       var countryCodeFormat = '+62' + inputNumber.substring(1);
@@ -44,9 +62,10 @@
       document.getElementById('whatsappLongFormat').innerText = whatsappLongFormat;
 
       if (message) {
-        document.getElementById('countryCodeFormat').innerText = message;
-        document.getElementById('whatsappShortFormat').innerText = "";
-        document.getElementById('whatsappLongFormat').innerText = "";
+        document.getElementById('phoneNumber').innerText = message;
+        document.getElementById('countryCodeFormat').innerText = countryCodeFormat;
+        document.getElementById('whatsappShortFormat').innerText = whatsappShortFormat;
+        document.getElementById('whatsappLongFormat').innerText = whatsappLongFormat;
       }
     }
   </script>
