@@ -8,7 +8,8 @@
   .result {
     white-space: pre-wrap;
     font-family: monospace;
-    cursor: text;
+    cursor: pointer;
+    user-select: none;
   }
   .label {
     user-select: none;
@@ -16,16 +17,17 @@
 </style>
 </head>
 <body>
-<h1>Phone Format Converter 1.0.3</h1>
-  <label class="label">Country Code Format:</label>
-  <div class="result" id="countryCodeFormat"></div>
-  <label class="label">WhatsApp Short Format:</label>
-  <div class="result" id="whatsappShortFormat"></div>
-  <label class="label">WhatsApp Long Format:</label>
-  <div class="result" id="whatsappLongFormat"></div>
+<h1>Phone Format Converter 1.0.4</h1>
+    <label for="phoneNumber">Enter phone number:</label>
+    <input type="text" id="phoneNumber" placeholder="08xxxxxxxxxx" pattern="[0-9]*" oninput="convertPhoneNumber()" onpaste="handlePaste(event)">
+    <br>
+    <label class="label">Country Code Format:</label>
+    <div class="result" id="countryCodeFormat" onclick="copyToClipboard('countryCodeFormat')">Click to Copy</div>
+    <label class="label">WhatsApp Short Format:</label>
+    <div class="result" id="whatsappShortFormat" onclick="copyToClipboard('whatsappShortFormat')">Click to Copy</div>
+    <label class="label">WhatsApp Long Format:</label>
+    <div class="result" id="whatsappLongFormat" onclick="copyToClipboard('whatsappLongFormat')">Click to Copy</div>
 
-  <label for="phoneNumber">Enter phone number:</label>
-  <input type="text" id="phoneNumber" placeholder="08xxxxxxxxxx" oninput="convertPhoneNumber()" onpaste="handlePaste(event)">
 
   <script>
     function handlePaste(event) {
@@ -67,6 +69,18 @@
         document.getElementById('whatsappShortFormat').innerText = whatsappShortFormat;
         document.getElementById('whatsappLongFormat').innerText = whatsappLongFormat;
       }
+    }
+
+    function copyToClipboard(elementId) {
+      var element = document.getElementById(elementId);
+      var text = element.innerText;
+      
+      navigator.clipboard.writeText(text).then(function() {
+        console.log('Text copied to clipboard: ' + text);
+        alert('Text copied to clipboard: ' + text);
+      }, function(err) {
+        console.error('Unable to copy text to clipboard: ', err);
+      });
     }
   </script>
 </body>
