@@ -3,22 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phone Number Converter v. 1.0.0</title>
+<title>Phone Number Converter</title>
 <style>
   .result {
     white-space: pre-wrap;
     font-family: monospace;
     cursor: text;
+  }
+  .label {
     user-select: none;
   }
 </style>
 </head>
 <body>
-  <label for="phoneNumber">Enter phone number:</label>
-  <input type="text" id="phoneNumber" placeholder="08xxxxxxxxxx" oninput="convertPhoneNumber()">
-  <div class="result" id="countryCodeFormat"></div>
-  <div class="result" id="whatsappShortFormat"></div>
-  <div class="result" id="whatsappLongFormat"></div>
+<h1>Phone Format Converter v 1.0.1</h1>
+    <label for="phoneNumber">Enter phone number:</label>
+    <input type="text" id="phoneNumber" placeholder="08xxxxxxxxxx" oninput="convertPhoneNumber()">
+  
+    <label class="label">Country Code Format:</label>
+    <div class="result" id="countryCodeFormat"></div>
+    <label class="label">WhatsApp Short Format:</label>
+    <div class="result" id="whatsappShortFormat"></div>
+    <label class="label">WhatsApp Long Format:</label>
+    <div class="result" id="whatsappLongFormat"></div>
 
   <script>
     function convertPhoneNumber() {
@@ -32,14 +39,14 @@
         message = "Please enter a phone number between 9 and 13 characters in length.";
       }
 
-      document.getElementById('countryCodeFormat').innerHTML = "<strong>Country Code Format:</strong> " + countryCodeFormat;
-      document.getElementById('whatsappShortFormat').innerHTML = "<strong>WhatsApp Short Format:</strong> " + whatsappShortFormat;
-      document.getElementById('whatsappLongFormat').innerHTML = "<strong>WhatsApp Long Format:</strong> " + whatsappLongFormat;
+      document.getElementById('countryCodeFormat').innerText = countryCodeFormat;
+      document.getElementById('whatsappShortFormat').innerText = whatsappShortFormat;
+      document.getElementById('whatsappLongFormat').innerText = whatsappLongFormat;
 
       if (message) {
-        document.getElementById('countryCodeFormat').innerHTML = message;
-        document.getElementById('whatsappShortFormat').innerHTML = "";
-        document.getElementById('whatsappLongFormat').innerHTML = "";
+        document.getElementById('countryCodeFormat').innerText = message;
+        document.getElementById('whatsappShortFormat').innerText = "";
+        document.getElementById('whatsappLongFormat').innerText = "";
       }
     }
   </script>
