@@ -17,7 +17,7 @@
 </style>
 </head>
 <body>
-<h1>Phone Format Converter 1.0.4</h1>
+<h1>Phone Format Converter 1.0.5</h1>
     <label for="phoneNumber">Enter phone number:</label>
     <input type="text" id="phoneNumber" placeholder="08xxxxxxxxxx" pattern="[0-9]*" oninput="convertPhoneNumber()" onpaste="handlePaste(event)">
     <br>
@@ -50,7 +50,17 @@
 
     function convertPhoneNumber() {
       var inputNumber = document.getElementById('phoneNumber').value;
-      var countryCodeFormat = '+62' + inputNumber.substring(1);
+      var countryCodeFormat;
+
+      // Check if inputNumber starts with '0' or '62' and construct countryCodeFormat accordingly
+      if (inputNumber.startsWith('0')) {
+        countryCodeFormat = '+62' + inputNumber.substring(1);
+      } else if (inputNumber.startsWith('62')) {
+        countryCodeFormat = '+' + inputNumber;
+      } else {
+        countryCodeFormat = inputNumber;
+      }
+
       var whatsappShortFormat = 'https://wa.me/' + countryCodeFormat.slice(1);
       var whatsappLongFormat = 'https://api.whatsapp.com/send?phone=' + countryCodeFormat.slice(1);
 
