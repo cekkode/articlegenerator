@@ -1,4 +1,4 @@
-var version = "0.0.154";
+var version = "0.0.155";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -27,7 +27,7 @@ const fetchData = async (supabase, mainDomain, columnPrefix) => {
     return data;
 };
 
-const getData = async (supabase, mainDomain, columnPrefix) => {
+const getCacheData = async (supabase, mainDomain, columnPrefix) => {
     const cache = {
         data: localStorage.getItem('data'),
         timestamp: localStorage.getItem('timestamp'),
@@ -321,7 +321,7 @@ script.onload = async function() {
     let columnPrefix = subdomain ? subdomain.toUpperCase() : '';
     console.log('columnPrefix:', columnPrefix);
 
-    const data = await getData(supabase, mainDomain, columnPrefix);
+    const data = await getCacheData(supabase, mainDomain, columnPrefix);
     console.log('Fetched data:', data);
 
     if (data && data.length > 0) {
