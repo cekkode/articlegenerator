@@ -1,4 +1,4 @@
-var version = "0.0.160";
+var version = "0.0.161";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -69,12 +69,6 @@ const getCacheData = async (supabase, mainDomain, columnPrefix) => {
 
     console.log('Using cached data...');
     return JSON.parse(cache.data);
-};
-
-const promptUserInfo = () => {
-    const userName = prompt("Please enter your full name:");
-    const userCompany = prompt("Please enter your company name (optional):");
-    return { userName, userCompany };
 };
 
 const updateUI = (data, columnPrefix, anchor = null, params = {}) => {
@@ -289,6 +283,14 @@ const updateUI = (data, columnPrefix, anchor = null, params = {}) => {
                 if (updateHref) {
                     const href = `https://${row[columnPrefix + '📊']}/${anchor.href.includes('what.sapp.my.id') ? row[columnPrefix + '💬'] + '/?text=' + textParam : row[columnPrefix + '📞']}`;
                     updateAnchorHref(anchor, href, '');
+    
+                    // Check if the link contains the 💬 emoji
+                    if (anchor.href.includes('💬')) {
+                        const { userName, userCompany } = promptUserInfo();
+                        const userInfo = `Nama: ${userName}${userCompany ? `, Perusahaan: ${userCompany}` : ''}`;
+                        const updatedParams = `${params}&userInfo=${encodeURIComponent(userInfo)}`;
+                        anchor.href += updatedParams;
+                    }
                 }
                 updateTextNodeWithinAnchor(anchor, regexPhoneName, formattedNumber, row[columnPrefix + '🧑🏻']);
             } else {
@@ -297,7 +299,7 @@ const updateUI = (data, columnPrefix, anchor = null, params = {}) => {
         });
     
         processTextNodes(regexPhoneName, formattedNumber, contactName, shouldHide);
-    };
+    };    
     
     updateFloatContact(row, textParam, formattedNumber);
     updatePageContact(row, textParam, formattedNumber, regexPhoneName, adjustTextColorBasedOnBackground);    
