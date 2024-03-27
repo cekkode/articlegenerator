@@ -1,4 +1,4 @@
-var version = "0.0.157";
+var version = "0.0.158";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -71,6 +71,12 @@ const getCacheData = async (supabase, mainDomain, columnPrefix) => {
     return JSON.parse(cache.data);
 };
 
+const promptUserInfo = () => {
+    const userName = prompt("Please enter your full name:");
+    const userCompany = prompt("Please enter your company name (optional):");
+    return { userName, userCompany };
+};
+
 const updateUI = (data, columnPrefix, anchor) => {
     const currentHour = new Date().getHours();
     const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
@@ -90,7 +96,7 @@ const updateUI = (data, columnPrefix, anchor) => {
     const regexPhoneName = /\d{4} \d{4} \d{4} \((.*?)\)/g;
     const regexOnlyPhone = /\b\d{4} \d{4} \d{4}\b(?! \([^)]*\))/g;
 
-    const textParam = encodeURIComponent(`Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, ${window.location.hostname}. Saya ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`);
+    const textParam = `Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, ${window.location.hostname}. Saya ${params.userInfo ? `. ${params.userInfo}` : ''}, ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`;
 
     const replaceAddress = (addressData) => {
         const elements = [
@@ -230,8 +236,20 @@ const updateUI = (data, columnPrefix, anchor) => {
         });
     };
 
-    const updateAnchorHref = (anchor, baseUrl, params) => {
+    /*const updateAnchorHref = (anchor, baseUrl, params) => {
         anchor.href = baseUrl + params;
+        Object.assign(anchor, { target: "_blank", rel: "noopener noreferrer" });
+    };*/
+
+    const updateAnchorHref = (anchor, baseUrl, params) => {
+        if (baseUrl.includes('💬')) {
+            const { userName, userCompany } = promptUserInfo();
+            const userInfo = `Nama: ${userName}${userCompany ? `, Perusahaan: ${userCompany}` : ''}`;
+            const updatedParams = `${params}&userInfo=${encodeURIComponent(userInfo)}`;
+            anchor.href = `${baseUrl}${updatedParams}`;
+        } else {
+            anchor.href = baseUrl + params;
+        }
         Object.assign(anchor, { target: "_blank", rel: "noopener noreferrer" });
     };
     
