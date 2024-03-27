@@ -1,4 +1,4 @@
-var version = "0.0.159";
+var version = "0.0.160";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -77,7 +77,7 @@ const promptUserInfo = () => {
     return { userName, userCompany };
 };
 
-const updateUI = (data, columnPrefix, anchor, params) => {
+const updateUI = (data, columnPrefix, anchor = null, params = {}) => {
     const currentHour = new Date().getHours();
     const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
 
@@ -127,6 +127,11 @@ const updateUI = (data, columnPrefix, anchor, params) => {
         });
     };
     replaceOnlyPhone(formattedNumber, regexOnlyPhone);
+
+    if (anchor) {
+        addHrefToTextNodeIfMissing(anchor, regexPhoneName, formattedNumber, contactName, textParam);
+        updateTextNodeWithinAnchor(anchor, regexPhoneName, formattedNumber, contactName, row, columnPrefix, textParam);
+    }
 
     const adjustTextColorBasedOnBackground = (element) => {
         if (document.body.contains(element)) {
@@ -348,6 +353,6 @@ script.onload = async function() {
     console.log('Fetched data:', data);
 
     if (data && data.length > 0) {
-        updateUI(data, columnPrefix, anchor, {});
+        updateUI(data, columnPrefix, null, {});
     }
 };
