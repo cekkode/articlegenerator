@@ -7,24 +7,28 @@ document.head.appendChild(script);
 
 const fetchData = async (supabase, mainDomain, columnPrefix) => {
     let selectColumns = `"📍", "${columnPrefix}🧑🏻", "${columnPrefix}#️⃣", "${columnPrefix}📊", "${columnPrefix}📞", "${columnPrefix}💬", "${columnPrefix}🏷️", "${columnPrefix}🏢"`;
-    const { data, error } = await supabase.from(mainDomain).select(selectColumns);
 
-    if (error) {
-        console.error('Error fetching data:', error);
-        throw error; // Propagate the error
-    }
+    try {
+        const { data, error } = await supabase.from(mainDomain).select(selectColumns);
 
-    if (!data || data.length === 0 || !data[0].hasOwnProperty(`${columnPrefix}🧑🏻`)) {
-        selectColumns = '"📍", "🧑🏻", "#️⃣", "📊", "📞", "💬", "🏷️", "🏢"';
-        const fallbackResult = await supabase.from(mainDomain).select(selectColumns);
-        if (fallbackResult.error) {
-            console.error('Error fetching fallback data:', fallbackResult.error);
-            throw fallbackResult.error; // Propagate the error
+        if (error) {
+            console.log(`Error fetching data from table ${mainDomain}:`, error);
+        } else if (!data || data.length === 0 || !data[0].hasOwnProperty(`${columnPrefix}🧑🏻`)) {
+            selectColumns = '"📍", "🧑🏻", "#️⃣", "📊", "📞", "💬", "🏷️", "🏢"';
+            const fallbackResult = await supabase.from(mainDomain).select(selectColumns);
+            if (fallbackResult.error) {
+                console.log(`Error fetching fallback data from table ${mainDomain}:`, fallbackResult.error);
+            } else {
+                return fallbackResult.data;
+            }
+        } else {
+            return data;
         }
-        return fallbackResult.data;
+    } catch (error) {
+        console.log(`Table ${mainDomain} does not exist in Supabase.`);
     }
 
-    return data;
+    return null;
 };
 
 const getCacheData = async (supabase, mainDomain, columnPrefix) => {
