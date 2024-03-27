@@ -1,4 +1,4 @@
-var version = "0.0.158";
+var version = "0.0.159";
 console.log("Supabase Client JS Script Version: " + version);
 
 var script = document.createElement('script');
@@ -77,7 +77,7 @@ const promptUserInfo = () => {
     return { userName, userCompany };
 };
 
-const updateUI = (data, columnPrefix, anchor) => {
+const updateUI = (data, columnPrefix, anchor, params) => {
     const currentHour = new Date().getHours();
     const greeting = currentHour >= 4 && currentHour < 10 ? "pagi" : currentHour >= 10 && currentHour < 15 ? "siang" : currentHour >= 15 && currentHour < 18 ? "sore" : "malam";
 
@@ -96,7 +96,7 @@ const updateUI = (data, columnPrefix, anchor) => {
     const regexPhoneName = /\d{4} \d{4} \d{4} \((.*?)\)/g;
     const regexOnlyPhone = /\b\d{4} \d{4} \d{4}\b(?! \([^)]*\))/g;
 
-    const textParam = `Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, ${window.location.hostname}. Saya ${params.userInfo ? `. ${params.userInfo}` : ''}, ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`;
+    const textParam = `Selamat ${greeting} pak ${row[columnPrefix + '🧑🏻']}, ${window.location.hostname}. Saya ${params && params.userInfo ? `. ${params.userInfo}` : ''}, ingin bertanya tentang "${document.title}" yang anda tawarkan di ${window.location.href}`;
 
     const replaceAddress = (addressData) => {
         const elements = [
@@ -348,6 +348,6 @@ script.onload = async function() {
     console.log('Fetched data:', data);
 
     if (data && data.length > 0) {
-        updateUI(data, columnPrefix);
+        updateUI(data, columnPrefix, anchor, {});
     }
 };
