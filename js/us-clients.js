@@ -1,4 +1,5 @@
 var version = '0.0.1';
+console.log("Version: "+version);
 
 // Step 1: Extract the URL parameter
 function getURLParameter(name) {
