@@ -1,4 +1,4 @@
-var version = '0.0.2';
+var version = '0.0.3';
 console.log("US Clients Version: "+version);
 
 // Step 1: Extract the URL parameter
@@ -24,13 +24,38 @@ async function findData() {
     const rows = csvData.split('\n');
     const headers = rows[0].split(',');
     const paramIndex = headers.indexOf('PARAM');
-    const businessIndex = headers.indexOf('🏢');
+
+    // Mapping of placeholders to column headers
+    const placeholderMap = {
+        '[LABEL]': '🏷️',
+        '[BUSINESS]': '🏢',
+        '[ADDRESS]': '📍',
+        '[PHONE]': '📞',
+        '[EMAIL]': '📧',
+        '[TAGLINE]': '📣',
+        '[PERIOD]': '📅',
+        '[AREA]': '🗺️',
+        '[SERVICE1]': '1️⃣',
+        '[SERVICE2]': '2️⃣',
+        '[SERVICE3]': '3️⃣',
+        '[SERVICE4]': '4️⃣',
+        '[SERVICE5]': '5️⃣',
+        '[SERVICE6]': '6️⃣',
+        '[SERVICE7]': '7️⃣',
+        '[SERVICE8]': '8️⃣',
+        '[SERVICE9]': '9️⃣'
+    };
 
     for (let i = 1; i < rows.length; i++) {
         const row = rows[i].split(',');
         if (row[paramIndex].toLowerCase() === searchKey.toLowerCase()) {
             // Step 4: Replace placeholders on the page
-            document.body.innerHTML = document.body.innerHTML.replace('[BUSINESS]', row[businessIndex]);
+            for (const [placeholder, header] of Object.entries(placeholderMap)) {
+                const columnIndex = headers.indexOf(header);
+                if (columnIndex !== -1) {
+                    document.body.innerHTML = document.body.innerHTML.replace(new RegExp(placeholder, 'g'), row[columnIndex]);
+                }
+            }
             break;
         }
     }
