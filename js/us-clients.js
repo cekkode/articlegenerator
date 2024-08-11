@@ -1,14 +1,14 @@
-var version = '0.0.1';
-console.log("Version: "+version);
+var version = '0.0.2';
+console.log("US Clients Version: "+version);
 
 // Step 1: Extract the URL parameter
-function getURLParameter(name) {
-    return new URLSearchParams(window.location.search).get(name);
+function getURLParameter() {
+    const query = window.location.search.substring(1);
+    return query.split('-');
 }
 
-// Assuming the parameter name is the state abbreviation followed by the city name
-let param = getURLParameter('fl-clearwater');
-let [state, searchKey] = param.split('-');
+// Extract the sheet name and search key from the URL
+let [sheetName, searchKey] = getURLParameter();
 
 // Step 2: Fetch the data from Google Sheets
 async function fetchData() {
