@@ -5,7 +5,7 @@ function loadPapaParse(callback) {
     document.head.appendChild(script);
 }
 
-var version = '0.0.9';
+var version = '0.0.10';
 console.log("US Clients Version: " + version);
 
 // Step 1: Extract the URL parameter
@@ -50,7 +50,7 @@ function replacePlaceholders(row, placeholderMap) {
     elements.forEach(element => {
         let content = element.innerHTML;
         for (const [placeholder, header] of Object.entries(placeholderMap)) {
-            if (row[header]) {
+            if (row[header] !== undefined && row[header] !== null) {
                 // Use a temporary element to handle HTML content safely
                 const tempDiv = document.createElement('div');
                 tempDiv.textContent = row[header];
@@ -117,3 +117,5 @@ async function findData() {
 
 // Load PapaParse and then execute findData
 loadPapaParse(findData);
+
+console.log('Replacing:', placeholder, 'with:', row[header]);
