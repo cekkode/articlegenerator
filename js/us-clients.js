@@ -5,7 +5,7 @@ function loadPapaParse(callback) {
     document.head.appendChild(script);
 }
 
-var version = '0.0.8';
+var version = '0.0.9';
 console.log("US Clients Version: " + version);
 
 // Step 1: Extract the URL parameter
@@ -51,7 +51,11 @@ function replacePlaceholders(row, placeholderMap) {
         let content = element.innerHTML;
         for (const [placeholder, header] of Object.entries(placeholderMap)) {
             if (row[header]) {
-                content = content.replace(new RegExp(placeholder, 'g'), row[header]);
+                // Use a temporary element to handle HTML content safely
+                const tempDiv = document.createElement('div');
+                tempDiv.textContent = row[header];
+                const safeContent = tempDiv.innerHTML.replace(/\n/g, '<br>'); // Replace newlines with <br>
+                content = content.replace(new RegExp(placeholder, 'g'), safeContent);
             }
         }
         element.innerHTML = content;
