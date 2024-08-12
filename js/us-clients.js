@@ -1,4 +1,4 @@
-var version = '0.0.5';
+var version = '0.0.6';
 console.log("US Clients Version: "+version);
 
 // Step 1: Extract the URL parameter
@@ -10,9 +10,25 @@ function getURLParameter() {
 // Extract the sheet name and search key from the URL
 let [sheetName, searchKey] = getURLParameter();
 
-// Step 2: Fetch the data from Google Sheets
-async function fetchData() {
-    const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDTTAc6YiatUsUAACaDo5RcnK2M4wKsktznsh16Vc-S5DSjz6hW_WmRRLNZ-l0Z91glgOSZDdGRYZd/pub?output=csv';
+// Mapping of sheet names to their respective gid values
+const sheetGidMap = {
+    'AL': '604141272',
+    'AK': '1934406001',
+    'AZ': '383221352',
+    'AR': '520460863',
+    'CA': '1033875458',
+    'CO': '759754201',
+    'FL': '1270348399'
+};
+
+// Step 2: Fetch the data from the appropriate Google Sheets CSV URL
+async function fetchData(sheetName) {
+    const gid = sheetGidMap[sheetName.toUpperCase()];
+    if (!gid) {
+        console.error('Invalid sheet name');
+        return null;
+    }
+    const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTDTTAc6YiatUsUAACaDo5RcnK2M4wKsktznsh16Vc-S5DSjz6hW_WmRRLNZ-l0Z91glgOSZDdGRYZd/pub?gid=${gid}&single=true&output=csv`;
     const response = await fetch(url);
     const data = await response.text();
     console.log('Fetched CSV Data:', data); // Log the fetched data
@@ -27,7 +43,9 @@ async function findData() {
     }
 
     try {
-        const csvData = await fetchData();
+        const csvData = await fetchData(sheetName);
+        if (!csvData) return;
+
         const rows = csvData.split('\n');
         const headers = rows[0].split(',');
         const paramIndex = headers.indexOf('PARAM');
