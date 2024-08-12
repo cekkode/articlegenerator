@@ -5,7 +5,7 @@ function loadPapaParse(callback) {
     document.head.appendChild(script);
 }
 
-var version = '0.0.7';
+var version = '0.0.8';
 console.log("US Clients Version: " + version);
 
 // Step 1: Extract the URL parameter
@@ -40,6 +40,22 @@ async function fetchData(sheetName) {
     const data = await response.text();
     console.log('Fetched CSV Data:', data); // Log the fetched data
     return data;
+}
+
+// Function to replace placeholders within specific elements
+function replacePlaceholders(row, placeholderMap) {
+    // Select all <p> and heading elements
+    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
+
+    elements.forEach(element => {
+        let content = element.innerHTML;
+        for (const [placeholder, header] of Object.entries(placeholderMap)) {
+            if (row[header]) {
+                content = content.replace(new RegExp(placeholder, 'g'), row[header]);
+            }
+        }
+        element.innerHTML = content;
+    });
 }
 
 // Step 3: Parse the data and find the matching row
@@ -86,11 +102,7 @@ async function findData() {
         for (const row of rows) {
             if (row['PARAM'] && row['PARAM'].toLowerCase() === searchKey.toLowerCase()) {
                 console.log('Matching Row:', row);
-                for (const [placeholder, header] of Object.entries(placeholderMap)) {
-                    if (row[header]) {
-                        document.body.innerHTML = document.body.innerHTML.replace(new RegExp(placeholder, 'g'), row[header]);
-                    }
-                }
+                replacePlaceholders(row, placeholderMap);
                 break;
             }
         }
