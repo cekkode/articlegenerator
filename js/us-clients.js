@@ -5,7 +5,7 @@ function loadPapaParse(callback) {
     document.head.appendChild(script);
 }
 
-var version = '0.0.11';
+var version = '0.0.12';
 console.log("US Clients Version: " + version);
 
 // Step 1: Extract the URL parameter
@@ -114,5 +114,3 @@ async function findData() {
 
 // Load PapaParse and then execute findData
 loadPapaParse(findData);
-
-console.log('Replacing:', placeholder, 'with:', row[header]);
