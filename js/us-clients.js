@@ -1,4 +1,4 @@
-var version = '0.0.4';
+var version = '0.0.5';
 console.log("US Clients Version: "+version);
 
 // Step 1: Extract the URL parameter
@@ -15,6 +15,7 @@ async function fetchData() {
     const url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTDTTAc6YiatUsUAACaDo5RcnK2M4wKsktznsh16Vc-S5DSjz6hW_WmRRLNZ-l0Z91glgOSZDdGRYZd/pub?output=csv';
     const response = await fetch(url);
     const data = await response.text();
+    console.log('Fetched CSV Data:', data); // Log the fetched data
     return data;
 }
 
@@ -33,6 +34,7 @@ async function findData() {
 
         if (paramIndex === -1) {
             // If the PARAM column is not found, exit the function
+            console.error('PARAM column not found');
             return;
         }
 
@@ -60,6 +62,7 @@ async function findData() {
         for (let i = 1; i < rows.length; i++) {
             const row = rows[i].split(',');
             if (row[paramIndex] && row[paramIndex].toLowerCase() === searchKey.toLowerCase()) {
+                console.log('Matching Row:', row); // Log the matching row
                 // Step 4: Replace placeholders on the page
                 for (const [placeholder, header] of Object.entries(placeholderMap)) {
                     const columnIndex = headers.indexOf(header);
