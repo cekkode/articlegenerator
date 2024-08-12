@@ -1,5 +1,12 @@
-var version = '0.0.6';
-console.log("US Clients Version: "+version);
+function loadPapaParse(callback) {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js';
+    script.onload = callback;
+    document.head.appendChild(script);
+}
+
+var version = '0.0.7';
+console.log("US Clients Version: " + version);
 
 // Step 1: Extract the URL parameter
 function getURLParameter() {
@@ -38,7 +45,6 @@ async function fetchData(sheetName) {
 // Step 3: Parse the data and find the matching row
 async function findData() {
     if (!sheetName || !searchKey) {
-        // If no valid parameter is provided, do nothing
         return;
     }
 
@@ -46,17 +52,17 @@ async function findData() {
         const csvData = await fetchData(sheetName);
         if (!csvData) return;
 
-        const rows = csvData.split('\n');
-        const headers = rows[0].split(',');
-        const paramIndex = headers.indexOf('PARAM');
+        // Use PapaParse to parse the CSV data
+        const parsedData = Papa.parse(csvData, { header: true });
+        const rows = parsedData.data;
+
+        const paramIndex = parsedData.meta.fields.indexOf('PARAM');
 
         if (paramIndex === -1) {
-            // If the PARAM column is not found, exit the function
             console.error('PARAM column not found');
             return;
         }
 
-        // Mapping of placeholders to column headers
         const placeholderMap = {
             '[LABEL]': '🏷️',
             '[BUSINESS]': '🏢',
@@ -77,15 +83,12 @@ async function findData() {
             '[SERVICE9]': '9️⃣'
         };
 
-        for (let i = 1; i < rows.length; i++) {
-            const row = rows[i].split(',');
-            if (row[paramIndex] && row[paramIndex].toLowerCase() === searchKey.toLowerCase()) {
-                console.log('Matching Row:', row); // Log the matching row
-                // Step 4: Replace placeholders on the page
+        for (const row of rows) {
+            if (row['PARAM'] && row['PARAM'].toLowerCase() === searchKey.toLowerCase()) {
+                console.log('Matching Row:', row);
                 for (const [placeholder, header] of Object.entries(placeholderMap)) {
-                    const columnIndex = headers.indexOf(header);
-                    if (columnIndex !== -1 && row[columnIndex]) {
-                        document.body.innerHTML = document.body.innerHTML.replace(new RegExp(placeholder, 'g'), row[columnIndex]);
+                    if (row[header]) {
+                        document.body.innerHTML = document.body.innerHTML.replace(new RegExp(placeholder, 'g'), row[header]);
                     }
                 }
                 break;
@@ -96,4 +99,5 @@ async function findData() {
     }
 }
 
-findData();
+// Load PapaParse and then execute findData
+loadPapaParse(findData);
