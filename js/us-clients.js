@@ -5,7 +5,7 @@ function loadPapaParse(callback) {
     document.head.appendChild(script);
 }
 
-var version = '0.0.12';
+var version = '0.0.13';
 console.log("US Clients Version: " + version);
 
 // Step 1: Extract the URL parameter
@@ -45,14 +45,16 @@ async function fetchData(sheetName) {
 // Function to replace placeholders within specific elements
 function replacePlaceholders(row, placeholderMap) {
     // Select all elements that might contain placeholders
-    const elements = document.querySelectorAll('p, h1, h2, h3, h4, h5, h6');
+    const elements = document.querySelectorAll('a, title, p, h1, h2, h3, h4, h5, h6');
 
     elements.forEach(element => {
         let content = element.innerHTML;
         for (const [placeholder, header] of Object.entries(placeholderMap)) {
             if (row[header]) {
+                // Replace newlines with <br> for HTML display
+                const safeContent = row[header].replace(/\n/g, '<br>');
                 // Replace all occurrences of the placeholder with the corresponding data
-                content = content.split(placeholder).join(row[header]);
+                content = content.split(placeholder).join(safeContent);
             }
         }
         element.innerHTML = content;
