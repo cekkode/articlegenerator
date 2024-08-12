@@ -5,7 +5,7 @@ function loadPapaParse(callback) {
     document.head.appendChild(script);
 }
 
-var version = '0.0.13';
+var version = '0.0.14';
 console.log("US Clients Version: " + version);
 
 // Step 1: Extract the URL parameter
@@ -62,55 +62,88 @@ function replacePlaceholders(row, placeholderMap) {
 }
 
 // Step 3: Parse the data and find the matching row
+function setCookie(name, value, days) {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
+}
+
+function getCookie(name) {
+    return document.cookie.split('; ').reduce((r, v) => {
+        const parts = v.split('=');
+        return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+    }, '');
+}
+
+async function fetchData(sheetName) {
+    const gid = sheetGidMap[sheetName.toUpperCase()];
+    if (!gid) {
+        console.error('Invalid sheet name');
+        return null;
+    }
+    const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTDTTAc6YiatUsUAACaDo5RcnK2M4wKsktznsh16Vc-S5DSjz6hW_WmRRLNZ-l0Z91glgOSZDdGRYZd/pub?gid=${gid}&single=true&output=csv`;
+    const response = await fetch(url);
+    const data = await response.text();
+    return data;
+}
+
 async function findData() {
     if (!sheetName || !searchKey) {
         return;
     }
 
-    try {
-        const csvData = await fetchData(sheetName);
-        if (!csvData) return;
+    const cacheKey = `${sheetName}-${searchKey}`;
+    let csvData = localStorage.getItem(cacheKey) || getCookie(cacheKey);
 
-        // Use PapaParse to parse the CSV data
-        const parsedData = Papa.parse(csvData, { header: true });
-        const rows = parsedData.data;
+    if (!csvData) {
+        try {
+            csvData = await fetchData(sheetName);
+            if (!csvData) return;
 
-        const paramIndex = parsedData.meta.fields.indexOf('PARAM');
-
-        if (paramIndex === -1) {
-            console.error('PARAM column not found');
+            // Store the fetched data in local storage and cookies
+            localStorage.setItem(cacheKey, csvData);
+            setCookie(cacheKey, csvData, 7); // Store for 7 days
+        } catch (error) {
+            console.error('Error fetching or processing data:', error);
             return;
         }
+    }
 
-        const placeholderMap = {
-            '[LABEL]': '🏷️',
-            '[BUSINESS]': '🏢',
-            '[ADDRESS]': '📍',
-            '[PHONE]': '📞',
-            '[EMAIL]': '📧',
-            '[SLOGAN]': '📣',
-            '[PERIOD]': '📅',
-            '[AREA]': '🗺️',
-            '[SERVICE1]': '1️⃣',
-            '[SERVICE2]': '2️⃣',
-            '[SERVICE3]': '3️⃣',
-            '[SERVICE4]': '4️⃣',
-            '[SERVICE5]': '5️⃣',
-            '[SERVICE6]': '6️⃣',
-            '[SERVICE7]': '7️⃣',
-            '[SERVICE8]': '8️⃣',
-            '[SERVICE9]': '9️⃣'
-        };
+    // Use PapaParse to parse the CSV data
+    const parsedData = Papa.parse(csvData, { header: true });
+    const rows = parsedData.data;
 
-        for (const row of rows) {
-            if (row['PARAM'] && row['PARAM'].toLowerCase() === searchKey.toLowerCase()) {
-                console.log('Matching Row:', row);
-                replacePlaceholders(row, placeholderMap);
-                break;
-            }
+    const paramIndex = parsedData.meta.fields.indexOf('PARAM');
+
+    if (paramIndex === -1) {
+        console.error('PARAM column not found');
+        return;
+    }
+
+    const placeholderMap = {
+        '[LABEL]': '🏷️',
+        '[BUSINESS]': '🏢',
+        '[ADDRESS]': '📍',
+        '[PHONE]': '📞',
+        '[EMAIL]': '📧',
+        '[SLOGAN]': '📣',
+        '[PERIOD]': '📅',
+        '[AREA]': '🗺️',
+        '[SERVICE1]': '1️⃣',
+        '[SERVICE2]': '2️⃣',
+        '[SERVICE3]': '3️⃣',
+        '[SERVICE4]': '4️⃣',
+        '[SERVICE5]': '5️⃣',
+        '[SERVICE6]': '6️⃣',
+        '[SERVICE7]': '7️⃣',
+        '[SERVICE8]': '8️⃣',
+        '[SERVICE9]': '9️⃣'
+    };
+
+    for (const row of rows) {
+        if (row['PARAM'] && row['PARAM'].toLowerCase() === searchKey.toLowerCase()) {
+            replacePlaceholders(row, placeholderMap);
+            break;
         }
-    } catch (error) {
-        console.error('Error fetching or processing data:', error);
     }
 }
 
