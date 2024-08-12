@@ -43,7 +43,7 @@ async function findData() {
             '[ADDRESS]': '📍',
             '[PHONE]': '📞',
             '[EMAIL]': '📧',
-            '[TAGLINE]': '📣',
+            '[SLOGAN]': '📣',
             '[PERIOD]': '📅',
             '[AREA]': '🗺️',
             '[SERVICE1]': '1️⃣',
