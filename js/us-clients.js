@@ -5,7 +5,7 @@ function loadPapaParse(callback) {
     document.head.appendChild(script);
 }
 
-var version = '0.0.16';
+var version = '0.0.17';
 console.log("US Clients Version: " + version);
 
 function getURLParameter() {
@@ -146,6 +146,7 @@ async function findData() {
         '[PHONE]': '📞',
         '[EMAIL]': '📧',
         '[SLOGAN]': '📣',
+        '[TAGLINE]': '📣',
         '[PERIOD]': '📅',
         '[AREA]': '🗺️',
         '[SERVICE1]': '1️⃣',
