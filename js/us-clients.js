@@ -5,7 +5,7 @@ function loadPapaParse(callback) {
     document.head.appendChild(script);
 }
 
-var version = '0.0.14';
+var version = '0.0.15';
 console.log("US Clients Version: " + version);
 
 function getURLParameter() {
