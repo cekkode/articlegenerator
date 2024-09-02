@@ -5,7 +5,7 @@ function loadPapaParse(callback) {
     document.head.appendChild(script);
 }
 
-var version = '0.0.15';
+var version = '0.0.16';
 console.log("US Clients Version: " + version);
 
 function getURLParameter() {
@@ -168,21 +168,30 @@ async function findData() {
     };
 
     const defaultValues = {
-        '🏢': 'Pool Builder USA',
-        '📍': 'Miami',
-        '📞': '+1 234 56789',
-        '📧': 'info@poolbuilderusa.com',
-        '📣': 'Building Dreams, One Pool at a Time',
-        '📅': '2023',
-        '🗺️': 'USA',
-        '🖼️': 'default-logo.png',
-        '📕': 'We are the leading pool builders in the USA.',
-        '🗣️1': 'Great service!',
-        '🗣️2': 'Highly recommend!',
-        '🗣️3': 'Best in the business!',
-        '𝕏': '@poolbuilderusa',
-        'ⓕ': 'facebook.com/poolbuilderusa',
-        '▶': 'youtube.com/poolbuilderusa'
+    '🏢': 'Pool Builder USA',
+    '📍': 'Miami',
+    '📞': '+1 234 56789',
+    '📧': 'info@poolbuilderusa.com',
+    '📣': 'Building Dreams, One Pool at a Time',
+    '📅': '2023',
+    '🗺️': 'USA',
+    '🖼️': 'default-logo.png',
+    '📕': 'We are the leading pool builders in the USA.',
+    '🗣️1': 'Great service!',
+    '🗣️2': 'Highly recommend!',
+    '🗣️3': 'Best in the business!',
+    '𝕏': '@poolbuilderusa',
+    'ⓕ': 'facebook.com/poolbuilderusa',
+    '▶': 'youtube.com/poolbuilderusa',
+    '1️⃣': 'Custom Pool Design',
+    '2️⃣': 'Pool Installation',
+    '3️⃣': 'Pool Maintenance',
+    '4️⃣': 'Pool Repair',
+    '5️⃣': 'Pool Renovation',
+    '6️⃣': 'Pool Cleaning',
+    '7️⃣': 'Pool Inspection',
+    '8️⃣': 'Pool Landscaping',
+    '9️⃣': 'Pool Safety Features'
     };
 
     for (const row of rows) {
