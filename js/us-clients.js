@@ -8,16 +8,13 @@ function loadPapaParse(callback) {
 var version = '0.0.14';
 console.log("US Clients Version: " + version);
 
-// Step 1: Extract the URL parameter
 function getURLParameter() {
     const query = window.location.search.substring(1);
     return query ? query.split('-') : [];
 }
 
-// Extract the sheet name and search key from the URL
 let [sheetName, searchKey] = getURLParameter();
 
-// Mapping of sheet names to their respective gid values
 const sheetGidMap = {
     'AL': '604141272',
     'AK': '1934406001',
@@ -71,7 +68,6 @@ const sheetGidMap = {
     'WY': '1275559536'
 };
 
-// Step 2: Fetch the data from the appropriate Google Sheets CSV URL
 async function fetchData(sheetName) {
     const gid = sheetGidMap[sheetName.toUpperCase()];
     if (!gid) {
@@ -81,22 +77,18 @@ async function fetchData(sheetName) {
     const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTDTTAc6YiatUsUAACaDo5RcnK2M4wKsktznsh16Vc-S5DSjz6hW_WmRRLNZ-l0Z91glgOSZDdGRYZd/pub?gid=${gid}&single=true&output=csv`;
     const response = await fetch(url);
     const data = await response.text();
-    console.log('Fetched CSV Data:', data); // Log the fetched data
     return data;
 }
 
-// Function to replace placeholders within specific elements
-function replacePlaceholders(row, placeholderMap) {
-    // Select all elements that might contain placeholders
+function replacePlaceholders(row, placeholderMap, defaultValues) {
     const elements = document.querySelectorAll('a, title, p, h1, h2, h3, h4, h5, h6');
 
     elements.forEach(element => {
         let content = element.innerHTML;
         for (const [placeholder, header] of Object.entries(placeholderMap)) {
-            if (row[header]) {
-                // Replace newlines with <br> for HTML display
-                const safeContent = row[header].replace(/\n/g, '<br>');
-                // Replace all occurrences of the placeholder with the corresponding data
+            const value = row[header] || defaultValues[header];
+            if (value) {
+                const safeContent = value.replace(/\n/g, '<br>');
                 content = content.split(placeholder).join(safeContent);
             }
         }
@@ -104,7 +96,6 @@ function replacePlaceholders(row, placeholderMap) {
     });
 }
 
-// Step 3: Parse the data and find the matching row
 function setCookie(name, value, days) {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
     document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/';
@@ -115,18 +106,6 @@ function getCookie(name) {
         const parts = v.split('=');
         return parts[0] === name ? decodeURIComponent(parts[1]) : r;
     }, '');
-}
-
-async function fetchData(sheetName) {
-    const gid = sheetGidMap[sheetName.toUpperCase()];
-    if (!gid) {
-        console.error('Invalid sheet name');
-        return null;
-    }
-    const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vTDTTAc6YiatUsUAACaDo5RcnK2M4wKsktznsh16Vc-S5DSjz6hW_WmRRLNZ-l0Z91glgOSZDdGRYZd/pub?gid=${gid}&single=true&output=csv`;
-    const response = await fetch(url);
-    const data = await response.text();
-    return data;
 }
 
 async function findData() {
@@ -142,16 +121,14 @@ async function findData() {
             csvData = await fetchData(sheetName);
             if (!csvData) return;
 
-            // Store the fetched data in local storage and cookies
             localStorage.setItem(cacheKey, csvData);
-            setCookie(cacheKey, csvData, 7); // Store for 7 days
+            setCookie(cacheKey, csvData, 7);
         } catch (error) {
             console.error('Error fetching or processing data:', error);
             return;
         }
     }
 
-    // Use PapaParse to parse the CSV data
     const parsedData = Papa.parse(csvData, { header: true });
     const rows = parsedData.data;
 
@@ -179,16 +156,41 @@ async function findData() {
         '[SERVICE6]': '6️⃣',
         '[SERVICE7]': '7️⃣',
         '[SERVICE8]': '8️⃣',
-        '[SERVICE9]': '9️⃣'
+        '[SERVICE9]': '9️⃣',
+        '[LOGO]': '🖼️',
+        '[ABOUT]': '📕',
+        '[TESTIMONY1]': '🗣️1',
+        '[TESTIMONY2]': '🗣️2',
+        '[TESTIMONY3]': '🗣️3',
+        '[TWITTER]': '𝕏',
+        '[FACEBOOK]': 'ⓕ',
+        '[YOUTUBE]': '▶'
+    };
+
+    const defaultValues = {
+        '🏢': 'Pool Builder USA',
+        '📍': 'Miami',
+        '📞': '+1 234 56789',
+        '📧': 'info@poolbuilderusa.com',
+        '📣': 'Building Dreams, One Pool at a Time',
+        '📅': '2023',
+        '🗺️': 'USA',
+        '🖼️': 'default-logo.png',
+        '📕': 'We are the leading pool builders in the USA.',
+        '🗣️1': 'Great service!',
+        '🗣️2': 'Highly recommend!',
+        '🗣️3': 'Best in the business!',
+        '𝕏': '@poolbuilderusa',
+        'ⓕ': 'facebook.com/poolbuilderusa',
+        '▶': 'youtube.com/poolbuilderusa'
     };
 
     for (const row of rows) {
         if (row['PARAM'] && row['PARAM'].toLowerCase() === searchKey.toLowerCase()) {
-            replacePlaceholders(row, placeholderMap);
+            replacePlaceholders(row, placeholderMap, defaultValues);
             break;
         }
     }
 }
 
-// Load PapaParse and then execute findData
 loadPapaParse(findData);
