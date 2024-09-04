@@ -1,4 +1,6 @@
 (function() {
+    const version = '0.0.1'; console.log("WA Enricher Version: " + version);
+    
     const currentHour = new Date().getHours();
     let waktu;
 
