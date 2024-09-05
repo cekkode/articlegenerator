@@ -1,5 +1,6 @@
 (function() {
-    const version = '0.0.1'; console.log("WA Enricher Version: " + version);
+    const version = '0.0.2'; 
+    console.log("WA Enricher Version: " + version);
     
     const currentHour = new Date().getHours();
     let waktu;
@@ -25,7 +26,8 @@
         const href = link.getAttribute('href');
         const param = `?text=Selamat ${waktu} ${capitalizedDomain}, saya lihat di ${url} tentang "${judul}". Mohon info lebih lanjut, terimakasih.`;
         const encodedParam = encodeURIComponent(param);
-        link.setAttribute('href', href + encodedParam);
+        const separator = href.includes('?') ? '&' : '?';
+        link.setAttribute('href', href + separator + encodedParam);
         link.setAttribute('target', '_blank');
     });
 })();
