@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     (function() {
-        const version = '0.0.3'; 
+        const version = '0.0.4'; 
         console.log("WA Enricher Version: " + version);
         
         const currentHour = new Date().getHours();
@@ -25,10 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         links.forEach(link => {
             const href = link.getAttribute('href');
-            const param = `text=Selamat ${waktu} ${capitalizedDomain}, saya lihat di ${url} tentang "${judul}". Mohon info lebih lanjut, terimakasih.`;
+            const param = `Selamat ${waktu} ${capitalizedDomain}, saya lihat di ${url} tentang "${judul}". Mohon info lebih lanjut, terimakasih.`;
             const encodedParam = encodeURIComponent(param);
             const separator = href.includes('?') ? '&' : '?';
-            link.setAttribute('href', href + separator + encodedParam);
+            link.setAttribute('href', href + separator + 'text=' + encodedParam);
             link.setAttribute('target', '_blank');
         });
     })();
