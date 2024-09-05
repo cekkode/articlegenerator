@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     (function() {
-        const version = '0.0.4'; 
+        const version = '0.0.5'; 
         console.log("WA Enricher Version: " + version);
         
         const currentHour = new Date().getHours();
@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const separator = href.includes('?') ? '&' : '?';
             link.setAttribute('href', href + separator + 'text=' + encodedParam);
             link.setAttribute('target', '_blank');
+            link.setAttribute('rel', 'nofollow');
         });
     })();
 });
