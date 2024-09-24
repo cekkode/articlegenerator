@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snippet HTML Generator</title>
+</head>
+<body>
+  <h1>HTML Generator</h1>
+
+  <div>
+    <label for="titles">Titles (one per line):</label>
+    <textarea id="titles" rows="5" required></textarea>
+  </div>
+
+  <div>
+    <label for="imageUrls">Image URLs (one per line):</label>
+    <textarea id="imageUrls" rows="5" required></textarea>
+  </div>
+
+  <div>
+    <label for="links">Links (one per line):</label>
+    <textarea id="links" rows="5" required></textarea>
+  </div>
+
+  <div>
+    <label for="categories">Categories (one per line):</label>
+    <textarea id="categories" rows="5" required></textarea>
+  </div>
+
+  <pre id="generatedHtml"></pre>
+
+  <script>
+    const titlesInput = document.getElementById('titles');
+    const imageUrlsInput = document.getElementById('imageUrls');
+    const linksInput = document.getElementById('links');
+    const categoriesInput = document.getElementById('categories');
+    const generatedHtml = document.getElementById('generatedHtml');
+
+    function generateHtmlSnippets() {
+      const titles = titlesInput.value.trim().split('\n');
+      const imageUrls = imageUrlsInput.value.trim().split('\n');
+      const links = linksInput.value.trim().split('\n');
+      const categories = categoriesInput.value.trim().split('\n');
+
+      const htmlSnippets = titles.map((title, index) => {
+        const imageUrl = imageUrls[index] || '';
+        const link = links[index] || '';
+        const category = categories[index] || '';
+        return generateHtmlSnippet(title, imageUrl, link, category);
+      });
+
+      generatedHtml.textContent = htmlSnippets.join('\n\n');
+    }
+
+    function generateHtmlSnippet(title, imageUrl, link, category) {
+      return `
+<div class="anwp-pg-post-teaser anwp-pg-post-teaser--layout-a anwp-col-lg-3 anwp-col-sm-4 anwp-col-6">
+  <div class="anwp-pg-post-teaser__thumbnail position-relative">
+    <img post-id="739" fifu-featured="1" loading="lazy" class="anwp-pg-post-teaser__thumbnail-img d-block anwp-pg-height-180 anwp-object-cover m-0 w-100" alt="${title}" src="${imageUrl}">
+    <div class="anwp-pg-post-teaser__muted_bg"></div>
+    <div class="anwp-pg-post-teaser__thumbnail-bg anwp-position-cover"></div>
+    <div class="anwp-pg-post-teaser__content d-flex flex-column anwp-position-cover">
+      <div class="d-flex flex-column anwp-pg-post-teaser__category-column ml-auto">
+        <div class="anwp-pg-category__wrapper-filled px-2 d-flex align-items-center anwp-pg-post-teaser__category-wrapper align-self-end anwp-pg-category-parent-0" style="background-color: #1565C0"><span>${category}</span></div>
+      </div>
+      <div class="anwp-pg-post-teaser__title anwp-font-heading mt-auto mb-1">${title}</div>
+    </div>
+    <a class="anwp-position-cover anwp-link-without-effects" href="${link}" aria-hidden="true"></a>
+  </div>
+</div>
+      `;
+    }
+
+    titlesInput.addEventListener('input', generateHtmlSnippets);
+    imageUrlsInput.addEventListener('input', generateHtmlSnippets);
+    linksInput.addEventListener('input', generateHtmlSnippets);
+    categoriesInput.addEventListener('input', generateHtmlSnippets);
+  </script>
+</body>
+</html>
