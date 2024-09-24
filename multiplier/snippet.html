@@ -127,7 +127,21 @@
     const generatedHtml = document.getElementById('generatedHtml');
 
     function generateHtmlSnippets() {
-      return `
+      const mainTitle = mainTitleInput.value;
+      const modifiers = modifiersInput.value.split('\n').filter(Boolean);
+      const imageUrls = imageUrlsInput.value.split('\n').filter(Boolean);
+      const links = linksInput.value.split('\n').filter(Boolean);
+      const categories = categoriesInput.value.split('\n').filter(Boolean);
+
+      const snippets = [];
+
+      for (let i = 0; i < Math.max(modifiers.length, imageUrls.length, links.length, categories.length); i++) {
+        const title = `${mainTitle} ${modifiers[i] || ''}`.trim();
+        const imageUrl = imageUrls[i] || '';
+        const link = links[i] || '#';
+        const category = categories[i] || 'Uncategorized';
+
+        snippets.push(`
 <div class="anwp-pg-post-teaser anwp-pg-post-teaser--layout-a anwp-col-lg-3 anwp-col-sm-4 anwp-col-6">
   <div class="anwp-pg-post-teaser__thumbnail position-relative">
     <img post-id="739" fifu-featured="1" loading="lazy" class="anwp-pg-post-teaser__thumbnail-img d-block anwp-pg-height-180 anwp-object-cover m-0 w-100" alt="${title}" src="${imageUrl}">
@@ -141,9 +155,10 @@
     </div>
     <a class="anwp-position-cover anwp-link-without-effects" href="${link}" aria-hidden="true"></a>
   </div>
-</div>
-      `;
-      generatedHtml.value = htmlSnippets.join('\n\n');
+</div>`);
+      }
+
+      generatedHtml.value = snippets.join('\n\n');
     }
 
     function copyToClipboard() {
@@ -158,6 +173,9 @@
     imageUrlsInput.addEventListener('input', generateHtmlSnippets);
     linksInput.addEventListener('input', generateHtmlSnippets);
     categoriesInput.addEventListener('input', generateHtmlSnippets);
+
+    // Generate initial HTML
+    generateHtmlSnippets();
   </script>
 </body>
 </html>
