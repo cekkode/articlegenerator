@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snippet HTML Generator</title>
+  <title>HTML Snippet Generator v1</title>
 </head>
 <body>
   <h1>HTML Generator</h1>
 
   <div>
-    <label for="titles">Titles (one per line):</label>
-    <textarea id="titles" rows="5" required></textarea>
+    <label for="mainTitle">Main Title:</label>
+    <input type="text" id="mainTitle" required>
+  </div>
+
+  <div>
+    <label for="modifiers">Modifiers (one per line):</label>
+    <textarea id="modifiers" rows="5" required></textarea>
   </div>
 
   <div>
@@ -31,19 +36,22 @@
   <pre id="generatedHtml"></pre>
 
   <script>
-    const titlesInput = document.getElementById('titles');
+    const mainTitleInput = document.getElementById('mainTitle');
+    const modifiersInput = document.getElementById('modifiers');
     const imageUrlsInput = document.getElementById('imageUrls');
     const linksInput = document.getElementById('links');
     const categoriesInput = document.getElementById('categories');
     const generatedHtml = document.getElementById('generatedHtml');
 
     function generateHtmlSnippets() {
-      const titles = titlesInput.value.trim().split('\n');
+      const mainTitle = mainTitleInput.value.trim();
+      const modifiers = modifiersInput.value.trim().split('\n');
       const imageUrls = imageUrlsInput.value.trim().split('\n');
       const links = linksInput.value.trim().split('\n');
       const categories = categoriesInput.value.trim().split('\n');
 
-      const htmlSnippets = titles.map((title, index) => {
+      const htmlSnippets = modifiers.map((modifier, index) => {
+        const title = `${mainTitle} ${modifier.trim()}`;
         const imageUrl = imageUrls[index] || '';
         const link = links[index] || '';
         const category = categories[index] || '';
@@ -72,7 +80,8 @@
       `;
     }
 
-    titlesInput.addEventListener('input', generateHtmlSnippets);
+    mainTitleInput.addEventListener('input', generateHtmlSnippets);
+    modifiersInput.addEventListener('input', generateHtmlSnippets);
     imageUrlsInput.addEventListener('input', generateHtmlSnippets);
     linksInput.addEventListener('input', generateHtmlSnippets);
     categoriesInput.addEventListener('input', generateHtmlSnippets);
