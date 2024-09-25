@@ -84,6 +84,15 @@
       border-radius: 4px;
       cursor: pointer;
     }
+
+    .form-container input[type="checkbox"] {
+      width: auto;
+      margin-right: 0.5rem;
+    }
+    .form-container .checkbox-label {
+      display: inline-block;
+      font-weight: normal;
+    }
   </style>
 </head>
 <body>
@@ -110,6 +119,11 @@
       <div>
         <textarea id="categories" rows="3" placeholder="Categories (one per line)" required></textarea>
       </div>
+
+      <div>
+        <input type="checkbox" id="loopCheckbox">
+        <label for="loopCheckbox" class="checkbox-label">Loop images and categories</label>
+      </div>
     </div>
 
     <div class="output-container">
@@ -124,6 +138,7 @@
     const imageUrlsInput = document.getElementById('imageUrls');
     const linksInput = document.getElementById('links');
     const categoriesInput = document.getElementById('categories');
+    const loopCheckbox = document.getElementById('loopCheckbox');
     const generatedHtml = document.getElementById('generatedHtml');
 
     function generateHtmlSnippets() {
@@ -132,14 +147,15 @@
       const imageUrls = imageUrlsInput.value.split('\n').filter(Boolean);
       const links = linksInput.value.split('\n').filter(Boolean);
       const categories = categoriesInput.value.split('\n').filter(Boolean);
+      const shouldLoop = loopCheckbox.checked;
 
       const snippets = [];
 
-      for (let i = 0; i < Math.max(modifiers.length, imageUrls.length, links.length, categories.length); i++) {
+      for (let i = 0; i < modifiers.length; i++) {
         const title = `${mainTitle} ${modifiers[i] || ''}`.trim();
-        const imageUrl = imageUrls[i] || '';
-        const link = links[i] || '#';
-        const category = categories[i] || 'Uncategorized';
+        const imageUrl = shouldLoop ? imageUrls[i % imageUrls.length] || '' : imageUrls[i] || '';
+        const link = shouldLoop ? links[i % links.length] || '#' : links[i] || '#';
+        const category = shouldLoop ? categories[i % categories.length] || 'Uncategorized' : categories[i] || 'Uncategorized';
 
         snippets.push(`
 <div class="anwp-pg-post-teaser anwp-pg-post-teaser--layout-a anwp-col-lg-3 anwp-col-sm-4 anwp-col-6">
@@ -173,6 +189,7 @@
     imageUrlsInput.addEventListener('input', generateHtmlSnippets);
     linksInput.addEventListener('input', generateHtmlSnippets);
     categoriesInput.addEventListener('input', generateHtmlSnippets);
+    loopCheckbox.addEventListener('change', generateHtmlSnippets);
 
     // Generate initial HTML
     generateHtmlSnippets();
