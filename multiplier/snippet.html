@@ -141,6 +141,17 @@
     const loopCheckbox = document.getElementById('loopCheckbox');
     const generatedHtml = document.getElementById('generatedHtml');
 
+    function formatModifier(modifier) {
+      return modifier.toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+    }
+    
+    function replaceModifierPlaceholder(text, modifier) {
+      return text.replace(/{modifier}/g, formatModifier(modifier));
+    }
+    
     function generateHtmlSnippets() {
       const mainTitle = mainTitleInput.value;
       const modifiers = modifiersInput.value.split('\n').filter(Boolean);
@@ -150,6 +161,7 @@
       const shouldLoop = loopCheckbox.checked;
 
       const snippets = [];
+      let isIncomplete = false;
 
       for (let i = 0; i < modifiers.length; i++) {
         const title = `${mainTitle} ${modifiers[i] || ''}`.trim();
@@ -157,31 +169,39 @@
         const link = shouldLoop ? links[i % links.length] || '#' : links[i] || '#';
         const category = shouldLoop ? categories[i % categories.length] || 'Uncategorized' : categories[i] || 'Uncategorized';
 
+        if (!imageUrl || link === '#' || category === 'Uncategorized') {
+          isIncomplete = true;
+        }
+    
+        const processedImageUrl = replaceModifierPlaceholder(imageUrl, modifiers[i]);
+        const processedLink = replaceModifierPlaceholder(link, modifiers[i]);
+    
         snippets.push(`
-<div class="anwp-pg-post-teaser anwp-pg-post-teaser--layout-a anwp-col-lg-3 anwp-col-sm-4 anwp-col-6">
-  <div class="anwp-pg-post-teaser__thumbnail position-relative">
-    <img post-id="739" fifu-featured="1" loading="lazy" class="anwp-pg-post-teaser__thumbnail-img d-block anwp-pg-height-180 anwp-object-cover m-0 w-100" alt="${title}" src="${imageUrl}">
-    <div class="anwp-pg-post-teaser__muted_bg"></div>
-    <div class="anwp-pg-post-teaser__thumbnail-bg anwp-position-cover"></div>
-    <div class="anwp-pg-post-teaser__content d-flex flex-column anwp-position-cover">
-      <div class="d-flex flex-column anwp-pg-post-teaser__category-column ml-auto">
-        <div class="anwp-pg-category__wrapper-filled px-2 d-flex align-items-center anwp-pg-post-teaser__category-wrapper align-self-end anwp-pg-category-parent-0" style="background-color: #1565C0"><span>${category}</span></div>
+    <div class="anwp-pg-post-teaser anwp-pg-post-teaser--layout-a anwp-col-lg-3 anwp-col-sm-4 anwp-col-6">
+      <div class="anwp-pg-post-teaser__thumbnail position-relative">
+        <img post-id="739" fifu-featured="1" loading="lazy" class="anwp-pg-post-teaser__thumbnail-img d-block anwp-pg-height-180 anwp-object-cover m-0 w-100" alt="${title}" src="${processedImageUrl}">
+        <div class="anwp-pg-post-teaser__muted_bg"></div>
+        <div class="anwp-pg-post-teaser__thumbnail-bg anwp-position-cover"></div>
+        <div class="anwp-pg-post-teaser__content d-flex flex-column anwp-position-cover">
+          <div class="d-flex flex-column anwp-pg-post-teaser__category-column ml-auto">
+            <div class="anwp-pg-category__wrapper-filled px-2 d-flex align-items-center anwp-pg-post-teaser__category-wrapper align-self-end anwp-pg-category-parent-0" style="background-color: #1565C0"><span>${category}</span></div>
+          </div>
+          <div class="anwp-pg-post-teaser__title anwp-font-heading mt-auto mb-1">${title}</div>
+        </div>
+        <a class="anwp-position-cover anwp-link-without-effects" href="${processedLink}" aria-hidden="true"></a>
       </div>
-      <div class="anwp-pg-post-teaser__title anwp-font-heading mt-auto mb-1">${title}</div>
-    </div>
-    <a class="anwp-position-cover anwp-link-without-effects" href="${link}" aria-hidden="true"></a>
-  </div>
-</div>`);
+    </div>`);
       }
 
       generatedHtml.value = snippets.join('\n\n');
-    }
-
-    function copyToClipboard() {
-      generatedHtml.select();
-      generatedHtml.setSelectionRange(0, 99999);
-      navigator.clipboard.writeText(generatedHtml.value);
-      alert('HTML copied to clipboard!');
+      
+      if (isIncomplete) {
+        generatedHtml.style.color = 'red';
+        copyButton.disabled = true;
+      } else {
+        generatedHtml.style.color = 'black';
+        copyButton.disabled = false;
+      }
     }
 
     mainTitleInput.addEventListener('input', generateHtmlSnippets);
@@ -190,6 +210,21 @@
     linksInput.addEventListener('input', generateHtmlSnippets);
     categoriesInput.addEventListener('input', generateHtmlSnippets);
     loopCheckbox.addEventListener('change', generateHtmlSnippets);
+    
+    // Generate initial HTML
+    generateHtmlSnippets();
+    
+    function copyToClipboard() {
+      if (!copyButton.disabled) {
+        generatedHtml.select();
+        generatedHtml.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(generatedHtml.value);
+        alert('HTML copied to clipboard!');
+      }
+    }
+    
+    const copyButton = document.querySelector('.copy-button');
+    copyButton.addEventListener('click', copyToClipboard);
 
     // Generate initial HTML
     generateHtmlSnippets();
