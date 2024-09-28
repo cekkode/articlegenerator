@@ -93,6 +93,21 @@
       display: inline-block;
       font-weight: normal;
     }
+    .input-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .insert-modifier-btn {
+      position: absolute;
+      right: 5px;
+      padding: 0.25rem 0.5rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -108,13 +123,15 @@
         <textarea id="modifiers" rows="3" placeholder="Modifiers (one per line)" required></textarea>
       </div>
 
-      <div>
+      <div class="input-group">
         <textarea id="imageUrls" rows="3" placeholder="Image URLs (one per line)" required></textarea>
+        <button class="insert-modifier-btn" onclick="insertModifier('imageUrls')">Insert {modifier}</button>
       </div>
       <small>You can put {modifier} to call modifier.</small>
 
-      <div>
+      <div class="input-group">
         <textarea id="links" rows="3" placeholder="Links (one per line)" required></textarea>
+        <button class="insert-modifier-btn" onclick="insertModifier('links')">Insert {modifier}</button>
       </div>
       <small>You can put {modifier} to call modifier.</small>
 
@@ -142,6 +159,7 @@
     const categoriesInput = document.getElementById('categories');
     const loopCheckbox = document.getElementById('loopCheckbox');
     const generatedHtml = document.getElementById('generatedHtml');
+    const copyButton = document.querySelector('.copy-button');
 
     function formatModifier(modifier) {
       return modifier.toLowerCase()
@@ -195,7 +213,18 @@
     </div>`);
       }
 
-      generatedHtml.value = snippets.join('\n\n');
+      const wrapperHtml = `
+<div class="elementor-element elementor-element-7c0d968 anwp-pg-widget-header-style--b anwp-pg-post-teaser__post-icon--size-16 elementor-widget elementor-widget-anwp-pg-simple-grid" data-id="7c0d968" data-element_type="widget" data-widget_type="anwp-pg-simple-grid.default" bis_skin_checked="1">
+  <div class="elementor-widget-container" bis_skin_checked="1">
+    <div class="anwp-pg-wrap" bis_skin_checked="1">
+      <div class="d-flex anwp-row flex-wrap anwp-pg-simple-grid anwp-pg-posts-wrapper anwp-pg-simple-grid__gutter-thick " bis_skin_checked="1">
+        ${snippets.join('\n\n')}
+      </div>
+    </div>
+  </div>
+</div>`;
+
+      generatedHtml.value = wrapperHtml;
       
       if (isIncomplete) {
         generatedHtml.style.color = 'red';
@@ -206,16 +235,6 @@
       }
     }
 
-    mainTitleInput.addEventListener('input', generateHtmlSnippets);
-    modifiersInput.addEventListener('input', generateHtmlSnippets);
-    imageUrlsInput.addEventListener('input', generateHtmlSnippets);
-    linksInput.addEventListener('input', generateHtmlSnippets);
-    categoriesInput.addEventListener('input', generateHtmlSnippets);
-    loopCheckbox.addEventListener('change', generateHtmlSnippets);
-    
-    // Generate initial HTML
-    generateHtmlSnippets();
-    
     function copyToClipboard() {
       if (!copyButton.disabled) {
         generatedHtml.select();
@@ -224,8 +243,25 @@
         alert('HTML copied to clipboard!');
       }
     }
-    
-    const copyButton = document.querySelector('.copy-button');
+
+    function insertModifier(elementId) {
+      const element = document.getElementById(elementId);
+      const cursorPos = element.selectionStart;
+      const textBefore = element.value.substring(0, cursorPos);
+      const textAfter = element.value.substring(cursorPos, element.value.length);
+      element.value = textBefore + '{modifier}' + textAfter;
+      element.focus();
+      element.setSelectionRange(cursorPos + 10, cursorPos + 10);
+      generateHtmlSnippets();
+    }
+
+    // Event listeners
+    mainTitleInput.addEventListener('input', generateHtmlSnippets);
+    modifiersInput.addEventListener('input', generateHtmlSnippets);
+    imageUrlsInput.addEventListener('input', generateHtmlSnippets);
+    linksInput.addEventListener('input', generateHtmlSnippets);
+    categoriesInput.addEventListener('input', generateHtmlSnippets);
+    loopCheckbox.addEventListener('change', generateHtmlSnippets);
     copyButton.addEventListener('click', copyToClipboard);
 
     // Generate initial HTML
