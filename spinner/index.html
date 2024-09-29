@@ -22,8 +22,15 @@
             border-radius: 8px;
             margin-bottom: 20px;
         }
-        .input-group {
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
             margin-bottom: 15px;
+        }
+        .input-group {
+            flex: 1;
+            min-width: 200px;
         }
         label {
             display: block;
@@ -46,51 +53,82 @@
             border-radius: 8px;
             white-space: pre-wrap;
         }
-        .btn {
-            background-color: #3498db;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .btn:hover {
-            background-color: #2980b9;
-        }
     </style>
 </head>
 <body>
     <h1>Prompt Generator</h1>
     
     <div class="input-section">
-        <div class="input-group">
-            <label for="gender">Gender:</label>
-            <select id="gender">
-                <option value="Pria">Pria</option>
-                <option value="Wanita">Wanita</option>
-                <option value="Random">Random</option>
-            </select>
+        <div class="input-row">
+            <div class="input-group">
+                <label for="situs">Situs URL:</label>
+                <input type="text" id="situs" placeholder="e.g., example.com">
+            </div>
         </div>
 
-        <div class="input-group">
-            <label for="age">Usia (18-65):</label>
-            <input type="number" id="age" min="18" max="65" value="30">
+        <div class="input-row">
+            <div class="input-group">
+                <label for="gender">Gender:</label>
+                <select id="gender">
+                    <option value="Pria">Pria</option>
+                    <option value="Wanita">Wanita</option>
+                    <option value="Random">Random</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label for="age">Usia (18-65):</label>
+                <input type="number" id="age" min="18" max="65" value="30">
+            </div>
+
+            <div class="input-group">
+                <label for="wordCount">Jumlah Kata:</label>
+                <select id="wordCount">
+                    <option value="500">500</option>
+                    <option value="600">600</option>
+                    <option value="700">700</option>
+                    <option value="800">800</option>
+                    <option value="900">900</option>
+                    <option value="1000">1000</option>
+                    <option value="1250">1250</option>
+                    <option value="1500">1500</option>
+                    <option value="1750">1750</option>
+                    <option value="2000">2000</option>
+                    <option value="2500">2500</option>
+                </select>
+            </div>
         </div>
 
-        <div class="input-group">
-            <label for="cities">Kota (one per line):</label>
-            <textarea id="cities" rows="4"></textarea>
+        <div class="input-row">
+            <div class="input-group">
+                <label for="articleType">Jenis Artikel:</label>
+                <select id="articleType">
+                    <option value="Artikel Promo">Artikel Promo</option>
+                    <option value="Artikel Informatif">Artikel Informatif</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="customArticleType">Custom Jenis Artikel:</label>
+                <input type="text" id="customArticleType" placeholder="Specify custom article type" style="display: none;">
+            </div>
         </div>
 
-        <div class="input-group">
-            <label for="articleType">Jenis Artikel:</label>
-            <select id="articleType">
-                <option value="Artikel Promo">Artikel Promo</option>
-                <option value="Artikel Informatif">Artikel Informatif</option>
-                <option value="custom">Custom</option>
-            </select>
-            <input type="text" id="customArticleType" placeholder="Specify custom article type" style="display: none; margin-top: 5px;">
+        <div class="input-row">
+            <div class="input-group">
+                <label for="style">Gaya Bahasa:</label>
+                <select id="style">
+                    <option value="serius">Serius</option>
+                    <option value="profesional">Profesional</option>
+                    <option value="semi-casual">Semi-casual</option>
+                    <option value="casual">Casual</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label for="customStyle">Custom Gaya Bahasa:</label>
+                <input type="text" id="customStyle" placeholder="Specify custom style" style="display: none;">
+            </div>
         </div>
 
         <div class="input-group">
@@ -99,32 +137,8 @@
         </div>
 
         <div class="input-group">
-            <label for="style">Gaya Bahasa:</label>
-            <select id="style">
-                <option value="serius">Serius</option>
-                <option value="profesional">Profesional</option>
-                <option value="semi-casual">Semi-casual</option>
-                <option value="casual">Casual</option>
-                <option value="custom">Custom</option>
-            </select>
-            <input type="text" id="customStyle" placeholder="Specify custom style" style="display: none; margin-top: 5px;">
-        </div>
-
-        <div class="input-group">
-            <label for="wordCount">Jumlah Kata:</label>
-            <select id="wordCount">
-                <option value="500">500</option>
-                <option value="600">600</option>
-                <option value="700">700</option>
-                <option value="800">800</option>
-                <option value="900">900</option>
-                <option value="1000">1000</option>
-                <option value="1250">1250</option>
-                <option value="1500">1500</option>
-                <option value="1750">1750</option>
-                <option value="2000">2000</option>
-                <option value="2500">2500</option>
-            </select>
+            <label for="cities">Kota (one per line):</label>
+            <textarea id="cities" rows="4"></textarea>
         </div>
 
         <div class="input-group">
@@ -136,8 +150,6 @@
             <label for="images">URL Gambar (one URL per line):</label>
             <textarea id="images" rows="4"></textarea>
         </div>
-
-        <button id="generatePrompt" class="btn">Generate Prompt</button>
     </div>
 
     <div class="prompt-output" id="promptOutput"></div>
@@ -148,20 +160,29 @@
             const customArticleType = document.getElementById('customArticleType');
             const styleSelect = document.getElementById('style');
             const customStyle = document.getElementById('customStyle');
-            const generateBtn = document.getElementById('generatePrompt');
             const promptOutput = document.getElementById('promptOutput');
+
+            // Get all input elements
+            const inputs = document.querySelectorAll('input, select, textarea');
 
             articleTypeSelect.addEventListener('change', function() {
                 customArticleType.style.display = this.value === 'custom' ? 'block' : 'none';
+                generatePrompt();
             });
 
             styleSelect.addEventListener('change', function() {
                 customStyle.style.display = this.value === 'custom' ? 'block' : 'none';
+                generatePrompt();
             });
 
-            generateBtn.addEventListener('click', generatePrompt);
+            // Add event listeners to all inputs
+            inputs.forEach(input => {
+                input.addEventListener('input', generatePrompt);
+                input.addEventListener('change', generatePrompt);
+            });
 
             function generatePrompt() {
+                const situs = document.getElementById('situs').value || '[SITUS]';
                 const gender = document.getElementById('gender').value;
                 const age = document.getElementById('age').value;
                 const cities = document.getElementById('cities').value.split('\n').filter(city => city.trim() !== '');
@@ -178,7 +199,7 @@
 Kamu adalah ${gender === 'Random' ? ['Pria', 'Wanita'][Math.floor(Math.random() * 2)] : gender} penulis artikel berusia ${age} tahun, berlokasi di ${selectedCity} dengan logat, dialek, cara bicara, dan fasih berbahasa daerah kota kamu.
 
 INSTRUKSI:
-Tulis ${articleType} yang SEO friendly berjudul '${title} ${selectedCity}' panjang ${wordCount} kata atau lebih dengan gaya bahasa ${style}. Kamu memanggil pembaca dengan sebutan sobat ${title.split(' ')[0]}.
+Tulis ${articleType} yang SEO friendly berjudul '${title} ${selectedCity}' panjang ${wordCount} kata atau lebih dengan gaya bahasa ${style}. Kamu memanggil pembaca dengan sebutan sobat ${situs}.
  
 Artikel mu kamu buat seperti layaknya kamu berbicara dan seperti percakapan agar tidak membosankan. Paragraf yang panjang kamu pecah menjadi paragraf pendek yang enak dibaca.
 
@@ -196,6 +217,9 @@ ${images.join('\n')}`;
 
                 promptOutput.textContent = prompt;
             }
+
+            // Initial generation
+            generatePrompt();
         });
     </script>
 </body>
