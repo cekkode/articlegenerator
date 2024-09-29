@@ -32,6 +32,10 @@
             flex: 1;
             min-width: 200px;
         }
+        .input-group-large {
+            flex: 2;
+            min-width: 300px;
+        }
         label {
             display: block;
             margin-bottom: 5px;
@@ -64,6 +68,10 @@
                 <label for="situs">Situs URL:</label>
                 <input type="text" id="situs" placeholder="e.g., example.com">
             </div>
+            <div class="input-group-large">
+                <label for="title">Judul:</label>
+                <input type="text" id="title">
+            </div>
         </div>
 
         <div class="input-row">
@@ -75,12 +83,10 @@
                     <option value="Random">Random</option>
                 </select>
             </div>
-
             <div class="input-group">
                 <label for="age">Usia (18-65):</label>
                 <input type="number" id="age" min="18" max="65" value="30">
             </div>
-
             <div class="input-group">
                 <label for="wordCount">Jumlah Kata:</label>
                 <select id="wordCount">
@@ -131,24 +137,19 @@
             </div>
         </div>
 
-        <div class="input-group">
-            <label for="title">Judul:</label>
-            <input type="text" id="title">
-        </div>
-
-        <div class="input-group">
-            <label for="cities">Kota (one per line):</label>
-            <textarea id="cities" rows="4"></textarea>
-        </div>
-
-        <div class="input-group">
-            <label for="references">Referensi (one URL per line):</label>
-            <textarea id="references" rows="4"></textarea>
-        </div>
-
-        <div class="input-group">
-            <label for="images">URL Gambar (one URL per line):</label>
-            <textarea id="images" rows="4"></textarea>
+        <div class="input-row">
+            <div class="input-group">
+                <label for="cities">Kota (one per line):</label>
+                <textarea id="cities" rows="4"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="references">Referensi (one URL per line):</label>
+                <textarea id="references" rows="4"></textarea>
+            </div>
+            <div class="input-group">
+                <label for="images">URL Gambar (one URL per line):</label>
+                <textarea id="images" rows="4"></textarea>
+            </div>
         </div>
     </div>
 
