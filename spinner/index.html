@@ -27,12 +27,16 @@
             gap: 15px;
             margin-bottom: 15px;
         }
-        .input-group {
+        .input-group-small {
             flex: 1;
+            min-width: 100px;
+        }
+        .input-group {
+            flex: 2;
             min-width: 200px;
         }
         .input-group-large {
-            flex: 2;
+            flex: 3;
             min-width: 300px;
         }
         label {
@@ -71,7 +75,7 @@
                 <label for="title">Judul:</label>
                 <input type="text" id="title">
             </div>
-            <div class="input-group"></div>
+            <div class="input-group-small"></div>
                 <label for="gender">Gender:</label>
                 <select id="gender">
                     <option value="Pria">Pria</option>
@@ -79,11 +83,11 @@
                     <option value="Random">Random</option>
                 </select>
             </div>
-            <div class="input-group">
+            <div class="input-group-small">
                 <label for="age">Usia (18-65):</label>
                 <input type="number" id="age" min="18" max="65" value="30">
             </div>
-            <div class="input-group">
+            <div class="input-group-small">
                 <label for="wordCount">Jumlah Kata:</label>
                 <select id="wordCount">
                     <option value="500">500</option>
