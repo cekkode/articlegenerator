@@ -1,21 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Find all forms on the page
-    const version = '1.0.1'; console.log("Form Sender Version: " + version);
+    const version = '1.0.2'; console.log("Form Sender Version: " + version);
     const forms = document.querySelectorAll('form');
     
     forms.forEach(form => {
         form.addEventListener('submit', function(e) {
-            // Don't prevent default form submission
-            
             // Check form validity
             if (!this.checkValidity()) {
-                return; // Exit if form is not valid
+                return;
             }
             
-            // Find WhatsApp link (excluding those with phone emoji)
+            // Find WhatsApp link (excluding those with phone emoji in URL)
             const whatsappLinks = Array.from(
                 document.querySelectorAll('a[href*="klik."], a[href*="link."], a[href*="whatsapp."], a[href*="what."]')
-            ).filter(link => !link.textContent.includes('📞'));
+            ).filter(link => !link.href.includes('📞') && !decodeURIComponent(link.href).includes('📞'));
             
             const whatsappLink = whatsappLinks.find(link => link.href);
             
@@ -30,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
             let hasAllRequired = true;
             
             formElements.forEach(element => {
-                // Skip hidden or non-displayed elements
                 if (element.type === 'hidden' || getComputedStyle(element).display === 'none') {
                     return;
                 }
@@ -38,25 +35,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 let label = '';
                 let value = element.value.trim();
                 
-                // Check if required field is empty
                 if (element.required && !value) {
                     hasAllRequired = false;
                     return;
                 }
                 
-                // Try to find label
                 const labelElement = form.querySelector(`label[for="${element.id}"]`);
                 if (labelElement) {
-                    // Remove any asterisks and trim
                     label = labelElement.textContent.replace('*', '').trim();
                 }
                 
-                // If no label found, try using placeholder as fallback
                 if (!label && element.placeholder) {
                     label = element.placeholder;
                 }
                 
-                // Handle special cases
                 if (element.classList.contains('wpforms-field-name-first') && element.value) {
                     const lastNameInput = form.querySelector('.wpforms-field-name-last');
                     const lastName = lastNameInput ? lastNameInput.value.trim() : '';
@@ -66,9 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                // Only add if we have both label and value
                 if (label && value) {
-                    // Add units if they exist in the label
                     if (label.toLowerCase().includes('tinggi') && !value.toLowerCase().includes('cm')) {
                         value += ' cm';
                     } else if (label.toLowerCase().includes('berat') && !value.toLowerCase().includes('kg')) {
@@ -79,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Only proceed if all required fields are filled
             if (!hasAllRequired) {
                 return;
             }
@@ -91,9 +80,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Create WhatsApp URL with encoded message
-            const encodedMessage = encodeURIComponent(message);
-            const whatsappUrl = new URL(whatsappLink.href);
-            whatsappUrl.searchParams.set('text', encodedMessage);
+            // Use the base URL without any existing parameters
+            const baseUrl = whatsappLink.href.split('?')[0];
+            const whatsappUrl = new URL(baseUrl);
+            
+            // Only encode the message once
+            whatsappUrl.searchParams.set('text', message);
             
             // Open WhatsApp link in new tab
             window.open(whatsappUrl.toString(), '_blank');
