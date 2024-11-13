@@ -118,10 +118,24 @@
             font-family: monospace;
             resize: vertical;
         }
+
+        .icon-button {
+            /* existing styles */
+            display: flex;  /* Add this */
+            align-items: center;  /* Add this */
+        }
+        .button-container {
+            /* existing styles */
+            display: flex;  /* Add this */
+            gap: 5px;  /* Add this */
+        }
+        #saveButton {
+            display: none;  /* Hidden by default */
+        }
     </style>
 </head>
 <body>
-    <h1>Prompt Generator v1.2.7</h1>
+    <h1>Prompt Generator v1.2.8</h1>
     
     <div class="input-section">
         <div class="input-row">
@@ -265,6 +279,14 @@
                 });
             });
 
+            // Add save button to HTML
+            const buttonContainer = document.querySelector('.button-container');
+            const saveButton = document.createElement('button');
+            saveButton.id = 'saveButton';
+            saveButton.className = 'icon-button';
+            saveButton.textContent = '💾';
+            buttonContainer.insertBefore(saveButton, copyButton);
+
             // Edit functionality
             editButton.addEventListener('click', () => {
                 if (!isEditing) {
@@ -274,21 +296,44 @@
                     promptOutput.replaceWith(textarea);
                     textarea.id = 'promptOutput';
                     promptOutput = textarea;
+                    
+                    // Show save button, change edit button to cancel
+                    saveButton.style.display = 'flex';
+                    editButton.textContent = '❌';
                 } else {
+                    // Cancel edit without saving
                     const div = document.createElement('div');
                     div.className = 'prompt-output';
-                    // Save the edited content
-                    div.textContent = promptOutput.value;  // Use .value since it's coming from textarea
+                    div.textContent = originalContent; // We'll store this when entering edit mode
                     promptOutput.replaceWith(div);
                     div.id = 'promptOutput';
                     promptOutput = div;
+                    
+                    // Hide save button, restore edit button
+                    saveButton.style.display = 'none';
+                    editButton.textContent = '✏️';
                 }
                 isEditing = !isEditing;
             });
 
+            // Save functionality
+            let originalContent = '';
+            saveButton.addEventListener('click', () => {
+                const div = document.createElement('div');
+                div.className = 'prompt-output';
+                div.textContent = promptOutput.value;  // Save the edited content
+                promptOutput.replaceWith(div);
+                div.id = 'promptOutput';
+                promptOutput = div;
+                
+                // Reset UI state
+                isEditing = false;
+                saveButton.style.display = 'none';
+                editButton.textContent = '✏️';
+            });
+
             // Copy functionality
             copyButton.addEventListener('click', () => {
-                // Always get content based on current state
                 const textToCopy = promptOutput.value || promptOutput.textContent;
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     // Optional: Add some visual feedback
