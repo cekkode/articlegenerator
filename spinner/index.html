@@ -54,16 +54,74 @@
         select {
             height: 35px;
         }
+
+        /* Add new styles for tabs */
+        .tabs {
+            margin-top: 20px;
+        }
+        .tab-list {
+            display: flex;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 15px;
+        }
+        .tab-button {
+            padding: 8px 16px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .tab-button.active {
+            border-bottom: 2px solid #000;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Styles for prompt output container */
+        .prompt-container {
+            position: relative;
+            margin-top: 20px;
+        }
+        .button-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+        }
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            margin-left: 5px;
+            font-size: 1.2em;
+        }
         .prompt-output {
-            background-color: #e9f7ef;
+            width: 100%;
+            min-height: 200px;
             padding: 20px;
-            border-radius: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
             white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .prompt-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: monospace;
+            resize: vertical;
         }
     </style>
 </head>
 <body>
-    <h1>Prompt Generator v1.2.5</h1>
+    <h1>Prompt Generator v1.2.6</h1>
     
     <div class="input-section">
         <div class="input-row">
@@ -150,7 +208,31 @@
         </div>
     </div>
 
-    <div class="prompt-output" id="promptOutput"></div>
+    <div class="tabs">
+        <div class="tab-list">
+            <button class="tab-button active" data-tab="prompt">Prompt</button>
+            <button class="tab-button" data-tab="result">Result</button>
+            <button class="tab-button" data-tab="bulk">Bulk</button>
+        </div>
+        
+        <div id="promptTab" class="tab-content active">
+            <div class="prompt-container">
+                <div class="button-container">
+                    <button class="icon-button" id="editButton">✏️</button>
+                    <button class="icon-button" id="copyButton">📋</button>
+                </div>
+                <div id="promptOutput" class="prompt-output"></div>
+            </div>
+        </div>
+        
+        <div id="resultTab" class="tab-content">
+            <p>Result tab content will be added in the next iteration</p>
+        </div>
+        
+        <div id="bulkTab" class="tab-content">
+            <p>Bulk tab content will be added in the next iteration</p>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -159,9 +241,63 @@
             const styleSelect = document.getElementById('style');
             const customStyle = document.getElementById('customStyle');
             const promptOutput = document.getElementById('promptOutput');
+            const editButton = document.getElementById('editButton');
+            const copyButton = document.getElementById('copyButton');
+            let isEditing = false;
 
             // Get all input elements
             const inputs = document.querySelectorAll('input, select, textarea');
+
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    // Update active states
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    button.classList.add('active');
+                    document.getElementById(tabId + 'Tab').classList.add('active');
+                });
+            });
+
+            // Edit functionality
+            editButton.addEventListener('click', () => {
+                if (!isEditing) {
+                    const textarea = document.createElement('textarea');
+                    textarea.className = 'prompt-textarea';
+                    textarea.value = promptOutput.textContent;
+                    promptOutput.replaceWith(textarea);
+                    textarea.id = 'promptOutput';
+                    promptOutput = textarea;
+                } else {
+                    const div = document.createElement('div');
+                    div.className = 'prompt-output';
+                    div.textContent = promptOutput.value;
+                    promptOutput.replaceWith(div);
+                    div.id = 'promptOutput';
+                    promptOutput = div;
+                }
+                isEditing = !isEditing;
+            });
+
+            // Copy functionality
+            copyButton.addEventListener('click', () => {
+                const textToCopy = isEditing ? promptOutput.value : promptOutput.textContent;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    // Optional: Add some visual feedback
+                    copyButton.textContent = '✔️';
+                    setTimeout(() => {
+                        copyButton.textContent = '📋';
+                    }, 1000);
+                }).catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+            });
 
             articleTypeSelect.addEventListener('change', function() {
                 customArticleType.style.display = this.value === 'custom' ? 'block' : 'none';
@@ -213,7 +349,11 @@ GAMBAR:
 Pastikan di badan artikel kamu beri gambar berikut ini:
 ${images.join('\n')}`;
 
-                promptOutput.textContent = prompt;
+                if (isEditing) {
+                    promptOutput.value = prompt;
+                } else {
+                    promptOutput.textContent = prompt;
+                }
             }
 
             // Initial generation
