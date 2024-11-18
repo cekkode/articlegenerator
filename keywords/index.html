@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyword Multiplier</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    textarea {
+      width: 23%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: none;
+      box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+      transition: border 0.2s ease;
+    }
+    textarea:focus {
+      border-color: #007BFF;
+      outline: none;
+    }
+    #result {
+      width: 100%;
+      height: 150px;
+      margin-top: 10px;
+    }
+    .message {
+      margin-top: 5px;
+      color: green;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Keyword Multiplier</h1>
+  <p>Input keywords in the text areas below. The results are displayed and updated in real-time.</p>
+  <div class="container">
+    <textarea id="textarea1" placeholder="Text Area 1"></textarea>
+    <textarea id="textarea2" placeholder="Text Area 2"></textarea>
+    <textarea id="textarea3" placeholder="Text Area 3"></textarea>
+    <textarea id="textarea4" placeholder="Text Area 4"></textarea>
+  </div>
+  <textarea id="result" placeholder="Result (Click to Copy)" readonly></textarea>
+  <div class="message" id="copyMessage">Copied to clipboard!</div>
+
+  <script>
+    const textAreas = Array.from(document.querySelectorAll('textarea[id^="textarea"]'));
+    const resultArea = document.getElementById('result');
+    const copyMessage = document.getElementById('copyMessage');
+
+    // Function to generate multiplied keywords
+    function multiplyKeywords() {
+      const inputs = textAreas.map(textarea => textarea.value.split('\n').filter(line => line.trim()));
+      if (inputs.some(input => input.length === 0)) {
+        resultArea.value = '';
+        return;
+      }
+      const combinations = inputs.reduce((a, b) => a.flatMap(x => b.map(y => `${x} ${y}`)));
+      resultArea.value = combinations.join('\n');
+    }
+
+    // Event listeners for text areas
+    textAreas.forEach(textarea => {
+      textarea.addEventListener('input', multiplyKeywords);
+    });
+
+    // Copy to clipboard
+    resultArea.addEventListener('click', () => {
+      navigator.clipboard.writeText(resultArea.value).then(() => {
+        copyMessage.style.display = 'block';
+        setTimeout(() => (copyMessage.style.display = 'none'), 1500);
+      });
+    });
+
+    // Toggle between input and selection modes
+    textAreas.forEach(textarea => {
+      textarea.addEventListener('focus', () => textarea.removeAttribute('readonly'));
+      textarea.addEventListener('blur', () => textarea.setAttribute('readonly', 'true'));
+    });
+
+    // Initial setup: make all text areas readonly by default
+    textAreas.forEach(textarea => textarea.setAttribute('readonly', 'true'));
+  </script>
+
+</body>
+</html>
