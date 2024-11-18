@@ -52,7 +52,7 @@
 </head>
 <body>
 
-  <h1>Keyword Multiplier v.1.1</h1>
+  <h1>Keyword Multiplier v1.2</h1>
   <p>Input keywords in the text areas below. The results are displayed and updated in real-time.</p>
   <div class="container">
     <textarea id="textarea1" placeholder="Text Area 1"></textarea>
@@ -70,13 +70,17 @@
 
     // Function to generate multiplied keywords
     function multiplyKeywords() {
-      const inputs = textAreas.map(textarea => textarea.value.split('\n').filter(line => line.trim()));
-      if (inputs.some(input => input.length === 0)) {
-        resultArea.value = '';
-        return;
-      }
-      const combinations = inputs.reduce((a, b) => a.flatMap(x => b.map(y => `${x} ${y}`)));
-      resultArea.value = combinations.join('\n');
+      const inputs = textAreas.map(textarea =>
+        textarea.value
+          .split('\n')
+          .filter(line => line.trim() !== '') || ['']
+      );
+
+      const combinations = inputs.reduce(
+        (a, b) => a.flatMap(x => b.map(y => `${x} ${y}`)),
+        ['']
+      );
+      resultArea.value = combinations.join('\n').trim();
     }
 
     // Event listeners for text areas
