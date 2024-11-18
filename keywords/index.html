@@ -11,11 +11,13 @@
     }
     .container {
       display: flex;
+      justify-content: space-between;
       gap: 10px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
     }
     textarea {
-      width: 23%;
+      flex: 1;
+      min-width: 0;
       height: 100px;
       padding: 10px;
       border: 1px solid #ccc;
@@ -38,11 +40,19 @@
       color: green;
       display: none;
     }
+    @media (max-width: 768px) {
+      .container {
+        flex-wrap: wrap;
+      }
+      textarea {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <h1>Keyword Multiplier</h1>
+  <h1>Keyword Multiplier v.1.1</h1>
   <p>Input keywords in the text areas below. The results are displayed and updated in real-time.</p>
   <div class="container">
     <textarea id="textarea1" placeholder="Text Area 1"></textarea>
@@ -72,6 +82,7 @@
     // Event listeners for text areas
     textAreas.forEach(textarea => {
       textarea.addEventListener('input', multiplyKeywords);
+      textarea.addEventListener('paste', () => setTimeout(multiplyKeywords, 0));
     });
 
     // Copy to clipboard
