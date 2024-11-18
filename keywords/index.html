@@ -40,6 +40,11 @@
       color: green;
       display: none;
     }
+    .counter {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #333;
+    }
     @media (max-width: 768px) {
       .container {
         flex-wrap: wrap;
@@ -52,7 +57,7 @@
 </head>
 <body>
 
-  <h1>Keyword Multiplier v1.2</h1>
+  <h1>Keyword Multiplier v1.3</h1>
   <p>Input keywords in the text areas below. The results are displayed and updated in real-time.</p>
   <div class="container">
     <textarea id="textarea1" placeholder="Text Area 1"></textarea>
@@ -61,26 +66,34 @@
     <textarea id="textarea4" placeholder="Text Area 4"></textarea>
   </div>
   <textarea id="result" placeholder="Result (Click to Copy)" readonly></textarea>
+  <div class="counter" id="keywordCounter">Total Keywords: 0</div>
   <div class="message" id="copyMessage">Copied to clipboard!</div>
 
   <script>
     const textAreas = Array.from(document.querySelectorAll('textarea[id^="textarea"]'));
     const resultArea = document.getElementById('result');
     const copyMessage = document.getElementById('copyMessage');
+    const keywordCounter = document.getElementById('keywordCounter');
 
     // Function to generate multiplied keywords
     function multiplyKeywords() {
-      const inputs = textAreas.map(textarea =>
-        textarea.value
+      const inputs = textAreas.map(textarea => {
+        const lines = textarea.value
           .split('\n')
-          .filter(line => line.trim() !== '') || ['']
-      );
+          .map(line => line.trim()) // Remove extra spaces
+          .filter(line => line !== ''); // Exclude empty lines
+        return lines.length > 0 ? lines : ['']; // Use [''] if the area is empty
+      });
 
+      // Generate combinations
       const combinations = inputs.reduce(
-        (a, b) => a.flatMap(x => b.map(y => `${x} ${y}`)),
+        (a, b) => a.flatMap(x => b.map(y => `${x} ${y}`.trim())),
         ['']
       );
-      resultArea.value = combinations.join('\n').trim();
+
+      // Remove leading/trailing spaces, update result, and keyword count
+      resultArea.value = combinations.join('\n');
+      keywordCounter.textContent = `Total Keywords: ${combinations.filter(k => k.trim() !== '').length}`;
     }
 
     // Event listeners for text areas
