@@ -11,8 +11,14 @@
     }
     .container {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       gap: 10px;
+    }
+    .lines-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
     .line-container {
       display: flex;
@@ -24,6 +30,7 @@
       transform: scale(1.2);
     }
     textarea {
+      flex: 1;
       width: 100%;
       height: 150px;
       padding: 10px;
@@ -42,6 +49,9 @@
       color: #333;
     }
     @media (max-width: 768px) {
+      .container {
+        flex-wrap: wrap;
+      }
       textarea {
         width: 100%;
       }
@@ -50,42 +60,45 @@
 </head>
 <body>
 
-<h1>Keyword Multiplier with Checkboxes</h1>
+<h1>Keyword Multiplier with Checkboxes v1.1</h1>
 <p>Select which lines to include in the keyword multiplication.</p>
-<div id="textareaContainer"></div>
-<button id="addTextArea">Add Text Area</button>
-<textarea id="result" placeholder="Result (Click to Copy)" readonly></textarea>
+<div class="container" id="textareaContainer"></div>
+<div class="container">
+  <textarea id="result" placeholder="Result (Click to Copy)" readonly></textarea>
+</div>
 <div class="counter" id="keywordCounter">Total Keywords: 0</div>
 
 <script>
   const container = document.getElementById('textareaContainer');
   const resultArea = document.getElementById('result');
   const keywordCounter = document.getElementById('keywordCounter');
-  const addTextAreaButton = document.getElementById('addTextArea');
 
-  function createTextArea() {
-    const textAreaWrapper = document.createElement('div');
-    textAreaWrapper.className = 'container';
+  // Create 4 fixed text areas with checkboxes for each line
+  function initializeTextAreas() {
+    for (let i = 1; i <= 4; i++) {
+      const linesContainer = document.createElement('div');
+      linesContainer.className = 'lines-container';
 
-    const textArea = document.createElement('textarea');
-    textArea.placeholder = 'Enter keywords here...';
-    textArea.addEventListener('input', updateLines);
+      const textArea = document.createElement('textarea');
+      textArea.placeholder = `Text Area ${i}`;
+      textArea.addEventListener('input', updateLines);
 
-    const linesContainer = document.createElement('div');
-    linesContainer.className = 'lines-container';
+      linesContainer.appendChild(textArea);
+      container.appendChild(linesContainer);
 
-    textAreaWrapper.appendChild(textArea);
-    textAreaWrapper.appendChild(linesContainer);
-
-    container.appendChild(textAreaWrapper);
-
-    // Initialize with a single empty line
-    updateLines.call(textArea);
+      // Initialize with a single empty line
+      updateLines.call(textArea);
+    }
   }
 
   function updateLines() {
-    const linesContainer = this.nextElementSibling;
+    const linesContainer = this.parentElement;
     linesContainer.innerHTML = ''; // Clear existing lines
+
+    const textArea = document.createElement('textarea');
+    textArea.value = this.value;
+    textArea.placeholder = this.placeholder;
+    textArea.addEventListener('input', updateLines);
 
     const lines = this.value.split('\n');
     lines.forEach((line, index) => {
@@ -107,6 +120,8 @@
       lineContainer.appendChild(lineText);
       linesContainer.appendChild(lineContainer);
     });
+
+    linesContainer.insertBefore(textArea, linesContainer.firstChild);
 
     multiplyKeywords();
   }
@@ -132,11 +147,8 @@
     keywordCounter.textContent = `Total Keywords: ${combinations.filter(k => k.trim() !== '').length}`;
   }
 
-  // Add the first text area on load
-  createTextArea();
-
-  // Add more text areas
-  addTextAreaButton.addEventListener('click', createTextArea);
+  // Add the initial 4 text areas on load
+  initializeTextAreas();
 </script>
 
 </body>
