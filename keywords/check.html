@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keyword Multiplier with Checkboxes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .line-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .checkbox {
+      margin: 0;
+      transform: scale(1.2);
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: none;
+    }
+    #result {
+      width: 100%;
+      height: 150px;
+      margin-top: 10px;
+    }
+    .counter {
+      margin-top: 5px;
+      font-size: 14px;
+      color: #333;
+    }
+    @media (max-width: 768px) {
+      textarea {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Keyword Multiplier with Checkboxes</h1>
+<p>Select which lines to include in the keyword multiplication.</p>
+<div id="textareaContainer"></div>
+<button id="addTextArea">Add Text Area</button>
+<textarea id="result" placeholder="Result (Click to Copy)" readonly></textarea>
+<div class="counter" id="keywordCounter">Total Keywords: 0</div>
+
+<script>
+  const container = document.getElementById('textareaContainer');
+  const resultArea = document.getElementById('result');
+  const keywordCounter = document.getElementById('keywordCounter');
+  const addTextAreaButton = document.getElementById('addTextArea');
+
+  function createTextArea() {
+    const textAreaWrapper = document.createElement('div');
+    textAreaWrapper.className = 'container';
+
+    const textArea = document.createElement('textarea');
+    textArea.placeholder = 'Enter keywords here...';
+    textArea.addEventListener('input', updateLines);
+
+    const linesContainer = document.createElement('div');
+    linesContainer.className = 'lines-container';
+
+    textAreaWrapper.appendChild(textArea);
+    textAreaWrapper.appendChild(linesContainer);
+
+    container.appendChild(textAreaWrapper);
+
+    // Initialize with a single empty line
+    updateLines.call(textArea);
+  }
+
+  function updateLines() {
+    const linesContainer = this.nextElementSibling;
+    linesContainer.innerHTML = ''; // Clear existing lines
+
+    const lines = this.value.split('\n');
+    lines.forEach((line, index) => {
+      const lineContainer = document.createElement('div');
+      lineContainer.className = 'line-container';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'checkbox';
+      checkbox.checked = true;
+
+      const lineText = document.createElement('span');
+      lineText.textContent = line.trim();
+      lineText.style.flex = '1';
+
+      checkbox.addEventListener('change', multiplyKeywords);
+
+      lineContainer.appendChild(checkbox);
+      lineContainer.appendChild(lineText);
+      linesContainer.appendChild(lineContainer);
+    });
+
+    multiplyKeywords();
+  }
+
+  function multiplyKeywords() {
+    const allInputs = Array.from(container.querySelectorAll('.lines-container'));
+
+    // Collect checked lines from all text areas
+    const inputs = allInputs.map(linesContainer =>
+      Array.from(linesContainer.querySelectorAll('.line-container'))
+        .filter(lineContainer => lineContainer.querySelector('.checkbox').checked)
+        .map(lineContainer => lineContainer.querySelector('span').textContent.trim())
+    );
+
+    // Generate combinations
+    const combinations = inputs.reduce(
+      (a, b) => a.flatMap(x => b.map(y => `${x} ${y}`.trim())),
+      ['']
+    );
+
+    // Update results and keyword counter
+    resultArea.value = combinations.join('\n');
+    keywordCounter.textContent = `Total Keywords: ${combinations.filter(k => k.trim() !== '').length}`;
+  }
+
+  // Add the first text area on load
+  createTextArea();
+
+  // Add more text areas
+  addTextAreaButton.addEventListener('click', createTextArea);
+</script>
+
+</body>
+</html>
