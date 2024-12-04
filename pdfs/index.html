@@ -3,198 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URL to PDF Converter</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .container {
-            display: flex;
-            gap: 20px;
-            flex-grow: 1;
-            overflow: hidden;
-        }
-        .urls-section {
-            width: 40%;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        #urlList {
-            width: 100%;
-            height: 300px;
-            resize: vertical;
-            padding: 10px;
-        }
-        .preview-section {
-            width: 60%;
-            border: 1px solid #ddd;
-            overflow-y: auto;
-            position: relative;
-        }
-        #progressContainer {
-            padding: 20px;
-            text-align: center;
-        }
-        .url-status {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        .status-pending { color: gray; }
-        .status-processing { color: blue; }
-        .status-completed { color: green; }
-        .status-error { color: red; }
-        .controls {
-            display: flex;
-            justify-content: center;
-            padding: 20px 0;
-        }
-        #convertToPdf {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        #convertToPdf:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        #iframeContainer {
-            position: absolute;
-            width: 0;
-            height: 0;
-            overflow: hidden;
-        }
-    </style>
+    <title>PDF Processor & Uploader v1</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <div class="urls-section">
-            <textarea id="urlList" placeholder="Enter URLs (one per line)"></textarea>
-            <div id="urlStatusList"></div>
-        </div>
-        <div class="preview-section">
-            <div id="progressContainer">
-                Ready to convert URLs to PDFs
-            </div>
-        </div>
-    </div>
-    <div class="controls">
-        <button id="convertToPdf">Convert URLs to PDFs</button>
-    </div>
-
-    <div id="iframeContainer"></div>
-
-    <script>
-        const urlListTextarea = document.getElementById('urlList');
-        const urlStatusList = document.getElementById('urlStatusList');
-        const progressContainer = document.getElementById('progressContainer');
-        const iframeContainer = document.getElementById('iframeContainer');
-        const convertToPdfButton = document.getElementById('convertToPdf');
-
-        convertToPdfButton.addEventListener('click', startUrlProcessing);
-
-        async function startUrlProcessing() {
-            const urls = urlListTextarea.value.split('\n').filter(url => url.trim());
+        <h1>PDF Processor</h1>
+        <form id="pdfForm">
+            <label for="printfriendlyApiKey">PrintFriendly API Key:</label>
+            <input type="text" id="printfriendlyApiKey" name="printfriendlyApiKey" required>
             
-            convertToPdfButton.disabled = true;
-            progressContainer.innerHTML = `Processing ${urls.length} URLs...`;
-            urlStatusList.innerHTML = '';
+            <label for="googleDriveApiKey">Google Drive API Key:</label>
+            <input type="text" id="googleDriveApiKey" name="googleDriveApiKey" required>
 
-            // Prepare status display
-            urls.forEach((url, index) => {
-                const statusElement = document.createElement('div');
-                statusElement.classList.add('url-status');
-                statusElement.innerHTML = `
-                    <span>${url}</span>
-                    <span class="status-pending">Pending</span>
-                `;
-                statusElement.id = `url-status-${index}`;
-                urlStatusList.appendChild(statusElement);
-            });
-
-            // Process URLs sequentially
-            for (let i = 0; i < urls.length; i++) {
-                try {
-                    await processUrlToPdf(urls[i], i);
-                } catch (error) {
-                    console.error(`Error processing ${urls[i]}:`, error);
-                    updateUrlStatus(i, 'error', 'Failed');
-                }
-            }
-
-            progressContainer.innerHTML = 'All URLs processed';
-            convertToPdfButton.disabled = false;
-        }
-
-        function processUrlToPdf(url, index) {
-            return new Promise((resolve, reject) => {
-                updateUrlStatus(index, 'processing', 'Processing');
-
-                const iframe = document.createElement('iframe');
-                iframe.src = url;
-                iframe.style.width = '100%';
-                iframe.style.height = '500px';
-                iframeContainer.appendChild(iframe);
-
-                iframe.onload = () => {
-                    try {
-                        const contentArea = 
-                            iframe.contentDocument.querySelector('.content-area, article, main, .article') || 
-                            iframe.contentDocument.body;
-
-                        convertToPdf(contentArea, url);
-                        updateUrlStatus(index, 'completed', 'Completed');
-                        iframeContainer.removeChild(iframe);
-                        resolve();
-                    } catch (error) {
-                        updateUrlStatus(index, 'error', 'Content Extraction Failed');
-                        reject(error);
-                    }
-                };
-
-                iframe.onerror = () => {
-                    updateUrlStatus(index, 'error', 'Load Failed');
-                    reject(new Error('Iframe load failed'));
-                };
-            });
-        }
-
-        function updateUrlStatus(index, statusClass, statusText) {
-            const statusElement = document.getElementById(`url-status-${index}`);
-            if (statusElement) {
-                statusElement.querySelector('span:last-child').textContent = statusText;
-                statusElement.querySelector('span:last-child').className = `status-${statusClass}`;
-            }
-        }
-
-        function convertToPdf(element, url) {
-            const opt = {
-                margin: [10, 10, 10, 10],
-                filename: `${new URL(url).hostname}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(element).save();
-        }
-    </script>
+            <label for="urls">URLs (one per line):</label>
+            <textarea id="urls" name="urls" rows="10" required></textarea>
+            
+            <button type="button" id="turnPdfButton">Turn PDF</button>
+        </form>
+        <div id="status"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
