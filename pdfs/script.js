@@ -9,14 +9,16 @@ document.getElementById('turnPdfButton').addEventListener('click', async () => {
     const folderName = `pdf_${timestamp}`;
 
     try {
-        // Function to create a folder in Google Drive (You'll need to implement this)
         const folderId = await createGoogleDriveFolder(googleDriveApiKey, folderName);
-
-        for (const url of urls) {
+        for (let i = 0; i < urls.length; i++) {
+            const url = urls[i];
+            status.innerHTML = `Processing: ${url} (${i + 1}/${urls.length})<br>`;
             const pdfUrl = await createPdf(printfriendlyApiKey, url);
-            await uploadToGoogleDrive(googleDriveApiKey, folderId, pdfUrl);
-            status.innerHTML += `Successfully processed: ${url}<br>`;
+            await new Promise(resolve => setTimeout(resolve, 1500)); // Respecting rate limit
+            await uploadToGoogleDrive(googleDriveApiKey, folderId, pdfUrl, url);
+            status.innerHTML += `Successfully uploaded: ${url}<br>`;
         }
+        status.innerHTML += `All files processed successfully!`;
     } catch (error) {
         status.innerHTML = `Error: ${error.message}`;
     }
@@ -33,7 +35,50 @@ async function createPdf(apiKey, url) {
     return data.file_url;
 }
 
-async function uploadToGoogleDrive(apiKey, folderId, fileUrl) {
-    // Function to upload a file to Google Drive (You'll need to implement this)
-    // You can use Google Drive API for this part
+async function createGoogleDriveFolder(apiKey, folderName) {
+    const response = await fetch('https://www.googleapis.com/drive/v3/files', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: folderName,
+            mimeType: 'application/vnd.google-apps.folder'
+        })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error('Failed to create folder');
+    return data.id;
+}
+
+async function uploadToGoogleDrive(apiKey, folderId, fileUrl, originalUrl) {
+    const fileName = originalUrl.replace(/\.|\//g, '-') + '.pdf';
+    const response = await fetch(fileUrl);
+    const fileBlob = await response.blob();
+    
+    const uploadResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files?uploadType=media`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/pdf',
+            'Content-Length': fileBlob.size
+        },
+        body: fileBlob
+    });
+    const fileData = await uploadResponse.json();
+    if (!uploadResponse.ok) throw new Error('Failed to upload file');
+    
+    // Move file to the created folder
+    await fetch(`https://www.googleapis.com/drive/v3/files/${fileData.id}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: fileName,
+            parents: [folderId]
+        })
+    });
 }
