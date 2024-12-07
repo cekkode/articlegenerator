@@ -1,6 +1,6 @@
 // Load OAuth 2.0 client credentials from JSON
 const { client_id, client_secret, redirect_uris, auth_uri, token_uri } = JSON.parse(
-    process.env.GOOGLE_OAUTH_CREDENTIALS
+    window.env.GOOGLE_OAUTH_CREDENTIALS
   );
 
 document.getElementById('turnPdfButton').addEventListener('click', async () => {
