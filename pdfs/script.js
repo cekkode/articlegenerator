@@ -1,3 +1,8 @@
+// Load OAuth 2.0 client credentials from JSON
+const { client_id, client_secret, redirect_uris, auth_uri, token_uri } = JSON.parse(
+    process.env.GOOGLE_OAUTH_CREDENTIALS
+  );
+
 document.getElementById('turnPdfButton').addEventListener('click', async () => {
     const printfriendlyApiKey = document.getElementById('printfriendlyApiKey').value;
     const googleDriveApiKey = document.getElementById('googleDriveApiKey').value;
@@ -13,8 +18,10 @@ document.getElementById('turnPdfButton').addEventListener('click', async () => {
         for (let i = 0; i < urls.length; i++) {
             const url = urls[i];
             status.innerHTML = `Processing: ${url} (${i + 1}/${urls.length})<br>`;
+            updateProgress(i, urls.length); // Update the progress bar
+          
             const pdfUrl = await createPdf(printfriendlyApiKey, url);
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Respecting rate limit
+            await new Promise((resolve) => setTimeout(resolve, 1200)); // Respecting rate limit
             await uploadToGoogleDrive(googleDriveApiKey, folderId, pdfUrl, url);
             status.innerHTML += `Successfully uploaded: ${url}<br>`;
         }
@@ -56,8 +63,9 @@ async function uploadToGoogleDrive(apiKey, folderId, fileUrl, originalUrl) {
     const fileName = originalUrl.replace(/\.|\//g, '-') + '.pdf';
     const response = await fetch(fileUrl);
     const fileBlob = await response.blob();
-    
-    const uploadResponse = await fetch(`https://www.googleapis.com/upload/drive/v3/files?uploadType=media`, {
+  
+    const uploadResponse = await retryWithBackoff(async () => {
+      const res = await fetch(`https://www.googleapis.com/upload/drive/v3/files?uploadType=media`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${apiKey}`,
@@ -66,11 +74,12 @@ async function uploadToGoogleDrive(apiKey, folderId, fileUrl, originalUrl) {
         },
         body: fileBlob
     });
-    const fileData = await uploadResponse.json();
-    if (!uploadResponse.ok) throw new Error('Failed to upload file');
-    
+    if (!res.ok) throw new Error(`Failed to upload file: ${res.status} - ${res.statusText}`);
+    return await res.json();
+});
+  
     // Move file to the created folder
-    await fetch(`https://www.googleapis.com/drive/v3/files/${fileData.id}`, {
+    await fetch(`https://www.googleapis.com/drive/v3/files/${uploadResponse.id}`, {
         method: 'PATCH',
         headers: {
             'Authorization': `Bearer ${apiKey}`,
@@ -82,3 +91,51 @@ async function uploadToGoogleDrive(apiKey, folderId, fileUrl, originalUrl) {
         })
     });
 }
+
+const progressIndicator = document.getElementById('progress-indicator');
+const progressBar = document.getElementById('progress-bar');
+
+// Update the progress bar during file processing
+const updateProgress = (currentIndex, totalFiles) => {
+  const progress = (currentIndex / totalFiles) * 100;
+  progressIndicator.style.width = `${progress}%`;
+};
+
+// Reset the progress bar
+const resetProgress = () => {
+  progressIndicator.style.width = '0%';
+};
+
+const cancelButton = document.getElementById('cancelButton');
+let processingActive = false;
+
+// Toggle the cancel button visibility and processing state
+const toggleCancelButton = (visible) => {
+  cancelButton.style.display = visible ? 'inline' : 'none';
+  processingActive = visible;
+};
+
+// Add click handler for the cancel button
+cancelButton.addEventListener('click', () => {
+  toggleCancelButton(false);
+  status.innerHTML = 'Processing cancelled.';
+  resetProgress();
+});
+
+async function retryWithBackoff(fn, maxRetries = 3, initialDelay = 1000) {
+    let retries = 0;
+    let delay = initialDelay;
+  
+    while (retries < maxRetries) {
+      try {
+        return await fn();
+      } catch (error) {
+        retries++;
+        status.innerHTML += `Retry attempt ${retries}/${maxRetries} - ${error.message}<br>`;
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        delay *= 2; // Exponential backoff
+      }
+    }
+  
+    throw new Error('Maximum retries reached. Unable to complete the operation.');
+  }
