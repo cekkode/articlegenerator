@@ -1,3 +1,5 @@
+const scriptVer = '1.2'; console.log("Ver: " + scriptVer);
+
 // Load OAuth 2.0 client credentials from JSON
 const { client_id, client_secret, redirect_uris, auth_uri, token_uri } = JSON.parse(
     window.env.GOOGLE_OAUTH_CREDENTIALS
