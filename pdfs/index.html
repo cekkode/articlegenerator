@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Processor & Uploader v1</title>
+    <title>PDF Processor & Uploader v1.1</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,8 +20,12 @@
             <textarea id="urls" name="urls" rows="10" required></textarea>
             
             <button type="button" id="turnPdfButton">Turn PDF</button>
+            <button type="button" id="cancelButton" style="display: none;">Cancel</button>
         </form>
         <div id="status"></div>
+        <div id="progress-bar" class="progress-bar">
+            <div id="progress-indicator" class="progress-indicator"></div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
