@@ -1,9 +1,8 @@
-const scriptVer = '1.3'; console.log("Ver: " + scriptVer);
+const scriptVer = '1.4'; console.log("Ver: " + scriptVer);
 
-// Load OAuth 2.0 client credentials from JSON
-const { client_id, client_secret, redirect_uris, auth_uri, token_uri } = JSON.parse(
-    window.env.GOOGLE_OAUTH_CREDENTIALS
-);
+// Load OAuth 2.0 client credentials from JSON input
+const googleOauthCredentials = document.getElementById('googleOauthCredentials').value;
+const { client_id, client_secret, redirect_uris, auth_uri, token_uri } = JSON.parse(googleOauthCredentials);
 
 document.getElementById('turnPdfButton').addEventListener('click', async () => {
   const printfriendlyApiKey = document.getElementById('printfriendlyApiKey').value;
@@ -156,26 +155,41 @@ async function retryWithBackoff(fn, maxRetries = 3, initialDelay = 1000) {
   throw new Error('Maximum retries reached. Unable to complete the operation.');
 }
 
+// Function to validate and parse OAuth credentials
+function parseAndValidateOAuthCredentials(credentialsJson) {
+  try {
+      const credentials = JSON.parse(credentialsJson);
+      
+      // Validate required fields
+      const requiredFields = ['client_id', 'client_secret', 'redirect_uris', 'auth_uri', 'token_uri'];
+      const missingFields = requiredFields.filter(field => !credentials[field]);
+      
+      if (missingFields.length > 0) {
+          throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+      }
+      
+      return credentials;
+  } catch (error) {
+      alert(`Invalid OAuth Credentials: ${error.message}`);
+      return null;
+  }
+}
+
 // Function to save credentials to localStorage
 function saveCredentials() {
   const printfriendlyApiKey = document.getElementById('printfriendlyApiKey').value;
   const googleDriveApiKey = document.getElementById('googleDriveApiKey').value;
   const googleOauthCredentials = document.getElementById('googleOauthCredentials').value;
 
-  // Validate inputs before saving
-  if (printfriendlyApiKey && googleDriveApiKey && googleOauthCredentials) {
-      try {
-          // Parse OAuth credentials to ensure it's valid JSON
-          JSON.parse(googleOauthCredentials);
-
-          localStorage.setItem('printfriendlyApiKey', printfriendlyApiKey);
-          localStorage.setItem('googleDriveApiKey', googleDriveApiKey);
-          localStorage.setItem('googleOauthCredentials', googleOauthCredentials);
-          
-          alert('Credentials saved successfully!');
-      } catch (error) {
-          alert('Invalid Google OAuth Credentials JSON');
-      }
+  // Validate OAuth credentials before saving
+  const parsedCredentials = parseAndValidateOAuthCredentials(googleOauthCredentials);
+  
+  if (printfriendlyApiKey && googleDriveApiKey && parsedCredentials) {
+      localStorage.setItem('printfriendlyApiKey', printfriendlyApiKey);
+      localStorage.setItem('googleDriveApiKey', googleDriveApiKey);
+      localStorage.setItem('googleOauthCredentials', googleOauthCredentials);
+      
+      alert('Credentials saved successfully!');
   }
 }
 
@@ -199,7 +213,33 @@ document.getElementById('turnPdfButton').addEventListener('click', async () => {
   // Parse OAuth credentials
   const { client_id, client_secret, redirect_uris, auth_uri, token_uri } = JSON.parse(googleOauthCredentials);
 
-  // Rest of the existing script remains the same...
+  const urls = document.getElementById('urls').value.split('\n');
+  const status = document.getElementById('status');
+  status.innerHTML = '';
+
+  const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+  const folderName = `pdf_${timestamp}`;
+
+  try {
+      const folderId = await createGoogleDriveFolder(googleDriveApiKey, folderName);
+      for (let i = 0; i < urls.length; i++) {
+          const url = urls[i];
+          status.innerHTML = `Processing: ${url} (${i + 1}/${urls.length})<br>`;
+          updateProgress(i, urls.length); // Update the progress bar
+        
+          const pdfUrl = await createPdf(printfriendlyApiKey, url);
+          await new Promise((resolve) => setTimeout(resolve, 1200)); // Respecting rate limit
+          await uploadToGoogleDrive(googleDriveApiKey, folderId, pdfUrl, url);
+          status.innerHTML += `Successfully uploaded: ${url}<br>`;
+      }
+      status.innerHTML += `All files processed successfully!`;
+      toggleCancelButton(false);
+      resetProgress();
+  } catch (error) {
+      status.innerHTML = `Error: ${error.message}`;
+      toggleCancelButton(false);
+      resetProgress();
+  }
 });
 
 // Load saved credentials when the page loads
