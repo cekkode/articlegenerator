@@ -29,7 +29,7 @@
     </style>
 </head>
 <body>
-    <h1>SpeedyIndex Tool v1</h1>
+    <h1>SpeedyIndex Tool v1.2</h1>
     <div class="balance-container">
     	Balance: <span id="balance-display">Loading...</span>
     </div>
@@ -106,22 +106,35 @@
         const qtyInvoiceInput = document.getElementById('qty-invoice');
 		const createInvoiceBtn = document.getElementById('create-invoice-btn');
         let currentBalance;
+		let currentTasks;
 
 
-        // Load API key and tasks from storage
+        // Load API key from storage
         let apiKey = localStorage.getItem('apiKey') || '';
-		let savedTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
         apiKeyInput.value = apiKey;
 		
-        // --- Balance ---
+		
+		// Initial data load
+		if(apiKey){
+			init();
+		}
+		
+		async function init(){
+			await updateBalance();
+			await updateTaskList();
+		}
+
+		 // --- Balance ---
 		async function updateBalance(){
 			try{
 				currentBalance = await fetchBalance();
 				balanceDisplay.textContent = `Indexer: ${currentBalance.indexer}, Checker: ${currentBalance.checker}`;
+				
 			}catch(err){
 				balanceDisplay.textContent = `Failed to load balance`;
+				console.error('Failed to load balance', err);
+				currentBalance = null;
 			}
-			
 		}
 
 		async function fetchBalance() {
@@ -143,16 +156,13 @@
 			const data = await response.json();
 			return data.balance;
 		}
-
-		//Update balance when page loaded
-		updateBalance()
 	
-	
-		// Save API key when it changes
-        apiKeyInput.addEventListener('change', (e) => {
+		
+        // Save API key when it changes
+        apiKeyInput.addEventListener('change', async (e) => {
             apiKey = e.target.value;
             localStorage.setItem('apiKey', apiKey);
-			updateBalance();
+			await init();
         });
 
         // Function to validate URLs and update warnings
@@ -192,7 +202,7 @@
             validateURLs(e.target.value);
         });
 
-        // Function to fetch task list and render it to the UI
+       // Function to fetch task list and render it to the UI
 		async function updateTaskList() {
 			try {
 				const response = await fetch(`${API_BASE}/task/google/indexer/list/0`, {
@@ -209,15 +219,20 @@
 				
 				const data = await response.json();
 				renderTaskList(data.result)
-				localStorage.setItem('tasks', JSON.stringify(data.result));
-				savedTasks = data.result;
+				currentTasks = data.result;
 			}catch(e){
 				console.error('An error has occurred while fetching tasks: ',e);
+				currentTasks = null;
+				taskListTableBody.innerHTML = '<tr><td colspan="8">Failed to fetch tasks</td></tr>';
 			}
 		}
 		
 		function renderTaskList(tasks){
 			taskListTableBody.innerHTML = '';
+			if(tasks.length === 0){
+				taskListTableBody.innerHTML = '<tr><td colspan="8">No tasks found</td></tr>';
+				return;
+			}
 			tasks.forEach(task => {
 				const row = document.createElement('tr');
 				row.innerHTML = `
@@ -242,14 +257,6 @@
                 });
             });
 		}
-        
-		
-		//Render saved tasks from storage
-		renderTaskList(savedTasks);
-		updateTaskList();
-		
-		
-
 		
         // Function to create indexing task
         createTaskBtn.addEventListener('click', async () => {
@@ -284,7 +291,7 @@
 
                 const data = await response.json();
 				urlWarnings.textContent = '';
-				updateTaskList()
+				await updateTaskList();
 				alert('Indexing task created successfully.');
             } catch (error) {
                 console.error('Error creating task:', error);
@@ -370,7 +377,6 @@
                 console.error('Error creating invoice:', error);
                 alert('Error creating invoice:' + error);
             }
-
         });
     </script>
 </body>
