@@ -24,18 +24,28 @@
         .button-container { display: flex; gap: 10px; }
         button { padding: 10px 15px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
         button:hover { background-color: #45a049; }
-        .task-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .task-table th, .task-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        .task-table th { background-color: #f2f2f2; }
         .prices-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .prices-table th, .prices-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .prices-table th { background-color: #f2f2f2; }
         .warning { color: red; }
         .balance-container { margin-bottom: 10px; font-weight: bold; display: flex; align-items: center; gap: 10px}
-		.task-table th:nth-child(1), .task-table td:nth-child(1),
-		.task-table th:nth-child(2), .task-table td:nth-child(2) {
-            width: 10%;
-        }
+		
+		/* Task cards styles */
+		#task-list-container {
+			overflow-x: auto;
+			display: flex;
+			gap: 20px;
+			padding-bottom: 20px; /* To accommodate shadow on last card when scrolled*/
+		}
+		.task-card {
+			border: 1px solid #ddd;
+			padding: 15px;
+			min-width: 300px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+		.task-card h4 { margin-top: 0; margin-bottom: 10px;}
+		.task-card p{ margin-bottom: 5px;}
+		
     </style>
 </head>
 <body>
@@ -49,7 +59,7 @@
 			Remember to disable the extension when you are not using the tool to avoid potential security vulnerabilities.
 		</p>
 	</div>
-    <h1>SpeedyIndex Tool v1.4</h1>
+    <h1>SpeedyIndex Tool v1.5</h1>
     <div class="balance-container">
     	Balance: <span id="balance-display">Loading...</span>
 		<button id="refresh-balance-btn">Refresh Balance</button>
@@ -73,22 +83,7 @@
     <h2 style="margin-top: 30px;">Tasks
 		<button id="refresh-tasks-btn">Refresh Tasks</button>
 	</h2>
-    <table id="task-list" class="task-table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Size</th>
-                <th>Processed</th>
-                <th>Indexed</th>
-                <th>Status</th>
-                <th>Created At</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div id="task-list-container"></div>
 
     <h2 style="margin-top: 30px;">Prices</h2>
     <table class="prices-table">
@@ -123,7 +118,7 @@
         const apiKeyInput = document.getElementById('api-key');
         const urlTextarea = document.getElementById('urls');
         const urlWarnings = document.getElementById('url-warnings');
-		const taskListTableBody = document.querySelector('#task-list tbody');
+		const taskListContainer = document.getElementById('task-list-container');
         const createTaskBtn = document.getElementById('create-task-btn');
 		const balanceDisplay = document.getElementById('balance-display');
         const qtyInvoiceInput = document.getElementById('qty-invoice');
@@ -138,19 +133,35 @@
 		let lastTasksFetch = 0;
 		const RATE_LIMIT_MS = 1000; // 1 second
 		
-
-        // Load API key from storage
+		// Load from storage
         let apiKey = localStorage.getItem('apiKey') || '';
         apiKeyInput.value = apiKey;
 		
-		// Initial data load
+		let cachedBalance = JSON.parse(localStorage.getItem('balance'))
+		let cachedTasks = JSON.parse(localStorage.getItem('tasks'))
+		
 		if(apiKey){
+			if(cachedBalance){
+				balanceDisplay.textContent = `Indexer: ${cachedBalance.indexer}, Checker: ${cachedBalance.checker}`;
+				currentBalance = cachedBalance;
+			}else{
+				balanceDisplay.textContent = 'Loading...';
+			}
+			if(cachedTasks){
+				renderTaskList(cachedTasks);
+				currentTasks = cachedTasks;
+			}else{
+				taskListContainer.innerHTML = 'Loading...';
+			}
 			init();
 		}
 
 		async function init(){
-			await updateBalance();
-			await updateTaskList();
+			// if no balance in storage, or no tasks in storage, or no api key in storage, then fetch from api
+			if(!cachedBalance || !cachedTasks || !apiKey){
+				await updateBalance();
+				await updateTaskList();
+			}
 		}
 
 		 // --- Balance ---
@@ -168,6 +179,8 @@
 				balanceDisplay.textContent = `Indexer: ${currentBalance.indexer}, Checker: ${currentBalance.checker}`;
 				corsWarning.style.display = 'none';
 				
+				//save to storage
+				localStorage.setItem('balance',JSON.stringify(currentBalance));
 			}catch(err){
 				balanceDisplay.textContent = `Failed to load balance: ${err.message}`;
 				console.error('Failed to load balance', err);
@@ -203,6 +216,10 @@
         apiKeyInput.addEventListener('change', async (e) => {
             apiKey = e.target.value;
             localStorage.setItem('apiKey', apiKey);
+			localStorage.removeItem('balance');
+			localStorage.removeItem('tasks');
+			cachedBalance = null;
+			cachedTasks = null;
 			await init();
         });
 
@@ -250,7 +267,7 @@
 				return;
 			}
 			
-			taskListTableBody.innerHTML = '<tr><td colspan="8">Loading...</td></tr>';
+			taskListContainer.innerHTML = 'Loading...';
 			lastTasksFetch = now;
 			try {
 				const response = await fetch(`${API_BASE}/task/google/indexer/list/0`, {
@@ -269,10 +286,11 @@
 				renderTaskList(data.result)
 				currentTasks = data.result;
 				corsWarning.style.display = 'none';
+				localStorage.setItem('tasks',JSON.stringify(data.result));
 			}catch(e){
 				console.error('An error has occurred while fetching tasks: ',e);
 				currentTasks = null;
-				taskListTableBody.innerHTML = '<tr><td colspan="8">Failed to fetch tasks: '+ e.message + '</td></tr>';
+				taskListContainer.innerHTML = 'Failed to fetch tasks: '+ e.message;
 				corsWarning.style.display = 'block';
 			}
 		}
@@ -281,25 +299,26 @@
 		refreshTasksBtn.addEventListener('click', updateTaskList);
 
 		function renderTaskList(tasks){
-			taskListTableBody.innerHTML = '';
+			taskListContainer.innerHTML = '';
 			if(!tasks || tasks.length === 0){
-				taskListTableBody.innerHTML = '<tr><td colspan="8">No tasks found</td></tr>';
+				taskListContainer.innerHTML = 'No tasks found';
 				return;
 			}
+
 			tasks.forEach(task => {
-				const row = document.createElement('tr');
-				row.innerHTML = `
-					<td>${task.id}</td>
-					<td>${task.title}</td>
-					<td>${task.size}</td>
-					<td>${task.processed_count}</td>
-					<td>${task.indexed_count}</td>
-					<td>${task.is_completed ? 'Completed' : 'In Progress'}</td>
-					<td>${new Date(task.created_at).toLocaleString()}</td>
-					<td>
-						${task.is_completed ? `<button data-taskid="${task.id}" class="download-task">Download</button>` : '-'}
-					</td>`;
-				taskListTableBody.appendChild(row);
+				const card = document.createElement('div');
+				card.classList.add('task-card');
+				card.innerHTML = `
+					<h4>${task.title}</h4>
+					<p><strong>ID:</strong> ${task.id}</p>
+					<p><strong>Size:</strong> ${task.size}</p>
+					<p><strong>Processed:</strong> ${task.processed_count}</p>
+					<p><strong>Indexed:</strong> ${task.indexed_count}</p>
+					<p><strong>Status:</strong> ${task.is_completed ? 'Completed' : 'In Progress'}</p>
+					<p><strong>Created At:</strong> ${new Date(task.created_at).toLocaleString()}</p>
+					${task.is_completed ? `<button data-taskid="${task.id}" class="download-task">Download</button>` : ''}
+					`;
+				taskListContainer.appendChild(card);
 			});
 		
 			const downloadButtons = document.querySelectorAll('.download-task');
@@ -345,6 +364,7 @@
 
                 const data = await response.json();
 				urlWarnings.textContent = '';
+				await updateBalance()
 				await updateTaskList();
 				alert('Indexing task created successfully.');
             } catch (error) {
