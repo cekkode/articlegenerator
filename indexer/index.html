@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeedyIndex Tool</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        h1 { margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; margin-bottom: 5px; }
+        .form-group textarea { height: 150px; }
+        .button-container { display: flex; gap: 10px; }
+        button { padding: 10px 15px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        .task-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .task-table th, .task-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .task-table th { background-color: #f2f2f2; }
+        .prices-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .prices-table th, .prices-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .prices-table th { background-color: #f2f2f2; }
+        .warning { color: red; }
+        .balance-container { margin-bottom: 10px; font-weight: bold;}
+		.task-table th:nth-child(1), .task-table td:nth-child(1),
+		.task-table th:nth-child(2), .task-table td:nth-child(2) {
+            width: 10%;
+        }
+    </style>
+</head>
+<body>
+    <h1>SpeedyIndex Tool v1</h1>
+    <div class="balance-container">
+    	Balance: <span id="balance-display">Loading...</span>
+    </div>
+    
+    <div class="form-group">
+        <label for="api-key">API Key:</label>
+        <input type="text" id="api-key" placeholder="Paste your API Key here">
+    </div>
+    
+    <div class="form-group">
+        <label for="urls">URLs to Index (one per line):</label>
+        <textarea id="urls" placeholder="Enter your URLs here"></textarea>
+        <p id="url-warnings" class="warning"></p>
+    </div>
+    
+    <div class="button-container">
+        <button id="create-task-btn">Create Indexing Task</button>
+    </div>
+
+    <h2 style="margin-top: 30px;">Tasks</h2>
+    <table id="task-list" class="task-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Size</th>
+                <th>Processed</th>
+                <th>Indexed</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <h2 style="margin-top: 30px;">Prices</h2>
+    <table class="prices-table">
+        <thead>
+            <tr>
+                <th>Package, links</th>
+                <th>Indexing links</th>
+                <th>Checking for index</th>
+                <th>Indexing links + checking for index</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1 link</td><td>0.0075 $</td><td>0.0015 $</td><td> - </td></tr>
+            <tr><td>5,000</td><td>30 $</td><td>6$</td><td>35 $</td></tr>
+            <tr><td>10,000</td><td>50 $</td><td>10 $</td><td>55 $</td></tr>
+            <tr><td>25,000</td><td>100 $</td><td>25 $</td><td>115 $</td></tr>
+            <tr><td>50,000</td><td>170 $</td><td>45 $</td><td>200 $</td></tr>
+            <tr><td>100,000</td><td>300 $</td><td>80 $</td><td>350 $</td></tr>
+        </tbody>
+    </table>
+    <div class="form-group">
+        <label for="qty-invoice">Number of links for invoice:</label>
+        <input type="number" id="qty-invoice" placeholder="Enter link number">
+    </div>
+    <div class="button-container">
+        <button id="create-invoice-btn">Create Invoice</button>
+    </div>
+    
+    
+    <script>
+        const API_BASE = 'https://api.speedyindex.com/v2';
+        const apiKeyInput = document.getElementById('api-key');
+        const urlTextarea = document.getElementById('urls');
+        const urlWarnings = document.getElementById('url-warnings');
+		const taskListTableBody = document.querySelector('#task-list tbody');
+        const createTaskBtn = document.getElementById('create-task-btn');
+		const balanceDisplay = document.getElementById('balance-display');
+        const qtyInvoiceInput = document.getElementById('qty-invoice');
+		const createInvoiceBtn = document.getElementById('create-invoice-btn');
+        let currentBalance;
+
+
+        // Load API key and tasks from storage
+        let apiKey = localStorage.getItem('apiKey') || '';
+		let savedTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        apiKeyInput.value = apiKey;
+		
+        // --- Balance ---
+		async function updateBalance(){
+			try{
+				currentBalance = await fetchBalance();
+				balanceDisplay.textContent = `Indexer: ${currentBalance.indexer}, Checker: ${currentBalance.checker}`;
+			}catch(err){
+				balanceDisplay.textContent = `Failed to load balance`;
+			}
+			
+		}
+
+		async function fetchBalance() {
+			const apiKey = localStorage.getItem('apiKey') || '';
+			if (!apiKey){
+				throw new Error('No API key specified')
+			}
+			
+			const response = await fetch(`${API_BASE}/account`, {
+				method: 'GET',
+				headers: {
+					'Authorization': apiKey
+				}
+			});
+			
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			const data = await response.json();
+			return data.balance;
+		}
+
+		//Update balance when page loaded
+		updateBalance()
+	
+	
+		// Save API key when it changes
+        apiKeyInput.addEventListener('change', (e) => {
+            apiKey = e.target.value;
+            localStorage.setItem('apiKey', apiKey);
+			updateBalance();
+        });
+
+        // Function to validate URLs and update warnings
+        function validateURLs(urls) {
+			let validUrls = [];
+            let warnings = [];
+            const urlRegex = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+			
+            const trimmedUrls = urls.split('\n').filter(url => url.trim() !== '');
+            
+			trimmedUrls.forEach(url => {
+                if (!urlRegex.test(url.trim())) {
+                    warnings.push(`Invalid URL: ${url}`);
+                }else{
+					validUrls.push(url.trim());
+				}
+            });
+
+			let uniqueBaseUrls = [...new Set(validUrls.map(url => {
+				try {
+					return new URL(url).origin;
+				} catch (e) {
+					return '';
+				}
+			}).filter(origin => origin !== ''))];
+			
+			let taskName = uniqueBaseUrls.length > 0 ?
+                uniqueBaseUrls.length === 1 ? uniqueBaseUrls[0] : 
+				uniqueBaseUrls.map((url,index) => `Base URL ${index + 1}`).join(' & ')
+                : 'Indexing Task';
+
+            urlWarnings.textContent = warnings.join('; ');
+            return [validUrls, taskName];
+        }
+        
+        urlTextarea.addEventListener('input', (e) => {
+            validateURLs(e.target.value);
+        });
+
+        // Function to fetch task list and render it to the UI
+		async function updateTaskList() {
+			try {
+				const response = await fetch(`${API_BASE}/task/google/indexer/list/0`, {
+					method: 'GET',
+					headers: {
+						'Authorization': apiKey,
+					},
+				});
+
+				if (!response.ok) {
+					console.error('Failed to fetch task list:', response.status);
+					return;
+				}
+				
+				const data = await response.json();
+				renderTaskList(data.result)
+				localStorage.setItem('tasks', JSON.stringify(data.result));
+				savedTasks = data.result;
+			}catch(e){
+				console.error('An error has occurred while fetching tasks: ',e);
+			}
+		}
+		
+		function renderTaskList(tasks){
+			taskListTableBody.innerHTML = '';
+			tasks.forEach(task => {
+				const row = document.createElement('tr');
+				row.innerHTML = `
+					<td>${task.id}</td>
+					<td>${task.title}</td>
+					<td>${task.size}</td>
+					<td>${task.processed_count}</td>
+					<td>${task.indexed_count}</td>
+					<td>${task.is_completed ? 'Completed' : 'In Progress'}</td>
+					<td>${new Date(task.created_at).toLocaleString()}</td>
+					<td>
+						${task.is_completed ? `<button data-taskid="${task.id}" class="download-task">Download</button>` : '-'}
+					</td>`;
+				taskListTableBody.appendChild(row);
+			});
+		
+			const downloadButtons = document.querySelectorAll('.download-task');
+			downloadButtons.forEach(button => {
+                button.addEventListener('click', async () => {
+                    const taskId = button.getAttribute('data-taskid');
+                    downloadReport(taskId);
+                });
+            });
+		}
+        
+		
+		//Render saved tasks from storage
+		renderTaskList(savedTasks);
+		updateTaskList();
+		
+		
+
+		
+        // Function to create indexing task
+        createTaskBtn.addEventListener('click', async () => {
+			
+            const [urls, taskName] = validateURLs(urlTextarea.value);
+			if(!urls.length){
+				urlWarnings.textContent = 'No valid URLs specified'
+				return;
+			}
+            if(!apiKey) {
+                urlWarnings.textContent = 'Please provide an API Key';
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE}/task/google/indexer/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': apiKey,
+                        'Content-Type': 'application/json'
+                    },
+					body: JSON.stringify({
+						title: taskName,
+						urls: urls
+					})
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to create indexing task:', response.status);
+					urlWarnings.textContent = `Failed to create indexing task: ${response.status}`;
+					return;
+                }
+
+                const data = await response.json();
+				urlWarnings.textContent = '';
+				updateTaskList()
+				alert('Indexing task created successfully.');
+            } catch (error) {
+                console.error('Error creating task:', error);
+				urlWarnings.textContent = 'Error creating task: ' + error;
+            }
+        });
+		
+		// Function to download task report
+        async function downloadReport(taskId) {
+            try {
+                const response = await fetch(`${API_BASE}/task/google/indexer/report`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': apiKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ task_id: taskId }),
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to download report:', response.status);
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.result) {
+                    const blob = new Blob([JSON.stringify(data.result, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `task_report_${taskId}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                } else {
+                    console.error('Report data not available.');
+                }
+            } catch (error) {
+                console.error('Error downloading report:', error);
+            }
+        }
+
+        //Create invoice
+        createInvoiceBtn.addEventListener('click', async () => {
+            const qty = parseInt(qtyInvoiceInput.value, 10);
+
+            if (isNaN(qty) || qty <= 0) {
+                alert('Please enter a valid positive number for links.');
+                return;
+            }
+
+            if(!apiKey) {
+                alert('Please provide an API Key');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/account/invoice/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': apiKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        qty: qty,
+                        method: "crypto",
+                        type: "indexer"
+                    })
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to create invoice:', response.status);
+                    alert(`Failed to create invoice: ${response.status}`);
+                    return;
+                }
+
+                const data = await response.json();
+                if (data.result) {
+                   window.open(data.result, '_blank');
+                }
+            } catch (error) {
+                console.error('Error creating invoice:', error);
+                alert('Error creating invoice:' + error);
+            }
+
+        });
+    </script>
+</body>
+</html>
