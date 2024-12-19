@@ -21,7 +21,7 @@
         .prices-table th, .prices-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         .prices-table th { background-color: #f2f2f2; }
         .warning { color: red; }
-        .balance-container { margin-bottom: 10px; font-weight: bold;}
+        .balance-container { margin-bottom: 10px; font-weight: bold; display: flex; align-items: center; gap: 10px}
 		.task-table th:nth-child(1), .task-table td:nth-child(1),
 		.task-table th:nth-child(2), .task-table td:nth-child(2) {
             width: 10%;
@@ -29,9 +29,10 @@
     </style>
 </head>
 <body>
-    <h1>SpeedyIndex Tool v1.2</h1>
+    <h1>SpeedyIndex Tool v1.3</h1>
     <div class="balance-container">
     	Balance: <span id="balance-display">Loading...</span>
+		<button id="refresh-balance-btn">Refresh Balance</button>
     </div>
     
     <div class="form-group">
@@ -49,7 +50,9 @@
         <button id="create-task-btn">Create Indexing Task</button>
     </div>
 
-    <h2 style="margin-top: 30px;">Tasks</h2>
+    <h2 style="margin-top: 30px;">Tasks
+		<button id="refresh-tasks-btn">Refresh Tasks</button>
+	</h2>
     <table id="task-list" class="task-table">
         <thead>
             <tr>
@@ -105,20 +108,25 @@
 		const balanceDisplay = document.getElementById('balance-display');
         const qtyInvoiceInput = document.getElementById('qty-invoice');
 		const createInvoiceBtn = document.getElementById('create-invoice-btn');
+		const refreshBalanceBtn = document.getElementById('refresh-balance-btn');
+		const refreshTasksBtn = document.getElementById('refresh-tasks-btn');
         let currentBalance;
 		let currentTasks;
 
+        let lastBalanceFetch = 0;
+		let lastTasksFetch = 0;
+		const RATE_LIMIT_MS = 1000; // 1 second
+		
 
         // Load API key from storage
         let apiKey = localStorage.getItem('apiKey') || '';
         apiKeyInput.value = apiKey;
 		
-		
 		// Initial data load
 		if(apiKey){
 			init();
 		}
-		
+
 		async function init(){
 			await updateBalance();
 			await updateTaskList();
@@ -126,12 +134,20 @@
 
 		 // --- Balance ---
 		async function updateBalance(){
+			
+			const now = Date.now();
+			if(now - lastBalanceFetch < RATE_LIMIT_MS){
+				return;
+			}
+			
+			balanceDisplay.textContent = `Loading...`;
+			lastBalanceFetch = now;
 			try{
 				currentBalance = await fetchBalance();
 				balanceDisplay.textContent = `Indexer: ${currentBalance.indexer}, Checker: ${currentBalance.checker}`;
 				
 			}catch(err){
-				balanceDisplay.textContent = `Failed to load balance`;
+				balanceDisplay.textContent = `Failed to load balance: ${err.message}`;
 				console.error('Failed to load balance', err);
 				currentBalance = null;
 			}
@@ -151,12 +167,14 @@
 			});
 			
 			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
+				const errorData = await response.json();
+				throw new Error(`HTTP error! status: ${response.status}: ${errorData.message || ''}`);
 			}
 			const data = await response.json();
 			return data.balance;
 		}
-	
+
+		refreshBalanceBtn.addEventListener('click', updateBalance);
 		
         // Save API key when it changes
         apiKeyInput.addEventListener('change', async (e) => {
@@ -204,6 +222,13 @@
 
        // Function to fetch task list and render it to the UI
 		async function updateTaskList() {
+			const now = Date.now();
+			if(now - lastTasksFetch < RATE_LIMIT_MS){
+				return;
+			}
+			
+			taskListTableBody.innerHTML = '<tr><td colspan="8">Loading...</td></tr>';
+			lastTasksFetch = now;
 			try {
 				const response = await fetch(`${API_BASE}/task/google/indexer/list/0`, {
 					method: 'GET',
@@ -213,8 +238,8 @@
 				});
 
 				if (!response.ok) {
-					console.error('Failed to fetch task list:', response.status);
-					return;
+					const errorData = await response.json();
+					throw new Error(`Failed to fetch tasks: ${response.status}: ${errorData.message || ''}`);
 				}
 				
 				const data = await response.json();
@@ -223,13 +248,16 @@
 			}catch(e){
 				console.error('An error has occurred while fetching tasks: ',e);
 				currentTasks = null;
-				taskListTableBody.innerHTML = '<tr><td colspan="8">Failed to fetch tasks</td></tr>';
+				taskListTableBody.innerHTML = '<tr><td colspan="8">Failed to fetch tasks: '+ e.message + '</td></tr>';
 			}
 		}
 		
+		
+		refreshTasksBtn.addEventListener('click', updateTaskList);
+
 		function renderTaskList(tasks){
 			taskListTableBody.innerHTML = '';
-			if(tasks.length === 0){
+			if(!tasks || tasks.length === 0){
 				taskListTableBody.innerHTML = '<tr><td colspan="8">No tasks found</td></tr>';
 				return;
 			}
@@ -284,8 +312,9 @@
                 });
 
                 if (!response.ok) {
+					const errorData = await response.json();
                     console.error('Failed to create indexing task:', response.status);
-					urlWarnings.textContent = `Failed to create indexing task: ${response.status}`;
+					urlWarnings.textContent = `Failed to create indexing task: ${response.status}: ${errorData.message || ''}`;
 					return;
                 }
 
@@ -295,7 +324,7 @@
 				alert('Indexing task created successfully.');
             } catch (error) {
                 console.error('Error creating task:', error);
-				urlWarnings.textContent = 'Error creating task: ' + error;
+				urlWarnings.textContent = 'Error creating task: ' + error.message;
             }
         });
 		
