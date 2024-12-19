@@ -7,6 +7,16 @@
     <style>
         body { font-family: sans-serif; margin: 20px; }
         h1 { margin-bottom: 20px; }
+		.cors-warning {
+            background-color: #ffe6e6;
+            border: 1px solid #ffb3b3;
+            padding: 10px;
+            margin-bottom: 20px;
+			color: #cc0000;
+        }
+		.cors-warning a{
+			color: #cc0000;
+		}
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; }
         .form-group input, .form-group textarea { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; margin-bottom: 5px; }
@@ -29,7 +39,17 @@
     </style>
 </head>
 <body>
-    <h1>SpeedyIndex Tool v1.3</h1>
+	<div id="cors-warning" class="cors-warning" style="display:none;">
+		It seems CORS (Cross-Origin Resource Sharing) is blocking API requests, which is preventing the tool from loading. To fix it:
+		<ol>
+			<li>Install a CORS unblock extension like <a href="https://chrome.google.com/webstore/detail/allow-cors-access-control/lhobafahddgcelffkeicbagjogmdmjcm" target="_blank">Allow CORS: Access-Control-Allow-Origin</a>.</li>
+			<li>Enable the extension before using the tool.</li>
+		</ol>
+		<p>
+			Remember to disable the extension when you are not using the tool to avoid potential security vulnerabilities.
+		</p>
+	</div>
+    <h1>SpeedyIndex Tool v1.4</h1>
     <div class="balance-container">
     	Balance: <span id="balance-display">Loading...</span>
 		<button id="refresh-balance-btn">Refresh Balance</button>
@@ -110,6 +130,7 @@
 		const createInvoiceBtn = document.getElementById('create-invoice-btn');
 		const refreshBalanceBtn = document.getElementById('refresh-balance-btn');
 		const refreshTasksBtn = document.getElementById('refresh-tasks-btn');
+		const corsWarning = document.getElementById('cors-warning');
         let currentBalance;
 		let currentTasks;
 
@@ -145,11 +166,13 @@
 			try{
 				currentBalance = await fetchBalance();
 				balanceDisplay.textContent = `Indexer: ${currentBalance.indexer}, Checker: ${currentBalance.checker}`;
+				corsWarning.style.display = 'none';
 				
 			}catch(err){
 				balanceDisplay.textContent = `Failed to load balance: ${err.message}`;
 				console.error('Failed to load balance', err);
 				currentBalance = null;
+				corsWarning.style.display = 'block';
 			}
 		}
 
@@ -175,7 +198,7 @@
 		}
 
 		refreshBalanceBtn.addEventListener('click', updateBalance);
-		
+
         // Save API key when it changes
         apiKeyInput.addEventListener('change', async (e) => {
             apiKey = e.target.value;
@@ -245,10 +268,12 @@
 				const data = await response.json();
 				renderTaskList(data.result)
 				currentTasks = data.result;
+				corsWarning.style.display = 'none';
 			}catch(e){
 				console.error('An error has occurred while fetching tasks: ',e);
 				currentTasks = null;
 				taskListTableBody.innerHTML = '<tr><td colspan="8">Failed to fetch tasks: '+ e.message + '</td></tr>';
+				corsWarning.style.display = 'block';
 			}
 		}
 		
