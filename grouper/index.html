@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW, NOARCHIVE">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Keyword Grouper Tool</title>
+	<style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        .main {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .center {
+            text-align: center;
+        }
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .btn-info {
+            background-color: #5bc0de;
+            color: #fff;
+            border-color: #46b8da;
+        }
+        .btn-info:hover{
+           background-color: #46b8da;
+        }
+         .btn-block {
+            display: block;
+            width: 100%;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-dialog {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+        .modal-header {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .modal-title {
+            margin-top: 0;
+            margin-bottom: 0;
+            line-height: 1.42857143;
+            font-size: 16px;
+        }
+        .modal-body {
+           padding: 15px;
+        }
+        .modal-footer {
+             padding: 15px;
+             text-align: right;
+             border-top: 1px solid #e5e5e5;
+        }
+         .close {
+            float: right;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: .2;
+        }
+        .close:hover {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+            opacity: .5;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #5cb85c;
+            color: white;
+            transition: width 0.6s ease;
+        }
+        .progress-bar-striped {
+           background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+           background-size: 40px 40px;
+        }
+        .progress-bar.active {
+            animation: progress-bar-stripes 2s linear infinite;
+        }
+         @keyframes progress-bar-stripes {
+             from {
+                background-position: 40px 0;
+            }
+            to {
+                background-position: 0 0;
+            }
+        }
+        .progressMessage {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+         .nav-tabs {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .nav-tabs > li {
+            float: left;
+            margin-bottom: -1px;
+        }
+
+        .nav-tabs > li > a {
+            margin-right: 2px;
+            line-height: 1.42857143;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+            padding: 10px 15px;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .nav-tabs > li.active > a,
+        .nav-tabs > li.active > a:hover,
+        .nav-tabs > li.active > a:focus {
+            color: #555;
+            cursor: default;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+        }
+        .tab-content {
+             border: 1px solid #ddd;
+            border-top: none;
+            padding: 15px;
+        }
+         .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-success {
+            color: #3c763d;
+            background-color: #dff0d8;
+            border-color: #d6e9c6;
+        }
+        .list-group {
+            padding-left: 0;
+            margin-bottom: 20px;
+        }
+        .list-group-item {
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: -1px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .pull-right {
+            float: right;
+        }
+         .clearfix::after {
+          content: "";
+          clear: both;
+          display: table;
+        }
+		.download-link{
+			display: inline-block;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+			background-color: #5cb85c;
+            color: #fff;
+            border-color: #4cae4c;
+			text-decoration:none;
+        }
+		.download-link:hover {
+			background-color: #4cae4c;
+		}
+    </style>
+</head>
+<body>
+	<div class="main">
+        <div class="center">
+			<h2>Keyword Grouper Tool v1</h2>
+		</div>
+        <div class="col-md-12 center">
+        	<form id="processForm">
+                <div class="col-sm-9">
+                    <textarea class="form-control text-to-copy" rows="12" id="results" name="phrases"></textarea>
+                    <span id="total-results" class="pull-right"></span>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" id="maxLength" name="max" placeholder="Minimum group length" />
+                    <button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#ExcludeModal">
+                    	Excluded Words List
+                    </button>
+					<br />
+                    <button type="button" class="btn btn-info btn-block js-process-btn" >Process Keywords</button>
+                </div>
+                <div class="clearfix"></div>
+                                
+                <!-- Modal -->
+                <div id="ExcludeModal" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                    
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        	<button type="button" class="close" data-dismiss="modal">×</button>
+                        	<h4 class="modal-title">Excluded Words List</h4>
+                        </div>
+                        <div class="modal-body">
+                        	<textarea class="form-control" name="excluded" id="excluded"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default js-exclude-btn">
+                                Set Excluded Words List
+                            </button>
+                        </div>
+                    </div>
+                    
+                    </div>
+                </div>
+                <!-- Modal End -->
+
+            </form>
+            <div id="groups" class="col-sm-12 center">
+                <div class="progress" id="keyword-progress">
+                    <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+
+                    </div>
+                    <div class="progressMessage"></div>
+                </div>
+                <div class="col-sm-12" id="process-result-list">
+                	<ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#menu1" id="list1"></a></li>
+                        <li><a data-toggle="tab" href="#menu2" id="list2"></a></li>
+                    </ul>
+                    <div class="tab-content">
+                    	<div id="menu1" class="tab-pane fade in active">
+                        	<p class="alert alert-success text-center" id="processed">
+                                <span class="success-process-keywords"><b>0</b> keywords analyzed</span>
+                                <span id="success-process-groups"><b>0</b> Groups created</span>
+                            </p>
+                        	<ul class="list-group" id="group-list-1"></ul>
+                        </div>
+                        <div id="menu2" class="tab-pane fade">
+                        	<p class="alert alert-success text-center" id="processedLess">
+                                <span class="success-process-keywords"><b>0</b> keywords analyzed</span>
+                                <span id="success-process-groupsL"><b>0</b> Groups created</span>
+                            </p>
+                            <ul class="list-group" id="group-list-2"></ul>
+                        </div>
+                    </div>
+					<div class="center">
+						<a href="#" class="download-link" id="downloadTXT">Download TXT</a>
+					</div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+		</div>
+	</div>
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+    $(document).ready(function() {
+
+        function updateResultCount() {
+            var text = $('#results').val();
+            var lines = text.split('\n').filter(line => line.trim() !== '');
+            $('#total-results').text(lines.length + ' Keywords');
+        }
+
+        $('#results').on('input', updateResultCount);
+        updateResultCount();
+
+		// Modal Handling
+        $('.js-exclude-btn').click(function() {
+            $('#ExcludeModal').hide();
+        });
+
+		$('.close').click(function() {
+            $(this).closest('.modal').hide();
+        });
+
+		$('[data-toggle="modal"]').click(function(e){
+			var target = $(this).data('target');
+			$(target).show();
+			e.preventDefault();
+		});
+		
+		// Processing Keywords
+        $('.js-process-btn').click(function() {
+            processKeywords();
+        });
+
+		// Download TXT
+		$('#downloadTXT').on('click', function(e){
+			e.preventDefault();
+			downloadTXT();
+		});
+
+        function processKeywords() {
+            var keywords = $('#results').val().split('\n').filter(line => line.trim() !== '');
+            var maxLength = parseInt($('#maxLength').val()) || 2;
+            var excludedWords = $('#excluded').val().split('\n').filter(word => word.trim() !== '');
+
+            if (keywords.length === 0) {
+                alert('Please enter keywords to process.');
+                return;
+            }
+			
+			 $('#keyword-progress').show();
+             $('.progress-bar').css('width', '0%');
+             $('.progressMessage').text('Processing keywords...');
+			
+			setTimeout(function() {
+
+				var groupedKeywords = groupKeywords(keywords, maxLength, excludedWords);
+				$('.progressMessage').text('Keywords grouped successfully!');
+				$('.progress-bar').css('width', '100%');
+				displayResults(groupedKeywords);
+				$('#keyword-progress').hide();
+
+			}, 100)
+        }
+		
+		function groupKeywords(keywords, minLength, excludedWords) {
+			  // Remove excluded words from keywords
+			  const filteredKeywords = [];
+			  for (const keyword of keywords) {
+				  const words = keyword.split(" ");
+				  const filteredWords = words.filter(word => !excludedWords.includes(word));
+					  if(filteredWords.length > 0){
+						  filteredKeywords.push(filteredWords.join(" "));
+					  }
+			  }
+			  keywords = filteredKeywords;
+
+			  const wordFrequency = {};
+				  for (const keyword of keywords) {
+				  const words = keyword.split(" ");
+				  for (const word of words) {
+					  wordFrequency[word] = (wordFrequency[word] || 0) + 1;
+				  }
+			  }
+
+			const groups = { list1: [], list2: [] };
+			for (const keyword of keywords) {
+				const group = [];
+				const words = keyword.split(" ");
+				for (const word of words) {
+					if (wordFrequency[word] > 1) {
+						group.push(word);
+					}
+				}
+				const uniqueGroup = [...new Set(group)];
+				if (uniqueGroup.length >= minLength) {
+					groups.list1.push([keyword]);
+				} else if (uniqueGroup.length > 0 && uniqueGroup.length < minLength){
+					groups.list2.push([keyword]);
+				}
+			}
+
+		  return {
+				totalKeywords: keywords.length,
+				groupedKeywords: groups,
+			};
+		}
+
+		function downloadTXT(){
+			var list1 = $('#group-list-1').find('li').map(function() {
+				return $(this).text();
+			}).get();
+			var list2 = $('#group-list-2').find('li').map(function() {
+				return $(this).text();
+			}).get();
+			
+			var combinedList = list1.concat(list2);
+			
+			var text = combinedList.join('\n').replace(/,/g, '   ');
+			
+			var element = document.createElement('a');
+			element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+			element.setAttribute('download', 'grouped-keywords.txt');
+			element.style.display = 'none';
+			document.body.appendChild(element);
+			element.click();
+			document.body.removeChild(element);
+		}
+
+        function displayResults(data) {
+			$('#group-list-1').empty();
+			$('#group-list-2').empty();
+
+            if (data && data.groupedKeywords) {
+				$('#processed .success-process-keywords b').text(data.totalKeywords);
+				$('#processedLess .success-process-keywords b').text(data.totalKeywords);
+                
+				//For List 1
+                if (data.groupedKeywords.list1.length > 0) {
+					$('#list1').text('Groups ' + data.groupedKeywords.list1.length+'+ Words');
+					 $('#processed #success-process-groups b').text(data.groupedKeywords.list1.length);
+                    data.groupedKeywords.list1.forEach(function(group) {
+                       $('#group-list-1').append('<li class="list-group-item">' + group.join(', ') + '</li>');
+                    });
+                }else{
+					$('#list1').text('No Group with '+ ($('#maxLength').val() || 2) +'+ Words');
+					 $('#processed #success-process-groups b').text('0');
+				}
+
+				//For List 2
+                if (data.groupedKeywords.list2.length > 0) {
+					$('#list2').text('Groups ' + data.groupedKeywords.list2.length + ' Words');
+					$('#processedLess #success-process-groupsL b').text(data.groupedKeywords.list2.length);
+                    data.groupedKeywords.list2.forEach(function(group) {
+                        $('#group-list-2').append('<li class="list-group-item">' + group.join(', ') + '</li>');
+                    });
+                }else{
+					$('#list2').text('No Group Under '+ ($('#maxLength').val() || 2) +'+ Words');
+					 $('#processedLess #success-process-groupsL b').text('0');
+				}
+
+                $('#groups').show();
+            } else {
+                $('#groups').hide();
+            }
+        }
+		
+		// Hide Progress Bar
+		$('#keyword-progress').hide();
+
+    });
+</script>
+</body>
+</html>
