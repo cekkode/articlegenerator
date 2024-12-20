@@ -250,7 +250,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.9</h2>
+            <h2>Keyword Grouper Tool v1.10</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -488,9 +488,10 @@
 					
 					// Sort groups by keyword count
 					allGroups.sort((a,b) => b.keywords.length - a.keywords.length)
-					// Filter groups by min length
-					const filteredGroups = allGroups.filter(group => group.title.split(" ").length >= minLengthParsed);
-					const unFilteredGroups = allGroups.filter(group => group.title.split(" ").length < minLengthParsed);
+					
+					// Filter groups by keyword count
+					const filteredGroups = allGroups.filter(group => group.keywords.length >= minLengthParsed);
+					const unFilteredGroups = allGroups.filter(group => group.keywords.length < minLengthParsed);
 
 					const filteredGroupsLength = filteredGroups.length;
 					
@@ -520,7 +521,7 @@
 						$('#processedLess #success-process-groupsL b').text(data.remainingKeywords.length + unFilteredGroups.length);
 						$('#list2').text('less than ' + minLengthParsed);
 						
-						data.remainingKeywords.forEach(function(keyword) {
+						 data.remainingKeywords.forEach(function(keyword) {
                             var cardHtml = '<div class="card">';
                             cardHtml += '<div class="card-body">';
                             cardHtml += keyword;
