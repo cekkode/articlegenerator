@@ -155,6 +155,10 @@
             text-decoration: none;
 			list-style:none;
         }
+		.nav-tabs > li > a:focus,
+        .nav-tabs > li > a:hover {
+			 border-color: #eee #eee #ddd;
+		}
         .nav-tabs > li.active > a,
         .nav-tabs > li.active > a:hover,
         .nav-tabs > li.active > a:focus {
@@ -243,7 +247,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.6</h2>
+            <h2>Keyword Grouper Tool v1.7</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -482,14 +486,14 @@
 					$('#processedLess .success-process-keywords b').text(data.totalKeywords);
 					
 					const allGroups = data.groupedKeywords.list1;
-					// Filter groups by min length
-					const filteredGroups = allGroups.filter(group => group.keywords.length >= minLengthParsed);
-					
-					const filteredGroupsLength = filteredGroups.length;
 					
 					// Sort groups by keyword count
-					filteredGroups.sort((a,b) => b.keywords.length - a.keywords.length)
+					allGroups.sort((a,b) => b.keywords.length - a.keywords.length)
+					// Filter groups by min length
+					const filteredGroups = allGroups.filter(group => group.keywords.length >= minLengthParsed);
 
+					
+					const filteredGroupsLength = filteredGroups.length;
 					
 					//For List 1
 					if(filteredGroupsLength > 0){
@@ -527,6 +531,7 @@
 						$('#processedLess #success-process-groupsL b').text(0);
 						$('#list2').text('less than ' + minLengthParsed);
 					}
+					
 					
 					// TAB Functionality
 					$('.nav-tabs a').on('click', function (e) {
