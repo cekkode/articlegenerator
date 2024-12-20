@@ -145,14 +145,15 @@
             float: left;
             margin-bottom: -1px;
         }
-        .nav-tabs > li > a {
-            margin-right: 2px;
+		.nav-tabs > li > a {
+			margin-right: 2px;
             line-height: 1.42857143;
             border: 1px solid transparent;
             border-radius: 4px 4px 0 0;
             padding: 10px 15px;
             display: inline-block;
             text-decoration: none;
+			list-style:none;
         }
         .nav-tabs > li.active > a,
         .nav-tabs > li.active > a:hover,
@@ -242,7 +243,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.4</h2>
+            <h2>Keyword Grouper Tool v1.5</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -471,18 +472,21 @@
 			}
 			
             function displayResults(data, minLength) {
+				
+				 const minLengthParsed = parseInt(minLength) || 2;
                 $('#group-list-1').empty();
 				$('#group-list-2').empty();
-				
-				const minLengthParsed = parseInt(minLength) || 2;
 				
                 if (data && data.groupedKeywords) {
                     $('#processed .success-process-keywords b').text(data.totalKeywords);
 					$('#processedLess .success-process-keywords b').text(data.totalKeywords);
 					
+					const allGroups = data.groupedKeywords.list1;
 					// Filter groups by min length
-					const filteredGroups = data.groupedKeywords.list1.filter(group => group.keywords.length >= minLengthParsed);
+					const filteredGroups = allGroups.filter(group => group.keywords.length >= minLengthParsed);
+					
 					const filteredGroupsLength = filteredGroups.length;
+					
 					// Sort groups by keyword count
 					filteredGroups.sort((a,b) => b.keywords.length - a.keywords.length)
 
