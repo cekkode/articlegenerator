@@ -250,7 +250,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.8</h2>
+            <h2>Keyword Grouper Tool v1.9</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -327,7 +327,7 @@
         </div>
     </div>
     
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
 
@@ -405,24 +405,20 @@
 
 				const grouped = {};
 
-				function extractPhrases(keyword, minLength) {
+				function extractPhrases(keyword) { // Remove minLength here
 					const words = keyword.split(" ");
 					const phrases = [];
 					for (let i = 0; i < words.length; i++) {
 						for (let j = i; j < words.length; j++) {
 							const phrase = words.slice(i, j + 1).join(" ");
-							if(phrase.split(" ").length >= minLength){
-								phrases.push(phrase);
-							}
-
+							phrases.push(phrase); // Store all phrases
 						}
 					}
 					return phrases;
 				}
 
-
 				for (const keyword of keywords) {
-					const phrases = extractPhrases(keyword, minLength);
+					const phrases = extractPhrases(keyword);
 					for (const phrase of phrases) {
 						if (!grouped[phrase]) {
 							grouped[phrase] = [];
@@ -433,22 +429,22 @@
 					}
 				}
 
-				const groups = { list1: [], list2: [] };
+				const groups = []; // Remove the object list1, list2 here
+
 				for (const key in grouped) {
 					if (grouped.hasOwnProperty(key)) {
-						groups.list1.push({ title: key, keywords: grouped[key] });
+						groups.push({ title: key, keywords: grouped[key] });
 					}
 				}
 
 				const remainingKeywords = keywords.filter(keyword => {
 					return !Object.values(grouped).flat().includes(keyword);
 				});
-                
-				groups.list2 = remainingKeywords;
 
                 return {
                     totalKeywords: keywords.length,
                     groupedKeywords: groups,
+					remainingKeywords: remainingKeywords
                 };
             }
 
@@ -480,7 +476,7 @@
 			
             function displayResults(data, minLength) {
 				
-				 const minLengthParsed = parseInt(minLength) || 2;
+				const minLengthParsed = parseInt(minLength) || 2;
                 $('#group-list-1').empty();
 				$('#group-list-2').empty();
 				
@@ -488,12 +484,13 @@
                     $('#processed .success-process-keywords b').text(data.totalKeywords);
 					$('#processedLess .success-process-keywords b').text(data.totalKeywords);
 					
-					const allGroups = data.groupedKeywords.list1;
+					const allGroups = data.groupedKeywords;
 					
 					// Sort groups by keyword count
 					allGroups.sort((a,b) => b.keywords.length - a.keywords.length)
 					// Filter groups by min length
-					const filteredGroups = allGroups.filter(group => group.keywords.length >= minLengthParsed);
+					const filteredGroups = allGroups.filter(group => group.title.split(" ").length >= minLengthParsed);
+					const unFilteredGroups = allGroups.filter(group => group.title.split(" ").length < minLengthParsed);
 
 					const filteredGroupsLength = filteredGroups.length;
 					
@@ -519,16 +516,26 @@
 					}
 					
 					//For List 2
-					if(data.groupedKeywords.list2.length > 0){
-						$('#processedLess #success-process-groupsL b').text(data.groupedKeywords.list2.length);
+					if(data.remainingKeywords.length > 0 || unFilteredGroups.length > 0){
+						$('#processedLess #success-process-groupsL b').text(data.remainingKeywords.length + unFilteredGroups.length);
 						$('#list2').text('less than ' + minLengthParsed);
-						 data.groupedKeywords.list2.forEach(function(keyword) {
+						
+						data.remainingKeywords.forEach(function(keyword) {
                             var cardHtml = '<div class="card">';
                             cardHtml += '<div class="card-body">';
                             cardHtml += keyword;
                             cardHtml += '</div></div>';
                             $('#group-list-2').append(cardHtml);
                         });
+						
+						unFilteredGroups.forEach(function(group) {
+							var cardHtml = '<div class="card">';
+                            cardHtml += '<div class="card-body">';
+							cardHtml += group.title;
+                            cardHtml += '</div></div>';
+                            $('#group-list-2').append(cardHtml);
+						});
+						
 					}else{
 						$('#processedLess #success-process-groupsL b').text(0);
 						$('#list2').text('less than ' + minLengthParsed);
