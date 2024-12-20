@@ -37,6 +37,9 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
+         ul, li {
+            list-style: none;
+        }
         .btn {
             display: inline-block;
             padding: 10px 15px;
@@ -181,7 +184,6 @@
         }
         .nav-tabs ul{
              padding-left: 0;
-            list-style: none;
         }
         .tab-content {
              border: 1px solid #ddd;
@@ -288,7 +290,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.15</h2>
+            <h2>Keyword Grouper Tool v1.16</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -299,6 +301,10 @@
                 </div>
                 <div class="col-sm-3">
                     <input type="text" class="form-control" id="maxLength" name="max" placeholder="Minimum group length" />
+                    <div style="margin-bottom: 10px">
+                        <input type="checkbox" id="overlap" name="overlap">
+                        <label for="overlap">Overlap?</label>
+                    </div>
                     <button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#ExcludeModal">
                         Excluded Words List
                     </button>
@@ -367,6 +373,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
+             $('#groups').hide();
 
             function updateResultCount() {
                 var text = $('#results').val();
@@ -404,6 +411,7 @@
                 var keywords = $('#results').val().split('\n').filter(line => line.trim() !== '');
                 var maxLength = parseInt($('#maxLength').val()) || 2;
                 var excludedWords = $('#excluded').val().split('\n').filter(word => word.trim() !== '');
+                var overlap = $('#overlap').is(':checked');
 
                 if (keywords.length === 0) {
                     alert('Please enter keywords to process.');
@@ -425,7 +433,7 @@
                 
                 setTimeout(function() {
 
-                    var groupedKeywords = groupKeywords(keywords, maxLength, excludedWords);
+                    var groupedKeywords = groupKeywords(keywords, maxLength, excludedWords, overlap);
                      $('.progressMessage').text('Keywords grouped successfully!');
                     $('.progress-bar').css('width', '100%');
                     clearInterval(interval);
@@ -436,7 +444,7 @@
                 }, 500)
             }
 
-           function groupKeywords(keywords, minLength, excludedWords) {
+           function groupKeywords(keywords, minLength, excludedWords, overlap) {
                 // Remove excluded words
                 const filteredKeywords = [];
                 for (const keyword of keywords) {
@@ -448,33 +456,57 @@
                 }
                 keywords = filteredKeywords;
 
-                const grouped = {};
+                const grouped = {};                
 
-                function extractPhrases(keyword) { // Remove minLength here
+                function extractPhrases(keyword) {
                     const words = keyword.split(" ");
                     const phrases = [];
                     for (let i = 0; i < words.length; i++) {
                         for (let j = i; j < words.length; j++) {
                             const phrase = words.slice(i, j + 1).join(" ");
-                            phrases.push(phrase); // Store all phrases
+                            phrases.push(phrase);
                         }
                     }
                     return phrases;
                 }
+                
+                if (overlap) {
+                     for (const keyword of keywords) {
+                        const phrases = extractPhrases(keyword);
+                        for (const phrase of phrases) {
+                            if (!grouped[phrase]) {
+                                grouped[phrase] = [];
+                            }
+                            if (!grouped[phrase].includes(keyword)) {
+                                grouped[phrase].push(keyword);
+                            }
+                        }
+                    }
+                } else {
+                    const assignedKeywords = new Set();
+                    for (const keyword of keywords) {
+                        if (assignedKeywords.has(keyword)) continue;
+                        const phrases = extractPhrases(keyword);
+                        let bestPhrase = '';
+                         let bestPhraseLength = 0;
+                       
+                        for (const phrase of phrases) {
+                              let phraseLength = phrase.split(' ').length;
+                             if (phraseLength > bestPhraseLength) {
+                                 bestPhrase = phrase;
+                                 bestPhraseLength = phraseLength
+                             }
+                        }
 
-                for (const keyword of keywords) {
-                    const phrases = extractPhrases(keyword);
-                    for (const phrase of phrases) {
-                        if (!grouped[phrase]) {
-                            grouped[phrase] = [];
-                        }
-                        if (!grouped[phrase].includes(keyword)) {
-                            grouped[phrase].push(keyword);
-                        }
+                         if (!grouped[bestPhrase]) {
+                                grouped[bestPhrase] = [];
+                            }
+                        grouped[bestPhrase].push(keyword);
+                           assignedKeywords.add(keyword)
                     }
                 }
 
-                const groups = []; // Remove the object list1, list2 here
+                 const groups = [];
 
                 for (const key in grouped) {
                     if (grouped.hasOwnProperty(key)) {
@@ -572,12 +604,13 @@
                 const $list2 = $('#group-list-2');
                  const $tabContent = $('.tab-content');
                 const $navTabs = $('.nav-tabs');
+                const $groups = $('#groups');
                 
                 $list1.empty();
                 $list2.empty();
                 
-                 $tabContent.hide();
-                 $navTabs.hide();
+                
+                 $groups.hide();
                 
                 if (data && data.groupedKeywords) {
                     $('#processed .success-process-keywords b').text(data.totalKeywords);
@@ -649,6 +682,8 @@
                     $('#download-span').append(downloadLink);
                     $('#download-span-less').append(downloadLink);
                     
+                    
+                    $groups.show();
                      $tabContent.show();
                      $navTabs.show();
                     
@@ -671,9 +706,9 @@
                     
                      $('#downloadTXT').off('click').on('click', downloadTXT);
 
-                    $('#groups').show();
+                   
                 } else {
-                    $('#groups').hide();
+                    $groups.hide();
                 }
             }
             // Hide Progress Bar
