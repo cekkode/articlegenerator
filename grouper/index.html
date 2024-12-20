@@ -223,6 +223,10 @@
 		.card h4 {
 			margin-top:0;
 		}
+		.card-body ul {
+			list-style:none;
+			padding-left: 0;
+		}
         @media (max-width: 768px) {
             .card {
                 width: calc(50% - 20px); /* Two cards per row for smaller screens */
@@ -238,7 +242,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool</h2>
+            <h2>Keyword Grouper Tool v1.2</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -379,42 +383,45 @@
                 }, 100)
             }
             
-            function groupKeywords(keywords, minLength, excludedWords) {
-                  // Remove excluded words from keywords
-                  const filteredKeywords = [];
-                  for (const keyword of keywords) {
-                      const words = keyword.split(" ");
-                      const filteredWords = words.filter(word => !excludedWords.includes(word));
-                          if(filteredWords.length > 0){
-                              filteredKeywords.push(filteredWords.join(" "));
-                          }
-                  }
-                  keywords = filteredKeywords;
+           function groupKeywords(keywords, minLength, excludedWords) {
+                // Remove excluded words
+				const filteredKeywords = [];
+				for (const keyword of keywords) {
+					const words = keyword.split(" ");
+					const filteredWords = words.filter(word => !excludedWords.includes(word));
+						if(filteredWords.length > 0){
+							filteredKeywords.push(filteredWords.join(" "));
+						}
+				}
+				keywords = filteredKeywords;
 
-                  const wordFrequency = {};
-                      for (const keyword of keywords) {
-                      const words = keyword.split(" ");
-                      for (const word of words) {
-                          wordFrequency[word] = (wordFrequency[word] || 0) + 1;
-                      }
-                  }
+                const grouped = {};
+
+				for (const keyword of keywords) {
+					const firstPhrase = keyword.split(' ').slice(0, minLength).join(' ');
+					if (firstPhrase.trim() !== '') {
+					    if (!grouped[firstPhrase]) {
+						    grouped[firstPhrase] = [];
+					    }
+					    grouped[firstPhrase].push(keyword);
+					}
+				}
+				
 
                 const groups = { list1: [], list2: [] };
-                for (const keyword of keywords) {
-                    const group = [];
-                    const words = keyword.split(" ");
-                    for (const word of words) {
-                        if (wordFrequency[word] > 1) {
-                            group.push(word);
-                        }
-                    }
-                    const uniqueGroup = [...new Set(group)];
-                    if (uniqueGroup.length >= minLength) {
-                        groups.list1.push([keyword]);
-                    } else if (uniqueGroup.length > 0 && uniqueGroup.length < minLength){
-                        groups.list2.push([keyword]);
-                    }
-                }
+				for (const key in grouped) {
+					if (grouped.hasOwnProperty(key)) {
+					    if(grouped[key].length > 0){
+						    groups.list1.push({ title: key, keywords: grouped[key] });
+						}
+					}
+				}
+
+				const remainingKeywords = keywords.filter(keyword => {
+				  return !Object.values(grouped).flat().includes(keyword);
+				});
+                
+				groups.list2 = remainingKeywords;
 
                 return {
                     totalKeywords: keywords.length,
@@ -424,15 +431,20 @@
 
 			function downloadTXT(){
 				var list1 = $('#group-list-1').find('.card').map(function() {
-					return $(this).find('.card-body').text();
+					var cardBody = $(this).find('.card-body');
+					var keywords = cardBody.find('ul li').map(function() {
+						return $(this).text();
+					}).get();
+					return cardBody.find('h4').text() + '\n' + keywords.join('\n');
 				}).get();
+				
 				var list2 = $('#group-list-2').find('.card').map(function() {
 					return $(this).find('.card-body').text();
 				}).get();
 				
 				var combinedList = list1.concat(list2);
 				
-				var text = combinedList.join('\n').replace(/,/g, '   ');
+				var text = combinedList.join('\n\n').replace(/,/g, '   ');
 				
 				var element = document.createElement('a');
 				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
@@ -442,47 +454,54 @@
 				element.click();
 				document.body.removeChild(element);
 			}
-
+			
             function displayResults(data) {
-				$('#group-list-1').empty();
+                $('#group-list-1').empty();
 				$('#group-list-2').empty();
                 if (data && data.groupedKeywords) {
-					$('#processed .success-process-keywords b').text(data.totalKeywords);
+                    $('#processed .success-process-keywords b').text(data.totalKeywords);
 					$('#processedLess .success-process-keywords b').text(data.totalKeywords);
 					
 					//For List 1
 					if(data.groupedKeywords.list1.length > 0){
 						$('#processed #success-process-groups b').text(data.groupedKeywords.list1.length);
-						data.groupedKeywords.list1.forEach(function(group) {
-							var cardHtml = '<div class="card">';
-							cardHtml += '<div class="card-body">';
-							cardHtml += group.join(', ');
-							cardHtml += '</div></div>';
-							$('#group-list-1').append(cardHtml);
-						});
+                        data.groupedKeywords.list1.forEach(function(group) {
+                            var cardHtml = '<div class="card">';
+                            cardHtml += '<div class="card-body">';
+                            cardHtml += '<h4>' + group.title + ' (' + group.keywords.length + ')</h4>';
+                            cardHtml += '<ul>';
+                            group.keywords.forEach(function(keyword) {
+                                cardHtml += '<li>' + keyword + '</li>';
+                            });
+                            cardHtml += '</ul>';
+                            cardHtml += '</div></div>';
+                            $('#group-list-1').append(cardHtml);
+                        });
 					}else{
 						$('#processed #success-process-groups b').text(0);
 					}
-
+					
 					//For List 2
 					if(data.groupedKeywords.list2.length > 0){
 						$('#processedLess #success-process-groupsL b').text(data.groupedKeywords.list2.length);
-						data.groupedKeywords.list2.forEach(function(group) {
-							var cardHtml = '<div class="card">';
-							cardHtml += '<div class="card-body">';
-							cardHtml += group.join(', ');
-							cardHtml += '</div></div>';
-							$('#group-list-2').append(cardHtml);
-						});
+						 data.groupedKeywords.list2.forEach(function(keyword) {
+                            var cardHtml = '<div class="card">';
+                            cardHtml += '<div class="card-body">';
+                            cardHtml += keyword;
+                            cardHtml += '</div></div>';
+                            $('#group-list-2').append(cardHtml);
+                        });
 					}else{
 						$('#processedLess #success-process-groupsL b').text(0);
 					}
+					
+
                     $('#groups').show();
                 } else {
                     $('#groups').hide();
                 }
             }
-			// Hide Progress Bar
+            // Hide Progress Bar
 			$('#keyword-progress').hide();
         });
     </script>
