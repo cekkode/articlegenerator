@@ -242,7 +242,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.3</h2>
+            <h2>Keyword Grouper Tool v1.4</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -291,8 +291,8 @@
                 </div>
                 <div class="col-sm-12" id="process-result-list">
 					<ul class="nav nav-tabs">
-						<li class="active"><a data-toggle="tab" href="#menu1" id="list1">Grouped Keywords</a></li>
-						<li><a data-toggle="tab" href="#menu2" id="list2">Ungrouped Keywords</a></li>
+						<li class="active"><a data-toggle="tab" href="#menu1" id="list1"></a></li>
+						<li><a data-toggle="tab" href="#menu2" id="list2"></a></li>
 					</ul>
 					<div class="tab-content">
 						<div id="menu1" class="tab-pane fade in active">
@@ -377,7 +377,7 @@
                     var groupedKeywords = groupKeywords(keywords, maxLength, excludedWords);
                     $('.progressMessage').text('Keywords grouped successfully!');
                     $('.progress-bar').css('width', '100%');
-                    displayResults(groupedKeywords);
+                    displayResults(groupedKeywords, maxLength);
                      $('#keyword-progress').hide();
 
                 }, 100)
@@ -470,17 +470,28 @@
 				document.body.removeChild(element);
 			}
 			
-            function displayResults(data) {
+            function displayResults(data, minLength) {
                 $('#group-list-1').empty();
 				$('#group-list-2').empty();
+				
+				const minLengthParsed = parseInt(minLength) || 2;
+				
                 if (data && data.groupedKeywords) {
                     $('#processed .success-process-keywords b').text(data.totalKeywords);
 					$('#processedLess .success-process-keywords b').text(data.totalKeywords);
 					
+					// Filter groups by min length
+					const filteredGroups = data.groupedKeywords.list1.filter(group => group.keywords.length >= minLengthParsed);
+					const filteredGroupsLength = filteredGroups.length;
+					// Sort groups by keyword count
+					filteredGroups.sort((a,b) => b.keywords.length - a.keywords.length)
+
+					
 					//For List 1
-					if(data.groupedKeywords.list1.length > 0){
-						$('#processed #success-process-groups b').text(data.groupedKeywords.list1.length);
-                        data.groupedKeywords.list1.forEach(function(group) {
+					if(filteredGroupsLength > 0){
+						$('#processed #success-process-groups b').text(filteredGroupsLength);
+						$('#list1').text(minLengthParsed + ' or more');
+                        filteredGroups.forEach(function(group) {
                             var cardHtml = '<div class="card">';
                             cardHtml += '<div class="card-body">';
                             cardHtml += '<h4>' + group.title + ' (' + group.keywords.length + ')</h4>';
@@ -494,11 +505,13 @@
                         });
 					}else{
 						$('#processed #success-process-groups b').text(0);
+						$('#list1').text(minLengthParsed + ' or more');
 					}
 					
 					//For List 2
 					if(data.groupedKeywords.list2.length > 0){
 						$('#processedLess #success-process-groupsL b').text(data.groupedKeywords.list2.length);
+						$('#list2').text('less than ' + minLengthParsed);
 						 data.groupedKeywords.list2.forEach(function(keyword) {
                             var cardHtml = '<div class="card">';
                             cardHtml += '<div class="card-body">';
@@ -508,6 +521,7 @@
                         });
 					}else{
 						$('#processedLess #success-process-groupsL b').text(0);
+						$('#list2').text('less than ' + minLengthParsed);
 					}
 					
 
