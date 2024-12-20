@@ -111,12 +111,13 @@
             background-color: #f5f5f5;
             border-radius: 4px;
             margin-bottom: 10px;
+            display: none;
         }
         .progress-bar {
             height: 100%;
             background-color: #5cb85c;
             color: white;
-            transition: width 0.6s ease;
+            transition: width 0.3s ease;
         }
         .progress-bar-striped {
            background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
@@ -227,6 +228,7 @@
             box-sizing: border-box;
             background-color: #fff;
 			margin-bottom: 10px;
+            position:relative;
         }
 		.card h4 {
 			margin-top:0;
@@ -252,7 +254,9 @@
             padding: 5px 10px;
             cursor: pointer;
 			display: inline-block;
-			margin-top:5px;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
         }
 		.copy-button:hover {
             background-color: #e0e0e0;
@@ -272,7 +276,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.11</h2>
+            <h2>Keyword Grouper Tool v1.12</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -401,15 +405,26 @@
                  $('.progress-bar').css('width', '0%');
                  $('.progressMessage').text('Processing keywords...');
                 
+                let progress = 0;
+                const interval = setInterval(function() {
+                     progress += 10;
+                     $('.progress-bar').css('width', progress + '%');
+                      if (progress >= 100) {
+                        clearInterval(interval);
+                      }
+                }, 30);
+                
                 setTimeout(function() {
 
                     var groupedKeywords = groupKeywords(keywords, maxLength, excludedWords);
-                    $('.progressMessage').text('Keywords grouped successfully!');
+                     $('.progressMessage').text('Keywords grouped successfully!');
                     $('.progress-bar').css('width', '100%');
+                    clearInterval(interval);
                     displayResults(groupedKeywords, maxLength);
-                     $('#keyword-progress').hide();
+                    $('#keyword-progress').hide();
+                    
 
-                }, 100)
+                }, 500)
             }
 
            function groupKeywords(keywords, minLength, excludedWords) {
@@ -495,11 +510,15 @@
 				document.body.removeChild(element);
 			}
 			
-            function displayResults(data, minLength) {
-				
+           function displayResults(data, minLength) {
 				const minLengthParsed = parseInt(minLength) || 2;
-                $('#group-list-1').empty();
-				$('#group-list-2').empty();
+                const $menu1 = $('#menu1');
+                const $menu2 = $('#menu2');
+                const $list1 = $('#group-list-1');
+                const $list2 = $('#group-list-2');
+                
+				$list1.empty();
+				$list2.empty();
 				
                 if (data && data.groupedKeywords) {
                     $('#processed .success-process-keywords b').text(data.totalKeywords);
@@ -517,7 +536,7 @@
 					const filteredGroupsLength = filteredGroups.length;
 					
 					//For List 1
-					if(filteredGroupsLength > 0){
+                    if(filteredGroupsLength > 0){
 						$('#processed #success-process-groups b').text(filteredGroupsLength);
 						$('#list1').text(minLengthParsed + ' or more');
                         filteredGroups.forEach(function(group) {
@@ -529,9 +548,8 @@
                                 cardHtml += '<li>' + keyword + '</li>';
                             });
                             cardHtml += '</ul>';
-                            cardHtml += '<button class="copy-button" data-clipboard-target=".card:last-child .card-body">Copy</button>';
-                            cardHtml += '</div></div>';
-                            $('#group-list-1').append(cardHtml);
+                            cardHtml += '</div><button class="copy-button" data-clipboard-target=".card:last-child .card-body">Copy</button></div>';
+                            $list1.append(cardHtml);
                         });
 					}else{
 						$('#processed #success-process-groups b').text(0);
@@ -547,18 +565,16 @@
                             var cardHtml = '<div class="card">';
                             cardHtml += '<div class="card-body">';
                             cardHtml += keyword;
-                            cardHtml += '<button class="copy-button" data-clipboard-target=".card:last-child .card-body">Copy</button>';
-                            cardHtml += '</div></div>';
-                            $('#group-list-2').append(cardHtml);
+                            cardHtml += '</div><button class="copy-button" data-clipboard-target=".card:last-child .card-body">Copy</button></div>';
+                            $list2.append(cardHtml);
                         });
 						
 						unFilteredGroups.forEach(function(group) {
 							var cardHtml = '<div class="card">';
                             cardHtml += '<div class="card-body">';
 							cardHtml += group.title;
-                            cardHtml += '<button class="copy-button" data-clipboard-target=".card:last-child .card-body">Copy</button>';
-                            cardHtml += '</div></div>';
-                            $('#group-list-2').append(cardHtml);
+                            cardHtml += '</div><button class="copy-button" data-clipboard-target=".card:last-child .card-body">Copy</button></div>';
+                            $list2.append(cardHtml);
 						});
 						
 					}else{
@@ -574,20 +590,22 @@
 					$('#download-span').append(downloadLink);
 					$('#download-span-less').append(downloadLink);
 					
-					// TAB Functionality
-					$('.nav-tabs a').off('click').on('click', function (e) {
-						e.preventDefault();
-						$(this).tab('show');
-					});
-					
-					$('.nav-tabs a').off('shown.bs.tab').on('shown.bs.tab', function (e) {
-						  var target = $(e.target).attr("href") // activated tab
-						  $('.tab-pane').removeClass('in active');
-						 $(target).addClass('in active');
-					});
+                    // TAB Functionality
+					 $('.nav-tabs a').off('click').on('click', function (e) {
+                         e.preventDefault();
+                        var target = $(this).attr("href");
+                        if (target === '#menu1') {
+                            $menu1.addClass('active in').show();
+                            $menu2.removeClass('active in').hide();
+                        } else if (target === '#menu2') {
+                             $menu2.addClass('active in').show();
+                             $menu1.removeClass('active in').hide();
+                        }
+                        $('.nav-tabs li').removeClass('active');
+                        $(this).parent().addClass('active');
+                    });
                     
-                     $('.nav-tabs a:first').tab('show');
-
+                      $('.nav-tabs a:first').click();
                     $('#groups').show();
                 } else {
                     $('#groups').hide();
