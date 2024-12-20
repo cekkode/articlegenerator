@@ -290,7 +290,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.17</h2>
+            <h2>Keyword Grouper Tool v1.18</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -450,14 +450,14 @@
                 for (const keyword of keywords) {
                     const words = keyword.split(" ");
                     const filteredWords = words.filter(word => !excludedWords.includes(word));
-                        if(filteredWords.length > 0){
-                            filteredKeywords.push(filteredWords.join(" "));
-                        }
+                    if (filteredWords.length > 0) {
+                        filteredKeywords.push(filteredWords.join(" "));
+                    }
                 }
                 keywords = filteredKeywords;
-
-                 const grouped = {};
-                 const minLengthParsed = parseInt(minLength) || 2;
+            
+                const grouped = {};
+                const minLengthParsed = parseInt(minLength) || 2;
 
                 function extractPhrases(keyword) {
                     const words = keyword.split(" ");
@@ -465,60 +465,55 @@
                     for (let i = 0; i < words.length; i++) {
                         for (let j = i; j < words.length; j++) {
                             const phrase = words.slice(i, j + 1).join(" ");
-                            if (phrase.split(" ").length >= minLengthParsed) {
-                                  phrases.push(phrase);
-                            }
-
+                             if(phrase.split(" ").length >= minLengthParsed){
+                                    phrases.push(phrase);
+                                }
+                           
                         }
                     }
-                     return phrases;
+                    return phrases;
                 }
                 
                 if (overlap) {
-                     for (const keyword of keywords) {
+                    for (const keyword of keywords) {
                         const phrases = extractPhrases(keyword);
-                        for (const phrase of phrases) {
-                            if (!grouped[phrase]) {
-                                grouped[phrase] = [];
-                            }
-                            if (!grouped[phrase].includes(keyword)) {
-                                grouped[phrase].push(keyword);
+                            for (const phrase of phrases) {
+                                if (!grouped[phrase]) {
+                                    grouped[phrase] = [];
+                                }
+                                if (!grouped[phrase].includes(keyword)) {
+                                    grouped[phrase].push(keyword);
+                                }
                             }
                         }
-                    }
-                } else {
-                  const assignedKeywords = new Set();
-                  for (let i = 0; i < keywords.length; i++) {
-                        const keyword1 = keywords[i];
-                        if (assignedKeywords.has(keyword1)) continue;
-                        const phrases1 = extractPhrases(keyword1);
-
-                        let groupedKeyword = false;
-
-                        for (let j = i+1; j < keywords.length; j++) {
-                              const keyword2 = keywords[j];
-                              if (assignedKeywords.has(keyword2)) continue;
-                              const phrases2 = extractPhrases(keyword2);
+                     } else {
+                        const assignedKeywords = new Set();
+                        for (const keyword of keywords) {
+                            if (assignedKeywords.has(keyword)) continue;
+                            const phrases = extractPhrases(keyword);
+                            let bestPhrase = '';
+                            let bestPhraseLength = 0;
+            
+                            for (const phrase of phrases) {
+                                let phraseLength = phrase.split(' ').length;
+                                 if (phraseLength > bestPhraseLength) {
+                                    bestPhrase = phrase;
+                                    bestPhraseLength = phraseLength;
+                                }
+                               
+                            }
+                               if(bestPhrase != ''){
+                                     if (!grouped[bestPhrase]) {
+                                            grouped[bestPhrase] = [];
+                                     }
+                                 grouped[bestPhrase].push(keyword);
+                                 assignedKeywords.add(keyword);
+                               }
                             
-                                    const sharedPhrase = phrases1.find(phrase => phrases2.includes(phrase));
-
-                                   if (sharedPhrase) {
-                                            if (!grouped[sharedPhrase]) {
-                                                grouped[sharedPhrase] = [];
-                                            }
-                                            grouped[sharedPhrase].push(keyword1);
-                                            grouped[sharedPhrase].push(keyword2);
-                                              assignedKeywords.add(keyword1)
-                                            assignedKeywords.add(keyword2)
-                                             groupedKeyword = true;
-
-                                        }
-
                         }
-
-                  }
-                }
-
+                        
+                    }
+            
                 const groups = [];
 
                 for (const key in grouped) {
@@ -526,7 +521,7 @@
                         groups.push({ title: key, keywords: grouped[key] });
                     }
                 }
-
+            
                 const remainingKeywords = keywords.filter(keyword => {
                     return !Object.values(grouped).flat().includes(keyword);
                 });
