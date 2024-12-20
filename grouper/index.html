@@ -180,12 +180,14 @@
             border-bottom-color: transparent;
         }
         .nav-tabs ul{
-            padding-left: 0;
+             padding-left: 0;
+            list-style: none;
         }
         .tab-content {
              border: 1px solid #ddd;
             border-top: none;
             padding: 15px;
+             display:none;
         }
         .alert {
             padding: 15px;
@@ -286,7 +288,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.14</h2>
+            <h2>Keyword Grouper Tool v1.15</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -540,6 +542,9 @@
 
                     }
                     
+                     // Prefix and remove double dashes
+                     filename = 'keyword-' + filename.replace(/--+/g, '-');
+                    
 					
                     // Create data URI
                     var dataUri = 'data:text/txt;charset=utf-8,' + encodeURIComponent(text);
@@ -565,10 +570,14 @@
                 const $menu2 = $('#menu2');
                 const $list1 = $('#group-list-1');
                 const $list2 = $('#group-list-2');
+                 const $tabContent = $('.tab-content');
+                const $navTabs = $('.nav-tabs');
                 
                 $list1.empty();
                 $list2.empty();
                 
+                 $tabContent.hide();
+                 $navTabs.hide();
                 
                 if (data && data.groupedKeywords) {
                     $('#processed .success-process-keywords b').text(data.totalKeywords);
@@ -640,8 +649,9 @@
                     $('#download-span').append(downloadLink);
                     $('#download-span-less').append(downloadLink);
                     
+                     $tabContent.show();
+                     $navTabs.show();
                     
-                     
                     // TAB Functionality
                      $('.nav-tabs a').off('click').on('click', function (e) {
                          e.preventDefault();
