@@ -231,10 +231,32 @@
 		.card h4 {
 			margin-top:0;
 		}
-		.card-body ul {
+		.card-body {
 			list-style:none;
 			padding-left: 0;
+            height: 200px; /* Set a fixed height */
+            overflow-y: auto; /* Enable vertical scrollbar */
+            text-align:left;
 		}
+		.card-body ul {
+			padding-left: 0;
+			margin-bottom: 10px;
+		}
+		.card-body li{
+			margin-bottom: 5px;
+		}
+        .copy-button {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+			display: inline-block;
+			margin-top:5px;
+        }
+		.copy-button:hover {
+            background-color: #e0e0e0;
+        }
         @media (max-width: 768px) {
             .card {
                 width: calc(50% - 20px); /* Two cards per row for smaller screens */
@@ -250,7 +272,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.10</h2>
+            <h2>Keyword Grouper Tool v1.11</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -307,6 +329,7 @@
 							<p class="alert alert-success text-center" id="processed">
 								<span class="success-process-keywords"><b>0</b> keywords analyzed</span>
 								<span id="success-process-groups"><b>0</b> Groups created</span>
+                                <span id="download-span"></span>
 							</p>
 							<div class="card-container" id="group-list-1"></div>
 						</div>
@@ -314,12 +337,10 @@
 							<p class="alert alert-success text-center" id="processedLess">
 								<span class="success-process-keywords"><b>0</b> keywords analyzed</span>
 								<span id="success-process-groupsL"><b>0</b> Ungrouped Keywords</span>
+							    <span id="download-span-less"></span>
 							</p>
 							<div class="card-container" id="group-list-2"></div>
 						</div>
-					</div>
-					<div class="center">
-						<a href="#" class="download-link" id="downloadTXT">Download TXT</a>
 					</div>
                     <div class="clearfix"></div>
                 </div>
@@ -327,7 +348,7 @@
         </div>
     </div>
     
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
 
@@ -508,6 +529,7 @@
                                 cardHtml += '<li>' + keyword + '</li>';
                             });
                             cardHtml += '</ul>';
+                            cardHtml += '<button class="copy-button" data-clipboard-target=".card:last-child .card-body">Copy</button>';
                             cardHtml += '</div></div>';
                             $('#group-list-1').append(cardHtml);
                         });
@@ -525,6 +547,7 @@
                             var cardHtml = '<div class="card">';
                             cardHtml += '<div class="card-body">';
                             cardHtml += keyword;
+                            cardHtml += '<button class="copy-button" data-clipboard-target=".card:last-child .card-body">Copy</button>';
                             cardHtml += '</div></div>';
                             $('#group-list-2').append(cardHtml);
                         });
@@ -533,6 +556,7 @@
 							var cardHtml = '<div class="card">';
                             cardHtml += '<div class="card-body">';
 							cardHtml += group.title;
+                            cardHtml += '<button class="copy-button" data-clipboard-target=".card:last-child .card-body">Copy</button>';
                             cardHtml += '</div></div>';
                             $('#group-list-2').append(cardHtml);
 						});
@@ -542,17 +566,27 @@
 						$('#list2').text('less than ' + minLengthParsed);
 					}
 					
+					// Download Link Handling
+					$('#download-span').empty();
+					$('#download-span-less').empty();
+					
+					var downloadLink = '<a href="#" class="download-link" id="downloadTXT">Download TXT</a>';
+					$('#download-span').append(downloadLink);
+					$('#download-span-less').append(downloadLink);
 					
 					// TAB Functionality
-					$('.nav-tabs a').on('click', function (e) {
+					$('.nav-tabs a').off('click').on('click', function (e) {
 						e.preventDefault();
 						$(this).tab('show');
 					});
-					$('.nav-tabs a').on('shown.bs.tab', function (e) {
+					
+					$('.nav-tabs a').off('shown.bs.tab').on('shown.bs.tab', function (e) {
 						  var target = $(e.target).attr("href") // activated tab
 						  $('.tab-pane').removeClass('in active');
 						 $(target).addClass('in active');
 					});
+                    
+                     $('.nav-tabs a:first').tab('show');
 
                     $('#groups').show();
                 } else {
@@ -561,7 +595,11 @@
             }
             // Hide Progress Bar
 			$('#keyword-progress').hide();
+            
+            // Initialize clipboard.js
+            new ClipboardJS('.copy-button');
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js"></script>
 </body>
 </html>
