@@ -228,7 +228,7 @@
             box-sizing: border-box;
             background-color: #fff;
 			margin-bottom: 10px;
-            position:relative;
+             position:relative;
         }
 		.card h4 {
 			margin-top:0;
@@ -276,7 +276,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.12</h2>
+            <h2>Keyword Grouper Tool v1.13</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -386,11 +386,8 @@
             });
 			
 			// Download TXT
-			$('#downloadTXT').on('click', function(e){
-				e.preventDefault();
-				downloadTXT();
-			});
-
+			
+			
             function processKeywords() {
                 var keywords = $('#results').val().split('\n').filter(line => line.trim() !== '');
                 var maxLength = parseInt($('#maxLength').val()) || 2;
@@ -484,34 +481,49 @@
                 };
             }
 
-			function downloadTXT(){
-				var list1 = $('#group-list-1').find('.card').map(function() {
-					var cardBody = $(this).find('.card-body');
-					var keywords = cardBody.find('ul li').map(function() {
-						return $(this).text();
-					}).get();
-					return cardBody.find('h4').text() + '\n' + keywords.join('\n');
-				}).get();
+			function downloadTXT(e){
+               e.preventDefault();
+                var downloadLink = $(this);
+                downloadLink.text('Preparing Download...'); // Update link text
+
+				setTimeout(function() {
+					
+					var list1 = $('#group-list-1').find('.card').map(function() {
+                        var cardBody = $(this).find('.card-body');
+                        var keywords = cardBody.find('ul li').map(function() {
+                            return $(this).text();
+                        }).get();
+						return cardBody.find('h4').text() + '\n' + '   ' + keywords.join('\n   ');
+                    }).get();
+
+                    var list2 = $('#group-list-2').find('.card').map(function() {
+                       return $(this).find('.card-body').text();
+                    }).get();
+
+                    var combinedList = list1.concat(list2);
+
+                    var text = combinedList.join('\n\n').replace(/,/g, '   ');
+					
+					// Create data URI
+					var dataUri = 'data:text/txt;charset=utf-8,' + encodeURIComponent(text);
+					
+					var element = document.createElement('a');
+                    element.setAttribute('href', dataUri);
+                    element.setAttribute('download', 'grouped-keywords.txt');
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+                    element.click();
+                    document.body.removeChild(element);
+                     downloadLink.text('Download TXT'); // Reset link text
+				}, 100);
 				
-				var list2 = $('#group-list-2').find('.card').map(function() {
-					return $(this).find('.card-body').text();
-				}).get();
-				
-				var combinedList = list1.concat(list2);
-				
-				var text = combinedList.join('\n\n').replace(/,/g, '   ');
-				
-				var element = document.createElement('a');
-				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-				element.setAttribute('download', 'grouped-keywords.txt');
-				element.style.display = 'none';
-				document.body.appendChild(element);
-				element.click();
-				document.body.removeChild(element);
 			}
 			
            function displayResults(data, minLength) {
+				
 				const minLengthParsed = parseInt(minLength) || 2;
+               
+                
                 const $menu1 = $('#menu1');
                 const $menu2 = $('#menu2');
                 const $list1 = $('#group-list-1');
@@ -519,6 +531,7 @@
                 
 				$list1.empty();
 				$list2.empty();
+                
 				
                 if (data && data.groupedKeywords) {
                     $('#processed .success-process-keywords b').text(data.totalKeywords);
@@ -590,6 +603,8 @@
 					$('#download-span').append(downloadLink);
 					$('#download-span-less').append(downloadLink);
 					
+					
+                     
                     // TAB Functionality
 					 $('.nav-tabs a').off('click').on('click', function (e) {
                          e.preventDefault();
@@ -605,7 +620,11 @@
                         $(this).parent().addClass('active');
                     });
                     
-                      $('.nav-tabs a:first').click();
+                     $('.nav-tabs a:first').click();
+                     
+                     $('#downloadTXT').off('click').on('click', downloadTXT);
+
+
                     $('#groups').show();
                 } else {
                     $('#groups').hide();
