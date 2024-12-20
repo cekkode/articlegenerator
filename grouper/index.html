@@ -243,7 +243,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.5</h2>
+            <h2>Keyword Grouper Tool v1.6</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -528,6 +528,14 @@
 						$('#list2').text('less than ' + minLengthParsed);
 					}
 					
+					// TAB Functionality
+					$('.nav-tabs a').on('click', function (e) {
+						e.preventDefault();
+						$(this).tab('show');
+						var tab = $(this).attr('href');
+						$('.tab-pane').removeClass('in active');
+						$(tab).addClass('in active');
+					});
 
                     $('#groups').show();
                 } else {
