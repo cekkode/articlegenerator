@@ -168,6 +168,9 @@
             border: 1px solid #ddd;
             border-bottom-color: transparent;
         }
+		.nav-tabs ul{
+			padding-left: 0;
+		}
         .tab-content {
              border: 1px solid #ddd;
             border-top: none;
@@ -247,7 +250,7 @@
 <body>
     <div class="main">
         <div class="center">
-            <h2>Keyword Grouper Tool v1.7</h2>
+            <h2>Keyword Grouper Tool v1.8</h2>
         </div>
         <div class="col-md-12 center">
             <form id="processForm">
@@ -492,7 +495,6 @@
 					// Filter groups by min length
 					const filteredGroups = allGroups.filter(group => group.keywords.length >= minLengthParsed);
 
-					
 					const filteredGroupsLength = filteredGroups.length;
 					
 					//For List 1
@@ -537,9 +539,11 @@
 					$('.nav-tabs a').on('click', function (e) {
 						e.preventDefault();
 						$(this).tab('show');
-						var tab = $(this).attr('href');
-						$('.tab-pane').removeClass('in active');
-						$(tab).addClass('in active');
+					});
+					$('.nav-tabs a').on('shown.bs.tab', function (e) {
+						  var target = $(e.target).attr("href") // activated tab
+						  $('.tab-pane').removeClass('in active');
+						 $(target).addClass('in active');
 					});
 
                     $('#groups').show();
