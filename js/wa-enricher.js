@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     (function() {
-        const version = '0.0.7';
+        const version = '0.0.8';
         console.log("WA Enricher Version: " + version);
 
         const currentHour = new Date().getHours();
@@ -44,10 +44,8 @@ document.addEventListener('DOMContentLoaded', function() {
             link.setAttribute('target', '_blank');
             link.setAttribute('rel', 'nofollow');
 
-            // Programmatically trigger a click on the *same* link after a slight delay
-            link.addEventListener('click', function(event) {
-                // Prevent the default action of this *second* click (optional, but good practice)
-                event.preventDefault();
+            // Programmatically trigger a *second* click after a slight delay
+            link.addEventListener('click', function() {
                 setTimeout(function() {
                     // Programmatically trigger the click event again
                     link.dispatchEvent(new MouseEvent('click', {
