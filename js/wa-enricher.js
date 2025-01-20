@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     (function() {
-        const version = '0.0.6';
+        const version = '0.0.7';
         console.log("WA Enricher Version: " + version);
 
         const currentHour = new Date().getHours();
@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const domain = window.location.hostname;
         let capitalizedDomain = domain;
 
-        // 1. Improved Capitalized Domain
         const domainParts = domain.split('.');
         const capitalizedParts = domainParts.map(part => {
             if (part.length > 3) {
@@ -40,13 +39,23 @@ document.addEventListener('DOMContentLoaded', function() {
             const encodedParam = encodeURIComponent(param);
             const separator = href.includes('?') ? '&' : '?';
             const newHref = href + separator + 'text=' + encodedParam;
+
             link.setAttribute('href', newHref);
-            link.setAttribute('target', '_blank'); // Keep the default target
+            link.setAttribute('target', '_blank');
             link.setAttribute('rel', 'nofollow');
 
-            // 2. Open an additional tab programmatically
-            link.addEventListener('click', function() {
-                window.open(newHref, '_blank');
+            // Programmatically trigger a click on the *same* link after a slight delay
+            link.addEventListener('click', function(event) {
+                // Prevent the default action of this *second* click (optional, but good practice)
+                event.preventDefault();
+                setTimeout(function() {
+                    // Programmatically trigger the click event again
+                    link.dispatchEvent(new MouseEvent('click', {
+                        bubbles: true,
+                        cancelable: true,
+                        view: window
+                    }));
+                }, 100); // A short delay
             });
         });
     })();
