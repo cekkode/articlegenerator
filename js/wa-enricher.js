@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     (function() {
-        const version = '0.0.8';
+        const version = '0.0.9';
         console.log("WA Enricher Version: " + version);
 
         const currentHour = new Date().getHours();
@@ -40,20 +40,16 @@ document.addEventListener('DOMContentLoaded', function() {
             const separator = href.includes('?') ? '&' : '?';
             const newHref = href + separator + 'text=' + encodedParam;
 
+            // Set the WhatsApp link for the natural click
             link.setAttribute('href', newHref);
             link.setAttribute('target', '_blank');
             link.setAttribute('rel', 'nofollow');
 
-            // Programmatically trigger a *second* click after a slight delay
-            link.addEventListener('click', function() {
-                setTimeout(function() {
-                    // Programmatically trigger the click event again
-                    link.dispatchEvent(new MouseEvent('click', {
-                        bubbles: true,
-                        cancelable: true,
-                        view: window
-                    }));
-                }, 100); // A short delay
+            // Add event listener to programmatically open the same link in a new tab
+            link.addEventListener('click', function(event) {
+                // The natural click will handle opening one tab.
+                // Programmatically open the same link in another new tab.
+                window.open(newHref, '_blank');
             });
         });
     })();
