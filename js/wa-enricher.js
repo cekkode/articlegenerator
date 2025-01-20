@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     (function() {
-        const version = '0.0.9';
+        const version = '0.10';
         console.log("WA Enricher Version: " + version);
 
         const currentHour = new Date().getHours();
@@ -40,17 +40,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const separator = href.includes('?') ? '&' : '?';
             const newHref = href + separator + 'text=' + encodedParam;
 
-            // Set the WhatsApp link for the natural click
+            // Set up the natural link
             link.setAttribute('href', newHref);
             link.setAttribute('target', '_blank');
             link.setAttribute('rel', 'nofollow');
 
-            // Add event listener to programmatically open the same link in a new tab
-            link.addEventListener('click', function(event) {
-                // The natural click will handle opening one tab.
-                // Programmatically open the same link in another new tab.
-                window.open(newHref, '_blank');
-            });
+            // Add onclick to programmatically open the same link (attempt to bypass blocker)
+            link.setAttribute('onclick', `window.open('${newHref}', '_blank');`);
+
+            // Note: We might need to prevent the default action in some cases,
+            // but let's see if this approach works first.
+            // link.addEventListener('click', function(event) {
+            //     event.preventDefault(); // Might be needed depending on browser behavior
+            //     window.open(newHref, '_blank');
+            // });
         });
     })();
 });
