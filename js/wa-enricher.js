@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     (function() {
-        const version = '0.0.5'; 
+        const version = '0.0.6';
         console.log("WA Enricher Version: " + version);
-        
+
         const currentHour = new Date().getHours();
         let waktu;
 
@@ -17,7 +17,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const domain = window.location.hostname;
-        const capitalizedDomain = domain.charAt(0).toUpperCase() + domain.slice(1);
+        let capitalizedDomain = domain;
+
+        // 1. Improved Capitalized Domain
+        const domainParts = domain.split('.');
+        const capitalizedParts = domainParts.map(part => {
+            if (part.length > 3) {
+                return part.charAt(0).toUpperCase() + part.slice(1);
+            }
+            return part;
+        });
+        capitalizedDomain = capitalizedParts.join('.');
+
         const url = window.location.href;
         const judul = document.title;
 
@@ -28,9 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const param = `Selamat ${waktu} ${capitalizedDomain}, saya lihat di ${url} tentang "${judul}". Mohon info lebih lanjut, terimakasih.`;
             const encodedParam = encodeURIComponent(param);
             const separator = href.includes('?') ? '&' : '?';
-            link.setAttribute('href', href + separator + 'text=' + encodedParam);
-            link.setAttribute('target', '_blank');
+            const newHref = href + separator + 'text=' + encodedParam;
+            link.setAttribute('href', newHref);
+            link.setAttribute('target', '_blank'); // Keep the default target
             link.setAttribute('rel', 'nofollow');
+
+            // 2. Open an additional tab programmatically
+            link.addEventListener('click', function() {
+                window.open(newHref, '_blank');
+            });
         });
     })();
 });
