@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Site Wireframe Generator</title>
+    <style>
+      /* Global Styles and Layout */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f9f9f9;
+      }
+      
+      header {
+        background: #4CAF50;
+        color: #fff;
+        padding: 10px 20px;
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 10px;
+        background: #fff;
+        box-shadow: 0px 0px 5px #ccc;
+      }
+      
+      /* Step Navigation */
+      #step-nav {
+        margin-bottom: 20px;
+      }
+      .step-btn {
+        padding: 10px 15px;
+        border: none;
+        background: #ddd;
+        margin-right: 5px;
+        cursor: pointer;
+      }
+      .step-btn:hover {
+        background: #ccc;
+      }
+      
+      /* Step Container */
+      .step-container {
+        display: none;
+        animation: fadein 0.5s;
+      }
+      .step-container.active {
+        display: block;
+      }
+      @keyframes fadein {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      /* Forms */
+      label {
+        display: block;
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      
+      input[type="text"],
+      textarea,
+      select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      
+      textarea {
+        resize: vertical;
+      }
+      
+      fieldset {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 15px;
+      }
+      
+      fieldset legend {
+        font-weight: bold;
+        padding: 0 5px;
+      }
+      
+      .button {
+        margin-top: 15px;
+        padding: 10px 15px;
+        background: #4CAF50;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      
+      .button:hover {
+        background: #45a049;
+      }
+      
+      /* Status messages */
+      .checkmark {
+        color: green;
+        font-size: 16px;
+        margin-left: 10px;
+      }
+      .error {
+        color: red;
+      }
+      
+      /* Mindmap and Tabs */
+      #mindmap-tabs {
+        margin-top: 20px;
+      }
+      .tab {
+        display: inline-block;
+        padding: 10px 20px;
+        background: #f1f1f1;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        margin-right: 2px;
+      }
+      .tab.active {
+        background: #fff;
+        border-bottom: none;
+      }
+      .view-content {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: -1px;
+      }
+      ul.mindmap {
+        list-style: none;
+        padding-left: 20px;
+      }
+      ul.mindmap li {
+        margin: 5px 0;
+      }
+      
+      .social-link {
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <header>
+      <h1>Site Wireframe Generator</h1>
+    </header>
+    <div class="container">
+      <!-- Step Navigation -->
+      <div id="step-nav">
+        <button class="step-btn" data-step="1">1. API Setup</button>
+        <button class="step-btn" data-step="2">2. Site Structure</button>
+        <button class="step-btn" data-step="3">3. Contact Details</button>
+        <button class="step-btn" data-step="4">4. Page Blocks</button>
+      </div>
+      
+      <!-- Step 1: API Setup -->
+      <div class="step-container" id="step-1">
+        <h2>API Setup</h2>
+        <label for="ai-model">Select AI Model:</label>
+        <select id="ai-model">
+          <option value="gemini">Gemini (Gemini Flash 2.0 Thinking)</option>
+          <option value="deepseek">Deepseek (Deepseek R1)</option>
+          <option value="openai">OpenAI (O3 Mini)</option>
+        </select>
+        
+        <label for="api-key">Enter API Key:</label>
+        <input type="text" id="api-key" placeholder="Paste your API key here">
+        <button id="validate-key" class="button">Validate API Key</button>
+        <span id="key-status"></span>
+      </div>
+      
+      <!-- Step 2: Site Structure -->
+      <div class="step-container" id="step-2">
+        <h2>Site Structure & Navigation</h2>
+        <fieldset>
+          <legend>Site Specifications</legend>
+          <label for="industry">Niche/Industry:</label>
+          <input type="text" id="industry" placeholder="e.g. Technology, Food, etc">
+          
+          <label for="site-details">Site Details/Description:</label>
+          <textarea id="site-details" rows="3" placeholder="Describe your website..."></textarea>
+          
+          <label for="company-name">Company Name:</label>
+          <input type="text" id="company-name" placeholder="Your Company Name">
+          
+          <label for="language">Language:</label>
+          <input type="text" id="language" placeholder="e.g. English">
+          
+          <label for="tone">Tone:</label>
+          <input type="text" id="tone" placeholder="e.g. Professional, Casual, etc">
+        </fieldset>
+        <button id="generate-navigation" class="button">Generate Navigation Layout</button>
+        <div id="navigation-output" style="margin-top:20px;"></div>
+        
+        <!-- Tabs for Mindmap and JSON view -->
+        <div id="mindmap-tabs" style="display:none; margin-top:20px;">
+          <div class="tab active" data-view="mindmap-view">Mindmap View</div>
+          <div class="tab" data-view="json-view">JSON View</div>
+          <div id="mindmap-view" class="view-content"></div>
+          <div id="json-view" class="view-content" style="display:none;"></div>
+          <button id="add-page" class="button">Add Page</button>
+        </div>
+      </div>
+      
+      <!-- Step 3: Contact Details -->
+      <div class="step-container" id="step-3">
+        <h2>Contact Details</h2>
+        <fieldset>
+          <legend>Contact Information</legend>
+          <label for="phone">Phone Number:</label>
+          <input type="text" id="phone" placeholder="e.g. +1 234 567 8900">
+          
+          <label for="whatsapp">WhatsApp Link:</label>
+          <input type="text" id="whatsapp" placeholder="WhatsApp link">
+          
+          <label for="email">Email:</label>
+          <input type="text" id="email" placeholder="example@domain.com">
+          
+          <label for="address">Address:</label>
+          <input type="text" id="address" placeholder="Your Address">
+        </fieldset>
+        
+        <fieldset id="social-media-field">
+          <legend>Social Media Links</legend>
+          <div id="social-media-links">
+            <div class="social-link">
+              <input type="text" class="social-url" placeholder="Social Media URL">
+            </div>
+          </div>
+          <button id="add-social-link" class="button">Add Social Link</button>
+        </fieldset>
+      </div>
+      
+      <!-- Step 4: Page Blocks -->
+      <div class="step-container" id="step-4">
+        <h2>Page Blocks Layout</h2>
+        <p>Generate the wireframe blocks for each page based on the navigation structure.</p>
+        <button id="generate-page-blocks" class="button">Generate Page Blocks</button>
+        <div id="page-blocks-output" style="margin-top:20px;"></div>
+      </div>
+    </div>
+    
+    <script>
+      /********************************************************************
+       * Global Application State
+       ********************************************************************/
+      const appState = {
+        apiKey: '',
+        aiModel: 'gemini',
+        navigation: null // This will hold the mindmap JSON structure
+      };
+      
+      /********************************************************************
+       * Step Navigation Handlers
+       ********************************************************************/
+      document.querySelectorAll('.step-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          let step = this.getAttribute('data-step');
+          showStep(step);
+        });
+      });
+      
+      function showStep(step) {
+        document.querySelectorAll('.step-container').forEach(container => {
+          container.classList.remove('active');
+        });
+        const stepContainer = document.getElementById('step-' + step);
+        if(stepContainer) {
+          stepContainer.classList.add('active');
+        }
+      }
+      
+      // Initially show Step 1
+      showStep(1);
+      
+      /********************************************************************
+       * Step 1: API Key Setup and Validation
+       ********************************************************************/
+      document.getElementById('validate-key').addEventListener('click', function() {
+        const key = document.getElementById('api-key').value.trim();
+        const model = document.getElementById('ai-model').value;
+        if(!key) {
+          document.getElementById('key-status').innerHTML = '<span class="error">API key cannot be empty.</span>';
+          return;
+        }
+        // Save key and model in the global state (note: do NOT store these on server)
+        appState.apiKey = key;
+        appState.aiModel = model;
+        
+        // Simulate API key validation—replace this with your secure API key check.
+        validateApiKey(key, model).then(isValid => {
+          if(isValid) {
+            document.getElementById('key-status').innerHTML = '<span class="checkmark">&#10004; Key Valid</span>';
+          } else {
+            document.getElementById('key-status').innerHTML = '<span class="error">Invalid API Key</span>';
+          }
+        }).catch(err => {
+          document.getElementById('key-status').innerHTML = '<span class="error">Error validating key</span>';
+        });
+      });
+      
+      // Dummy API key validation – for production, call the actual endpoint.
+      function validateApiKey(key, model) {
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(key.length > 5); // dummy rule: key longer than 5 chars is valid  
+          }, 500);
+        });
+      }
+      
+      /********************************************************************
+       * Step 2: Generate the Site Navigation (Mindmap)
+       ********************************************************************/
+      document.getElementById('generate-navigation').addEventListener('click', function() {
+        // Collect site-specification details from the form.
+        const industry = document.getElementById('industry').value;
+        const siteDetails = document.getElementById('site-details').value;
+        const companyName = document.getElementById('company-name').value;
+        const language = document.getElementById('language').value;
+        const tone = document.getElementById('tone').value;
+        
+        // Build a prompt for the AI. (Notice: the returned structure must be strict JSON.)
+        const prompt = `Based on the following details, generate a website navigation structure in JSON format.
+Details:
+Industry: ${industry}
+Site Description: ${siteDetails}
+Company Name: ${companyName}
+Language: ${language}
+Tone: ${tone}
+
+The JSON should have the structure:
+{
+  "siteName": "${companyName}",
+  "pages": [
+    { "name": "Home", "children": [ ... ] },
+    { "name": "About Us", "children": [] },
+    ...
+  ]
+}
+Output only valid JSON.`;
+        
+        document.getElementById('navigation-output').innerHTML = '<p>Generating navigation structure...</p>';
+        
+        // Simulate an AI API call – replace callAiApi() with your real API integration.
+        callAiApi(prompt).then(responseJSON => {
+          try {
+            const navStructure = JSON.parse(responseJSON);
+            appState.navigation = navStructure;
+            renderMindMap(navStructure);
+            renderJsonView(navStructure);
+            document.getElementById('mindmap-tabs').style.display = 'block';
+          } catch(e) {
+            document.getElementById('navigation-output').innerHTML = '<span class="error">Failed to parse AI response. Please ensure valid JSON output.</span>';
+          }
+        }).catch(err => {
+          document.getElementById('navigation-output').innerHTML = '<span class="error">Error generating navigation: ' + err + '</span>';
+        });
+      });
+      
+      // Dummy AI call simulation – replace with your secured AI API call.
+      function callAiApi(prompt) {
+        console.log("AI Prompt:", prompt);
+        return new Promise((resolve, reject) => {
+          setTimeout(() => {
+            // Example response – you might get a more complex structure.
+            const response = {
+              siteName: companyNameFromPrompt(prompt) || "Example Site",
+              pages: [
+                { 
+                  name: "Home", 
+                  children: [
+                    { name: "Products", children: [] },
+                    { name: "About Us", children: [] },
+                    { name: "Contact Us", children: [] }
+                  ]
+                }
+              ]
+            };
+            resolve(JSON.stringify(response, null, 2));
+          }, 1000);
+        });
+      }
+      
+      // Simple helper to extract a company name from the prompt (for simulation only).
+      function companyNameFromPrompt(prompt) {
+        const m = prompt.match(/Company Name:\s*(.+)/);
+        return m ? m[1].trim() : null;
+      }
+      
+      /********************************************************************
+       * Mindmap Rendering & Editing
+       ********************************************************************/
+      // Render the navigation as a nested list (mindmap) on the left/tab.
+      function renderMindMap(navStructure) {
+        const container = document.getElementById('mindmap-view');
+        container.innerHTML = '';
+        if(navStructure && navStructure.pages) {
+          const ul = document.createElement('ul');
+          ul.classList.add('mindmap');
+          navStructure.pages.forEach(page => {
+            const li = createMindMapNode(page);
+            ul.appendChild(li);
+          });
+          container.appendChild(ul);
+        }
+      }
+      
+      // Recursive function to create nodes with “Delete” and “Add Subpage” actions.
+      function createMindMapNode(node) {
+        const li = document.createElement('li');
+        li.textContent = node.name;
+        
+        // Delete button for the node.
+        const delBtn = document.createElement('button');
+        delBtn.textContent = 'Delete';
+        delBtn.style.marginLeft = '10px';
+        delBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          deleteNodeByName(node.name, appState.navigation.pages);
+          renderMindMap(appState.navigation);
+          renderJsonView(appState.navigation);
+        });
+        li.appendChild(delBtn);
+        
+        // Add Subpage button.
+        const addChildBtn = document.createElement('button');
+        addChildBtn.textContent = 'Add Subpage';
+        addChildBtn.style.marginLeft = '5px';
+        addChildBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const subpageName = prompt('Enter subpage name:');
+          if(subpageName) {
+            node.children = node.children || [];
+            node.children.push({ name: subpageName, children: [] });
+            renderMindMap(appState.navigation);
+            renderJsonView(appState.navigation);
+          }
+        });
+        li.appendChild(addChildBtn);
+        
+        if(node.children && node.children.length > 0) {
+          const ul = document.createElement('ul');
+          node.children.forEach(child => {
+            ul.appendChild(createMindMapNode(child));
+          });
+          li.appendChild(ul);
+        }
+        return li;
+      }
+      
+      // Remove a node (by name) from the navigation tree recursively.
+      function deleteNodeByName(name, nodes) {
+        for(let i = 0; i < nodes.length; i++){
+          if(nodes[i].name === name){
+            nodes.splice(i, 1);
+            return true;
+          }
+          if(nodes[i].children && nodes[i].children.length > 0){
+            const found = deleteNodeByName(name, nodes[i].children);
+            if(found) return true;
+          }
+        }
+        return false;
+      }
+      
+      // Render a JSON view of the mindmap.
+      function renderJsonView(navStructure) {
+        const container = document.getElementById('json-view');
+        container.textContent = JSON.stringify(navStructure, null, 2);
+      }
+      
+      // Tab switching between mindmap and JSON view.
+      document.querySelectorAll('#mindmap-tabs .tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          document.querySelectorAll('#mindmap-tabs .tab').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+          const view = this.getAttribute('data-view');
+          if(view === 'mindmap-view'){
+            document.getElementById('mindmap-view').style.display = 'block';
+            document.getElementById('json-view').style.display = 'none';
+          } else {
+            document.getElementById('mindmap-view').style.display = 'none';
+            document.getElementById('json-view').style.display = 'block';
+          }
+        });
+      });
+      
+      // Button for adding a new page at the root of the navigation.
+      document.getElementById('add-page').addEventListener('click', function() {
+        const pageName = prompt('Enter page name:');
+        if(pageName) {
+          appState.navigation.pages = appState.navigation.pages || [];
+          appState.navigation.pages.push({ name: pageName, children: [] });
+          renderMindMap(appState.navigation);
+          renderJsonView(appState.navigation);
+        }
+      });
+      
+      /********************************************************************
+       * Step 3: Contact Details (Including Social Media)
+       ********************************************************************/
+      document.getElementById('add-social-link').addEventListener('click', function() {
+        const container = document.getElementById('social-media-links');
+        const div = document.createElement('div');
+        div.className = 'social-link';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'social-url';
+        input.placeholder = 'Social Media URL';
+        div.appendChild(input);
+        container.appendChild(div);
+      });
+      
+      /********************************************************************
+       * Step 4: Generate Page Blocks Layout from Mindmap
+       ********************************************************************/
+      document.getElementById('generate-page-blocks').addEventListener('click', function() {
+        if(!appState.navigation || !appState.navigation.pages) {
+          document.getElementById('page-blocks-output').innerHTML = '<span class="error">Please generate the navigation structure first.</span>';
+          return;
+        }
+        // Extract page names from the navigation tree.
+        const pages = extractPageNames(appState.navigation.pages);
+        const prompt = `For each of the following website pages: ${pages.join(", ")}, please provide a suggested layout wireframe composed of blocks. 
+Available blocks: hero, page header, about, services, service lists, features, features list, contact form, location, why choose us, call to action, portfolio, gallery, testimonials, pricing, faq, team, statistics.
+Return a JSON object where each key is a page name and the value is an ordered array of block names that make a good layout for the page.
+For example:
+{
+  "Home": ["hero", "about", "services", "testimonials", "call to action"],
+  "Contact Us": ["page header", "contact form", "location"]
+}
+Output only valid JSON.`;
+        
+        document.getElementById('page-blocks-output').innerHTML = '<p>Generating page blocks layout...</p>';
+        
+        // Simulate the AI call for page blocks – replace with your actual API integration.
+        callAiApi(prompt).then(responseJSON => {
+          try {
+            const pageBlocks = JSON.parse(responseJSON);
+            renderPageBlocks(pageBlocks);
+          } catch(e) {
+            document.getElementById('page-blocks-output').innerHTML = '<span class="error">Failed to parse AI response for page blocks.</span>';
+          }
+        }).catch(err => {
+          document.getElementById('page-blocks-output').innerHTML = '<span class="error">Error: ' + err + '</span>';
+        });
+      });
+      
+      // Helper function to recursively extract page names.
+      function extractPageNames(nodes) {
+        let names = [];
+        nodes.forEach(n => {
+          names.push(n.name);
+          if(n.children && n.children.length > 0){
+            names = names.concat(extractPageNames(n.children));
+          }
+        });
+        return names;
+      }
+      
+      // Render the suggested blocks for each page.
+      function renderPageBlocks(pageBlocks) {
+        const container = document.getElementById('page-blocks-output');
+        container.innerHTML = '<h3>Suggested Blocks for Each Page</h3>';
+        for(const page in pageBlocks) {
+          const pageDiv = document.createElement('div');
+          pageDiv.style.border = "1px solid #ccc";
+          pageDiv.style.padding = "10px";
+          pageDiv.style.marginBottom = "10px";
+          const title = document.createElement('h4');
+          title.textContent = page;
+          pageDiv.appendChild(title);
+          const blocksList = document.createElement('ul');
+          pageBlocks[page].forEach(block => {
+            const li = document.createElement('li');
+            li.textContent = block;
+            blocksList.appendChild(li);
+          });
+          pageDiv.appendChild(blocksList);
+          container.appendChild(pageDiv);
+        }
+      }
+    </script>
+  </body>
+</html>
